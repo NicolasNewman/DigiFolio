@@ -4,6 +4,7 @@
         "module": "CommonJS",
         "lib": ["dom", "esnext"],
         "declaration": true,
+        /* sample comment */
         "declarationMap": true,
         "noEmit": true,
         "jsx": "react",
