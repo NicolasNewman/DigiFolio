@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Component } from 'react';
 import { RouteComponentProps } from 'react-router';
 // import { Redirect } from 'react-router';
-import DataStore from 'app/classes/DataStore';
+import DataStore from '../classes/DataStore';
 // import routes from '../constants/routes';
 
 interface IProps extends RouteComponentProps<any> {
@@ -10,7 +10,7 @@ interface IProps extends RouteComponentProps<any> {
 }
 
 export default class Home extends Component<IProps> {
-    props: IProps;
+    props!: IProps;
 
     constructor(props, history) {
         super(props);

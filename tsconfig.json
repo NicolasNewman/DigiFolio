@@ -4,6 +4,7 @@
         "module": "CommonJS",
         "lib": ["dom", "esnext"],
         "declaration": true,
+        /* sample comment */
         "declarationMap": true,
         "noEmit": true,
         "jsx": "react",
@@ -14,6 +15,7 @@
         "noUnusedLocals": false,
         "noUnusedParameters": false,
         "noImplicitReturns": true,
+        "noImplicitAny": false,
         "noFallthroughCasesInSwitch": true,
         /* Module Resolution Options */
         "moduleResolution": "node",

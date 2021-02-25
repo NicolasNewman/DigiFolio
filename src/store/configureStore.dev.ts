@@ -1,5 +1,5 @@
-import { createStore, applyMiddleware, compose } from 'redux';
-import thunk from 'redux-thunk';
+import { createStore, applyMiddleware, compose, Middleware } from 'redux';
+import thunk, { ThunkMiddleware } from 'redux-thunk';
 import { createHashHistory } from 'history';
 import { routerMiddleware, routerActions } from 'connected-react-router';
 import { createLogger } from 'redux-logger';
@@ -12,8 +12,8 @@ const rootReducer = createRootReducer(history);
 
 const configureStore = (initialState?: any) => {
     // Redux Configuration
-    const middleware = [];
-    const enhancers = [];
+    const middleware: Array<Middleware | ThunkMiddleware> = [];
+    const enhancers: Array<any> = [];
 
     // Thunk Middleware
     middleware.push(thunk);
