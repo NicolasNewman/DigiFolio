@@ -96,6 +96,9 @@ export default merge(baseConfig, {
                         loader: 'less-loader',
                         options: {
                             sourceMap: true,
+                            lessOptions: {
+                                javascriptEnabled: true,
+                            },
                         },
                     },
                 ],
@@ -122,6 +125,9 @@ export default merge(baseConfig, {
                         loader: 'less-loader',
                         options: {
                             sourceMap: true,
+                            lessOptions: {
+                                javascriptEnabled: true,
+                            },
                         },
                     },
                 ],
