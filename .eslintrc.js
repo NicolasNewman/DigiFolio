@@ -5,6 +5,8 @@ module.exports = {
         'import/no-extraneous-dependencies': 'off',
         'react/no-unused-prop-types': 'warn',
         'react/static-property-placement': 'off',
+        'no-useless-constructor': 'off',
+        '@typescript-eslint/no-useless-constructor': 'off',
     },
     parserOptions: {
         ecmaVersion: 2020,
