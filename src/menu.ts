@@ -224,46 +224,56 @@ export default class MenuBuilder {
                 label: '&File',
                 submenu: [
                     {
-                        label: '&Open',
+                        label: 'New Portfolio',
+                        accelerator: 'Ctrl+N',
+                    },
+                    {
+                        label: 'Open Portfolio',
                         accelerator: 'Ctrl+O',
                     },
                     {
-                        label: '&Close',
-                        accelerator: 'Ctrl+W',
-                        click: () => {
-                            this.mainWindow.close();
-                        },
+                        label: 'Save Portfolio',
+                        accelerator: 'Ctrl+S',
+                    },
+                    {
+                        label: 'Save Portfolio As',
+                        accelerator: 'Ctrl+Shift+S',
+                    },
+                    {
+                        label: 'Export Portfolio',
+                        accelerator: 'Ctrl+E',
+                    },
+                    {
+                        label: 'Export Portfolio As',
+                        accelerator: 'Ctrl+Shift+E',
+                    },
+                    {
+                        label: 'Print',
+                        accelerator: 'Ctrl+P',
                     },
                 ],
             },
             {
-                label: '&View',
+                label: 'Edit',
                 submenu:
                     process.env.NODE_ENV === 'development' ||
                     process.env.DEBUG_PROD === 'true'
                         ? [
                               {
-                                  label: '&Reload',
-                                  accelerator: 'Ctrl+R',
-                                  click: () => {
-                                      this.mainWindow.webContents.reload();
-                                  },
+                                  label: 'Add Theme',
+                                  accelerator: 'F1',
                               },
                               {
-                                  label: 'Toggle &Full Screen',
-                                  accelerator: 'F11',
-                                  click: () => {
-                                      this.mainWindow.setFullScreen(
-                                          !this.mainWindow.isFullScreen()
-                                      );
-                                  },
+                                  label: 'Edit Theme',
+                                  accelerator: 'F2',
                               },
                               {
-                                  label: 'Toggle &Developer Tools',
-                                  accelerator: 'Alt+Ctrl+I',
-                                  click: () => {
-                                      this.mainWindow.webContents.toggleDevTools();
-                                  },
+                                  label: 'Change Theme',
+                                  accelerator: 'F3',
+                              },
+                              {
+                                  label: 'Edit Widgets',
+                                  accelerator: 'F4',
                               },
                           ]
                         : [
@@ -279,7 +289,20 @@ export default class MenuBuilder {
                           ],
             },
             {
-                label: 'Help',
+                label: 'Insert',
+                submenu: [
+                    {
+                        label: 'Service',
+                        accelerator: 'Alt+Ctrl+S',
+                    },
+                    {
+                        label: 'Widgets',
+                        accelerator: 'Alt+Ctrl+W',
+                    },
+                ],
+            },
+            {
+                label: 'Tools',
                 submenu: [
                     {
                         label: 'Learn More',
