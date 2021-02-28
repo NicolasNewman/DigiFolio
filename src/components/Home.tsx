@@ -5,6 +5,8 @@ import { RouteComponentProps } from 'react-router';
 import DataStore from 'app/classes/DataStore';
 // import routes from '../constants/routes';
 
+import mainIcon from '../../assets/digifolio_icon.png';
+
 interface IProps extends RouteComponentProps<any> {
     dataStore: DataStore;
 }
@@ -26,8 +28,10 @@ export default class Home extends Component<IProps> {
         //     return <Redirect to="/home" />;
         // }
         return (
-            <div>
-                <h2>Home</h2>
+            <div className="landingContainer">
+                <img src={mainIcon} alt="Logo" />
+                <h3>Welcome to DigiFolio!</h3>
+                <h4>Begin by Creating a New Portfolio!</h4>
             </div>
         );
     }
