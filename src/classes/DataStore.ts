@@ -1,4 +1,4 @@
-import * as Store from 'electron-store';
+import Store from 'electron-store';
 
 /**
  * Wrapper for electron-store\'s Store object

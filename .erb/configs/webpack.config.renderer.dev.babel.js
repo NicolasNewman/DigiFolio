@@ -150,6 +150,11 @@ export default merge(baseConfig, {
                     },
                     {
                         loader: 'less-loader',
+                        options: {
+                            lessOptions: {
+                                javascriptEnabled: true,
+                            },
+                        },
                     },
                 ],
             },
