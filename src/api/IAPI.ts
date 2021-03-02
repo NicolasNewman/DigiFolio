@@ -1,7 +1,14 @@
 /* eslint-disable no-underscore-dangle */
+
+/**
+ * Abstract class for a services integration
+ * @param DM - generic interface for the format of the processed data
+ */
 export default abstract class IAPI<DM> {
+    /** the variable storing the processed data */
     private _data: DM | null = null;
 
+    /** The options containing the header information for the request */
     private opt: RequestInit;
 
     /**
