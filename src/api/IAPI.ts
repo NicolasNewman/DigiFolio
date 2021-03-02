@@ -2,7 +2,18 @@
 export default abstract class IAPI<DM> {
     private _data: DM | null = null;
 
-    constructor(private _name, private _key) {}
+    private opt: RequestInit;
+
+    constructor(private _name: string, private _key: string) {
+        this.opt = {
+            method: 'GET',
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': _key,
+            },
+        };
+    }
 
     get name(): string {
         return this._name;
@@ -16,5 +27,12 @@ export default abstract class IAPI<DM> {
         return this._data;
     }
 
-    abstract fetch(): Promise<DM>;
+    async fetch(url, body): Promise<unknown> {
+        this.opt.body = JSON.stringify(body);
+        const res = await fetch(url, this.opt);
+        this.opt.body = '';
+        return res.json();
+    }
+
+    abstract parse_api(): Promise<DM>;
 }
