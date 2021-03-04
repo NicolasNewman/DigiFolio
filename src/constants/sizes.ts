@@ -4,7 +4,7 @@ const sizes = {
         height: 500,
     },
     settingsWindow: {
-        width: 350,
+        width: 750,
         height: 500,
     },
 };
