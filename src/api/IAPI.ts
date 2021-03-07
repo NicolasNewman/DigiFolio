@@ -15,7 +15,7 @@ export default abstract class IAPI<DM> {
      * @param _name - the name of the integrated service
      * @param _key - the API key used to access the service
      */
-    constructor(private _name: string, private _key: string) {
+    constructor(private _key: string) {
         this.opt = {
             method: 'GET',
             mode: 'cors',
@@ -24,10 +24,6 @@ export default abstract class IAPI<DM> {
                 'x-api-key': _key,
             },
         };
-    }
-
-    get name(): string {
-        return this._name;
     }
 
     set data(data: DM | null) {
@@ -45,7 +41,7 @@ export default abstract class IAPI<DM> {
      * @param url - the url of the route to request to
      * @param body - the data to be given through the request
      */
-    async fetch(url, body): Promise<unknown> {
+    async fetch(url, body): Promise<any> {
         this.opt.body = JSON.stringify(body);
         const res = await fetch(url, this.opt);
         this.opt.body = '';

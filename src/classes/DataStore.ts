@@ -3,6 +3,11 @@ import Store from 'electron-store';
 /**
  * Wrapper for electron-store\'s Store object
  */
+
+export enum SchemaFields {
+    catsAPIKey = 'catsAPIKey',
+}
+
 export default class DataStore {
     private store;
 
@@ -14,6 +19,10 @@ export default class DataStore {
      */
     constructor() {
         this.schema = {
+            catsAPIKey: {
+                type: 'string',
+                description: 'The API key used for the catsapi',
+            },
             key: {
                 type: 'string',
                 description:

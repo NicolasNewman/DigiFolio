@@ -2,13 +2,14 @@ import IAPI from './IAPI';
 
 export interface CatsAPIDataModel {
     info: string;
+    voteData: any;
 }
 
 export default class CatsAPI extends IAPI<CatsAPIDataModel> {
     private username: string;
 
-    constructor(name: string, key: string, username: string) {
-        super(name, key);
+    constructor(key: string, username: string) {
+        super(key);
         this.username = username;
     }
 
@@ -16,6 +17,7 @@ export default class CatsAPI extends IAPI<CatsAPIDataModel> {
     async parse_api(): Promise<CatsAPIDataModel> {
         const temp: CatsAPIDataModel = {
             info: 'Test',
+            voteData: await this.process_votes(),
         };
         return temp;
     }
