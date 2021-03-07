@@ -16,7 +16,7 @@ interface IProps {
 export default class Counter extends PureComponent<IProps> {
     props!: IProps;
 
-    constructor(props: IProps) {
+    constructor(props, history) {
         super(props);
     }
 

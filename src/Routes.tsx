@@ -8,6 +8,7 @@ import HomePage from './containers/HomePage';
 import DataStore from './classes/DataStore';
 import IpcInterface from './classes/IpcInterface';
 import sizes from './constants/sizes';
+//import SettingsPanel from './containers/SettingsPanel';
 
 export default class Routes extends Component {
     private dataStore: DataStore = new DataStore();
@@ -27,6 +28,19 @@ export default class Routes extends Component {
                         }}
                     />
                     <Redirect from="/" to="/home" />
+
+                    {/* ---Path to Settings for testing container--- */}
+                    {/* <Route
+                        path={routes.SETTINGS}
+                        component={() => {
+                            IpcInterface.resizeWindow(
+                                sizes.settingsWindow.width,
+                                sizes.settingsWindow.height
+                            );
+                            return <SettingsPanel dataStore={this.dataStore} />;
+                        }}
+                    />
+                    <Redirect from="/" to="/settings" /> */}
                 </Switch>
             </App>
         );
