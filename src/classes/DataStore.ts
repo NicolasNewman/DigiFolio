@@ -23,6 +23,10 @@ export default class DataStore {
                 type: 'string',
                 description: 'The API key used for the catsapi',
             },
+            reduxSave: {
+                type: 'object',
+                description: 'The saved state of the redux store',
+            },
             key: {
                 type: 'string',
                 description:

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Component } from 'react';
+import { PureComponent } from 'react';
 import { Switch, Route, Redirect } from 'react-router';
 import routes from './constants/routes';
 import App from './containers/App';
@@ -10,10 +10,19 @@ import IpcInterface from './classes/IpcInterface';
 import sizes from './constants/sizes';
 import SettingsPage from './containers/SettingsPage';
 
-export default class Routes extends Component {
-    private dataStore: DataStore = new DataStore();
+interface IProps {
+    dataStore: DataStore;
+}
+
+export default class Routes extends PureComponent<IProps> {
+    props!: IProps;
+
+    constructor(props: IProps) {
+        super(props);
+    }
 
     render() {
+        const { dataStore } = this.props;
         return (
             <App>
                 <Switch>
@@ -24,7 +33,7 @@ export default class Routes extends Component {
                                 sizes.homeWindow.width,
                                 sizes.homeWindow.height
                             );
-                            return <HomePage dataStore={this.dataStore} />;
+                            return <HomePage dataStore={dataStore} />;
                         }}
                     />
                     <Route
@@ -34,7 +43,7 @@ export default class Routes extends Component {
                                 sizes.settingsWindow.width,
                                 sizes.settingsWindow.height
                             );
-                            return <SettingsPage dataStore={this.dataStore} />;
+                            return <SettingsPage dataStore={dataStore} />;
                         }}
                     />
                     <Redirect from="/" to="/home" />
