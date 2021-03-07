@@ -28,18 +28,19 @@ function callback(key) {
 
 const TabsPane = () => (
     <Tabs defaultActiveKey="1" onChange={callback}>
-        <TabPane className="inputPane" tab="API Keys" key="1">
-            Insert/Remove API Key
-            <Input className="input" placeholder="Insert API Key" />
-            <Input className="input" placeholder="Remove API Key" />
+        <TabPane className="settings__tab--api" tab="API Keys" key="1">
+            <div>
+                <span className="settings__label">CatsAPI: </span>
+                <Input className="settings__input" placeholder="catsapi key" />
+            </div>
         </TabPane>
 
-        <TabPane className="generalPane" tab="General" key="2">
+        <TabPane className="settings__tab--general" tab="General" key="2">
             General Settings
-            <div className="colorTheme">
+            <div className="tab-general__colorTheme">
                 <Dropdown overlay={menu}>
                     <div
-                        className="ant-dropdown-link themeButton"
+                        className="ant-dropdown-link tab-general__themeButton"
                         //onClick={(e) => e.preventDefault()}
                     >
                         Color Theme <DownOutlined />
@@ -65,17 +66,18 @@ export default class Settings extends Component<IProps> {
 
     render() {
         return (
-            <div className="settingsPanel">
+            <div className="settings">
                 <h2>Settings</h2>
-                <div className="tabPane">
+                <div className="settings__tab-container">
                     <TabsPane />
                 </div>
-                <div className="returnButton">
+                <div className="settings__button-container">
                     <Button
                         type="primary"
                         shape="round"
                         icon={<LeftCircleOutlined />}
                         size="middle"
+                        onClick={(e) => this.toPage(routes.HOME, e)}
                     >
                         Return
                     </Button>

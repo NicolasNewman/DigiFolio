@@ -1,6 +1,6 @@
 const sizes = {
     homeWindow: {
-        width: 350,
+        width: 400,
         height: 500,
     },
     settingsWindow: {
