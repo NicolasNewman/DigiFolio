@@ -13,6 +13,8 @@ module.exports = {
         'require-await': 'warn',
         'no-var': 'error',
         'spaced-comment': 'off',
+        'no-useless-constructor': 'off',
+        '@typescript-eslint/no-useless-constructor': 'off',
     },
     parserOptions: {
         ecmaVersion: 2020,
