@@ -5,11 +5,12 @@ import { Tabs, Input, Menu, Dropdown, Button } from 'antd';
 import 'antd/dist/antd.css';
 
 import { DownOutlined, LeftCircleOutlined } from '@ant-design/icons';
-import DataStore from '../classes/DataStore';
+import DataStore, { SchemaFields } from '../classes/DataStore';
 import routes from '../constants/routes';
 
+const { TabPane } = Tabs;
+
 interface IProps extends RouteComponentProps<any> {
-    // IProps extends RouteComponentProps because this is the root component for our window
     dataStore: DataStore;
 }
 
@@ -20,48 +21,74 @@ const menu = (
     </Menu>
 );
 
-const { TabPane } = Tabs;
-
 function callback(key) {
     console.log(key);
 }
 
-const TabsPane = () => (
-    <Tabs defaultActiveKey="1" onChange={callback}>
-        <TabPane className="settings__tab--api" tab="API Keys" key="1">
-            <div>
-                <span className="settings__label">CatsAPI: </span>
-                <Input className="settings__input" placeholder="catsapi key" />
-            </div>
-        </TabPane>
+// const TabsPane = function (this: Settings) {
+//     return (
+//         <Tabs defaultActiveKey="1" onChange={callback}>
+//             <TabPane className="settings__tab--api" tab="API Keys" key="1">
+//                 <div>
+//                     <span className="settings__label">CatsAPI: </span>
+//                     <Input
+//                         className="settings__input"
+//                         placeholder="catsapi key"
+//                     />
+//                 </div>
+//                 <Button onClick={this}>Save</Button>
+//             </TabPane>
 
-        <TabPane className="settings__tab--general" tab="General" key="2">
-            General Settings
-            <div className="tab-general__colorTheme">
-                <Dropdown overlay={menu}>
-                    <div
-                        className="ant-dropdown-link tab-general__themeButton"
-                        //onClick={(e) => e.preventDefault()}
-                    >
-                        Color Theme <DownOutlined />
-                    </div>
-                </Dropdown>
-            </div>
-        </TabPane>
-    </Tabs>
-);
+//             <TabPane className="settings__tab--general" tab="General" key="2">
+//                 General Settings
+//                 <div className="tab-general__colorTheme">
+//                     <Dropdown overlay={menu}>
+//                         <div
+//                             className="ant-dropdown-link tab-general__themeButton"
+//                             //onClick={(e) => e.preventDefault()}
+//                         >
+//                             Color Theme <DownOutlined />
+//                         </div>
+//                     </Dropdown>
+//                 </div>
+//             </TabPane>
+//         </Tabs>
+//     );
+// };
 
 export default class Settings extends Component<IProps> {
     props!: IProps;
 
+    /** React reference to the catsapi key input */
+    catsAPIInput: React.RefObject<Input>;
+
     constructor(props, history) {
         super(props);
+        this.catsAPIInput = React.createRef();
     }
 
-    // only include this function if you need to be able to switch pages
     toPage(route: string, e) {
         const { history } = this.props;
         history.push(route);
+    }
+
+    /**
+     * Saves or updates the keys specified by the API tab to the Electron data store
+     */
+    saveKeys() {
+        const { dataStore } = this.props;
+        const saveKey = (name, value) => {
+            const savedKey = dataStore.get(name);
+            if (!savedKey) {
+                dataStore.set(name, value);
+            } else if (savedKey !== value) {
+                dataStore.set(name, value);
+            }
+        };
+        saveKey(
+            SchemaFields.catsAPIKey,
+            this.catsAPIInput.current?.state.value
+        );
     }
 
     render() {
@@ -69,7 +96,42 @@ export default class Settings extends Component<IProps> {
             <div className="settings">
                 <h2>Settings</h2>
                 <div className="settings__tab-container">
-                    <TabsPane />
+                    <Tabs defaultActiveKey="1" onChange={callback}>
+                        <TabPane
+                            className="settings__tab--api"
+                            tab="API Keys"
+                            key="1"
+                        >
+                            <div>
+                                <span className="settings__label">
+                                    CatsAPI:{' '}
+                                </span>
+                                <Input
+                                    className="settings__input"
+                                    placeholder="catsapi key"
+                                    ref={this.catsAPIInput}
+                                />
+                            </div>
+                            <Button onClick={this.saveKeys}>Save</Button>
+                        </TabPane>
+                        <TabPane
+                            className="settings__tab--general"
+                            tab="General"
+                            key="2"
+                        >
+                            General Settings
+                            <div className="tab-general__colorTheme">
+                                <Dropdown overlay={menu}>
+                                    <div
+                                        className="ant-dropdown-link tab-general__themeButton"
+                                        //onClick={(e) => e.preventDefault()}
+                                    >
+                                        Color Theme <DownOutlined />
+                                    </div>
+                                </Dropdown>
+                            </div>
+                        </TabPane>
+                    </Tabs>
                 </div>
                 <div className="settings__button-container">
                     <Button
