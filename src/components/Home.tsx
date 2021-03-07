@@ -33,7 +33,11 @@ export default class Home extends Component<IProps> {
                 <img className="home__img" src={mainIcon} alt="Logo" />
                 <h3>Welcome to DigiFolio!</h3>
                 <h4>Begin by Creating a New Portfolio!</h4>
-                <Button className="home__button" type="primary">
+                <Button
+                    className="home__button"
+                    type="primary"
+                    onClick={(e) => this.toPage(routes.DESIGNER, e)}
+                >
                     New Portfolio
                 </Button>
                 <Button

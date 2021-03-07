@@ -4,11 +4,12 @@ import { Switch, Route, Redirect } from 'react-router';
 import routes from './constants/routes';
 import App from './containers/App';
 import HomePage from './containers/HomePage';
+import SettingsPage from './containers/SettingsPage';
+import DesignerPage from './containers/DesignerPage';
 // import CounterPage from './containers/CounterPage';
 import DataStore from './classes/DataStore';
 import IpcInterface from './classes/IpcInterface';
 import sizes from './constants/sizes';
-import SettingsPage from './containers/SettingsPage';
 
 export default class Routes extends Component {
     private dataStore: DataStore = new DataStore();
@@ -35,6 +36,16 @@ export default class Routes extends Component {
                                 sizes.settingsWindow.height
                             );
                             return <SettingsPage dataStore={this.dataStore} />;
+                        }}
+                    />
+                    <Route
+                        path={routes.DESIGNER}
+                        component={() => {
+                            IpcInterface.resizeWindow(
+                                sizes.designerWindow.width,
+                                sizes.designerWindow.height
+                            );
+                            return <DesignerPage dataStore={this.dataStore} />;
                         }}
                     />
                     <Redirect from="/" to="/home" />
