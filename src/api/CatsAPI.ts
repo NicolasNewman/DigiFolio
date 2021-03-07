@@ -5,6 +5,8 @@ export interface CatsAPIDataModel {
     voteData: any;
 }
 
+export type CatsAPIData = CatsAPIDataModel | null;
+
 export default class CatsAPI extends IAPI<CatsAPIDataModel> {
     private username: string;
 
@@ -13,7 +15,6 @@ export default class CatsAPI extends IAPI<CatsAPIDataModel> {
         this.username = username;
     }
 
-    // eslint-disable-next-line class-methods-use-this
     async parse_api(): Promise<CatsAPIDataModel> {
         const temp: CatsAPIDataModel = {
             info: 'Test',
