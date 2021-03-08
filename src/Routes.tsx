@@ -9,6 +9,7 @@ import DataStore from './classes/DataStore';
 import IpcInterface from './classes/IpcInterface';
 import sizes from './constants/sizes';
 import SettingsPage from './containers/SettingsPage';
+import DebugPage from './containers/DebugPage';
 
 interface IProps {
     dataStore: DataStore;
@@ -44,6 +45,16 @@ export default class Routes extends PureComponent<IProps> {
                                 sizes.settingsWindow.height
                             );
                             return <SettingsPage dataStore={dataStore} />;
+                        }}
+                    />
+                    <Route
+                        path={routes.DEBUG}
+                        component={() => {
+                            IpcInterface.resizeWindow(
+                                sizes.debugWindow.width,
+                                sizes.debugWindow.height
+                            );
+                            return <DebugPage />;
                         }}
                     />
                     <Redirect from="/" to="/home" />
