@@ -108,7 +108,7 @@ export default class Settings extends Component<IProps> {
                                 </span>
                                 <Input
                                     className="settings__input"
-                                    placeholder="catsapi key"
+                                    placeholder="Catsapi Key"
                                     ref={this.catsAPIInput}
                                 />
                             </div>
