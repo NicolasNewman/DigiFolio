@@ -41,9 +41,12 @@ export default abstract class IAPI<DM> {
      * @param url - the url of the route to request to
      * @param body - the data to be given through the request
      */
-    async fetch(url, body): Promise<any> {
-        this.opt.body = JSON.stringify(body);
-        const res = await fetch(url, this.opt);
+    async fetch(url, body: { [key: string]: any }): Promise<any> {
+        let newURL = '';
+        Object.keys(body).forEach((key) => {
+            newURL = `${url}?${key}=${body[key]}`;
+        });
+        const res = await fetch(newURL, this.opt);
         this.opt.body = '';
         return res.json();
     }

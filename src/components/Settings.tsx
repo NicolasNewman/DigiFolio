@@ -67,15 +67,10 @@ export default class Settings extends Component<IProps> {
         this.catsAPIInput = React.createRef();
     }
 
-    toPage(route: string, e) {
-        const { history } = this.props;
-        history.push(route);
-    }
-
     /**
      * Saves or updates the keys specified by the API tab to the Electron data store
      */
-    saveKeys() {
+    saveKeys = () => {
         const { dataStore } = this.props;
         const saveKey = (name, value) => {
             const savedKey = dataStore.get(name);
@@ -89,9 +84,15 @@ export default class Settings extends Component<IProps> {
             SchemaFields.catsAPIKey,
             this.catsAPIInput.current?.state.value
         );
+    };
+
+    toPage(route: string, e) {
+        const { history } = this.props;
+        history.push(route);
     }
 
     render() {
+        const { dataStore } = this.props;
         return (
             <div className="settings">
                 <h2>Settings</h2>
@@ -109,6 +110,9 @@ export default class Settings extends Component<IProps> {
                                 <Input
                                     className="settings__input"
                                     placeholder="catsapi key"
+                                    defaultValue={dataStore.get(
+                                        SchemaFields.catsAPIKey
+                                    )}
                                     ref={this.catsAPIInput}
                                 />
                             </div>

@@ -19,6 +19,8 @@ export default class APIManager {
         if (catsAPIKey) {
             this.apis.catsAPI = new CatsAPI(catsAPIKey, 'quantum');
         }
+
+        console.log(this.apis);
     }
 
     getAPIs() {
