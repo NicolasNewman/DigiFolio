@@ -54,7 +54,7 @@ export default class Routes extends PureComponent<IProps> {
                                 sizes.debugWindow.width,
                                 sizes.debugWindow.height
                             );
-                            return <DebugPage />;
+                            return <DebugPage dataStore={dataStore} />;
                         }}
                     />
                     <Redirect from="/" to="/home" />

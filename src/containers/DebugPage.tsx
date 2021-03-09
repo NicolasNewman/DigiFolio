@@ -9,7 +9,7 @@ import CounterActions from '../actions/counter';
 
 function mapStateToProps(state, ownProps) {
     return {
-        // data store should always be passed
+        dataStore: ownProps.dataStore,
     };
 }
 
