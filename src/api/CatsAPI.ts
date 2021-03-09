@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 import IAPI from './IAPI';
 
 export interface CatsAPIDataModel {
@@ -28,5 +29,47 @@ export default class CatsAPI extends IAPI<CatsAPIDataModel> {
             sub_id: this.username,
         });
         return votes;
+    }
+
+    async save_as_favourite(img_id) {
+        const favourite = await this.fetch(
+            'https://api.thecatapi.com/v1/favourites',
+            {
+                method: 'POST',
+                body: {
+                    image_id: img_id,
+                    sub_id: this.username,
+                },
+            }
+        );
+        return favourite;
+    }
+
+    async get_favourite_breeds() {
+        const favourites = await fetch(
+            'https://api.thecatapi.com/v1/favourites',
+            {
+                method: 'GET',
+            }
+        );
+        return favourites;
+    }
+
+    async get_specific_favourite(fav_id) {
+        const requestedFavourite = await fetch(
+            `https://api.thecatapi.com/v1/favourites/${fav_id}`,
+            {
+                method: 'GET',
+            }
+        );
+        return requestedFavourite;
+    }
+
+    async get_all_images(lim = 10) {
+        const url = `https://api.thecatapi.com/v1/images/search?limit=${lim}`;
+        const images = await fetch(url, {
+            method: 'GET',
+        });
+        return images;
     }
 }

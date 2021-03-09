@@ -1,10 +1,13 @@
 import {
     app,
+    remote,
     Menu,
     shell,
     BrowserWindow,
     MenuItemConstructorOptions,
 } from 'electron';
+import { writeFile } from 'fs';
+import { join } from 'path';
 
 interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
     selector?: string;
@@ -12,7 +15,14 @@ interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
 }
 
 export default class MenuBuilder {
-    mainWindow: BrowserWindow;
+    // mainWindow: BrowserWindow;
+
+    mainWindow = new BrowserWindow({
+        webPreferences: {
+            enableRemoteModule: true,
+            nodeIntegration: true,
+        },
+    });
 
     constructor(mainWindow: BrowserWindow) {
         this.mainWindow = mainWindow;
@@ -219,6 +229,86 @@ export default class MenuBuilder {
     }
 
     buildDefaultTemplate() {
+        const saveClickHandler = () => {
+            // Resolves to a Promise<Object>
+            remote.dialog
+                .showSaveDialog({
+                    title: 'Select the File Path to save',
+                    defaultPath: join(__dirname, '../assets/sample.txt'),
+                    // defaultPath: path.join(__dirname, '../assets/'),
+                    buttonLabel: 'Save',
+                    // Restricting the user to only Text Files.
+                    filters: [
+                        {
+                            name: 'Text Files',
+                            extensions: ['txt', 'docx'],
+                        },
+                    ],
+                    properties: [],
+                })
+                .then((file) => {
+                    // Stating whether dialog operation was cancelled or not.
+                    console.log(file.canceled);
+                    // eslint-disable-next-line promise/always-return
+                    if (!file.canceled && file.filePath) {
+                        console.log(file.filePath.toString());
+
+                        // Creating and Writing to the sample.txt file
+                        writeFile(
+                            file.filePath.toString(),
+                            'This is a Sample File',
+                            function (err) {
+                                if (err) throw err;
+                                console.log('Saved!');
+                            }
+                        );
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        };
+
+        const exportClickHandler = () => {
+            // Resolves to a Promise<Object>
+            remote.dialog
+                .showSaveDialog({
+                    title: 'Select the File Path to Export to',
+                    defaultPath: join(__dirname, '../assets/sample.txt'),
+                    // defaultPath: path.join(__dirname, '../assets/'),
+                    buttonLabel: 'Export',
+                    // Restricting the user to only Text Files.
+                    filters: [
+                        {
+                            name: 'Text Files',
+                            extensions: ['txt', 'docx'],
+                        },
+                    ],
+                    properties: [],
+                })
+                .then((file) => {
+                    // Stating whether dialog operation was cancelled or not.
+                    console.log(file.canceled);
+                    // eslint-disable-next-line promise/always-return
+                    if (!file.canceled && file.filePath) {
+                        console.log(file.filePath.toString());
+
+                        // Creating and Writing to the sample.txt file
+                        writeFile(
+                            file.filePath.toString(),
+                            'This is a Sample File',
+                            function (err) {
+                                if (err) throw err;
+                                console.log('Exported!');
+                            }
+                        );
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        };
+
         const templateDefault = [
             {
                 label: '&File',
@@ -234,18 +324,22 @@ export default class MenuBuilder {
                     {
                         label: 'Save Portfolio',
                         accelerator: 'Ctrl+S',
+                        click: saveClickHandler,
                     },
                     {
                         label: 'Save Portfolio As',
                         accelerator: 'Ctrl+Shift+S',
+                        click: saveClickHandler,
                     },
                     {
                         label: 'Export Portfolio',
                         accelerator: 'Ctrl+E',
+                        click: exportClickHandler,
                     },
                     {
                         label: 'Export Portfolio As',
                         accelerator: 'Ctrl+Shift+E',
+                        click: exportClickHandler,
                     },
                     {
                         label: 'Print',
