@@ -1,20 +1,25 @@
+/* eslint-disable react/self-closing-comp */
 import * as React from 'react';
-import { Component } from 'react';
-import { RouteComponentProps } from 'react-router';
+import { PureComponent } from 'react';
 import { Button } from 'antd';
-// import DataStore from '../classes/DataStore';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface IProps {}
 
-export default class Portfolio extends Component<IProps> {
+export default class Portfolio extends PureComponent<IProps> {
     props!: IProps;
 
-    constructor(props, history) {
+    constructor(props) {
         super(props);
     }
 
     render() {
-        return <p>Portfolio!</p>;
+        return (
+            <div className="portfolio">
+                <div className="portfolio__page">
+                    <p>This is my page</p>
+                </div>
+            </div>
+        );
     }
 }
