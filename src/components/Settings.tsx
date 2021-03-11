@@ -7,11 +7,13 @@ import 'antd/dist/antd.css';
 import { DownOutlined, LeftCircleOutlined } from '@ant-design/icons';
 import DataStore, { SchemaFields } from '../classes/DataStore';
 import routes from '../constants/routes';
+import APIManager from '../api/APIManager';
 
 const { TabPane } = Tabs;
 
 interface IProps extends RouteComponentProps<any> {
     dataStore: DataStore;
+    apiManager: APIManager;
 }
 
 const menu = (
@@ -71,14 +73,30 @@ export default class Settings extends Component<IProps> {
      * Saves or updates the keys specified by the API tab to the Electron data store
      */
     saveKeys = () => {
-        const { dataStore } = this.props;
+        const { dataStore, apiManager } = this.props;
         const saveKey = (name, value) => {
-            const savedKey = dataStore.get(name);
-            if (!savedKey) {
-                dataStore.set(name, value);
-            } else if (savedKey !== value) {
-                dataStore.set(name, value);
+            console.log(`Saving key: ${name}`);
+            // console.log(`Processing key for ${name}`);
+            // const savedKey = dataStore.get(name);
+            // console.log(`Stored value is: ${savedKey}`);
+            if (value === '') {
+                apiManager.updateKey(name);
+            } else {
+                apiManager.updateKey(name, value);
             }
+            // if (!savedKey) {
+            //     console.log('Setting value...');
+            //     apiManager.updateKey(name, value);
+            //     // dataStore.set(name, value);
+            // } else if (savedKey !== value) {
+            //     console.log('Updating value...');
+            //     apiManager.updateKey(name, value);
+            //     // dataStore.set(name, value);
+            // } else {
+            //     console.log('No change');
+            //     return;
+            // }
+            // console.log(`New value is: ${dataStore.get(name)}`);
         };
         saveKey(
             SchemaFields.catsAPIKey,
@@ -103,19 +121,27 @@ export default class Settings extends Component<IProps> {
                             tab="API Keys"
                             key="1"
                         >
-                            <div>
-                                <span className="settings__label">
-                                    CatsAPI:{' '}
-                                </span>
-                                <Input
-                                    className="settings__input"
-                                    placeholder="catsapi key"
-                                    defaultValue={dataStore.get(
-                                        SchemaFields.catsAPIKey
-                                    )}
-                                    ref={this.catsAPIInput}
-                                />
-                            </div>
+                            {(() => {
+                                if (process.env.NODE_ENV === 'development') {
+                                    return (
+                                        <div>
+                                            <span className="settings__label">
+                                                CatsAPI:{' '}
+                                            </span>
+                                            <Input
+                                                className="settings__input"
+                                                placeholder="catsapi key"
+                                                defaultValue={dataStore.get(
+                                                    SchemaFields.catsAPIKey
+                                                )}
+                                                ref={this.catsAPIInput}
+                                            />
+                                        </div>
+                                    );
+                                }
+                                return <span />;
+                            })()}
+
                             <Button onClick={this.saveKeys}>Save</Button>
                         </TabPane>
                         <TabPane

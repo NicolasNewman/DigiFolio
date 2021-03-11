@@ -1,13 +1,12 @@
 import Store from 'electron-store';
 
-/**
- * Wrapper for electron-store\'s Store object
- */
-
 export enum SchemaFields {
     catsAPIKey = 'catsAPIKey',
 }
 
+/**
+ * Wrapper for electron-store\'s Store object
+ */
 export default class DataStore {
     private store;
 
@@ -60,7 +59,7 @@ export default class DataStore {
      */
     set = (key: string, value: any): void => {
         if (this.schema[key]) {
-            console.log('contains key ', key);
+            // console.log('contains key ', key);
             this.store.set(key, value);
         }
     };

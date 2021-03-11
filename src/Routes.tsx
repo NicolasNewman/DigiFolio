@@ -10,9 +10,11 @@ import IpcInterface from './classes/IpcInterface';
 import sizes from './constants/sizes';
 import SettingsPage from './containers/SettingsPage';
 import DebugPage from './containers/DebugPage';
+import APIManager from './api/APIManager';
 
 interface IProps {
     dataStore: DataStore;
+    apiManager: APIManager;
 }
 
 export default class Routes extends PureComponent<IProps> {
@@ -23,7 +25,8 @@ export default class Routes extends PureComponent<IProps> {
     }
 
     render() {
-        const { dataStore } = this.props;
+        const { dataStore, apiManager } = this.props;
+        apiManager.printState('State after route render: ');
         return (
             <App>
                 <Switch>
@@ -44,7 +47,12 @@ export default class Routes extends PureComponent<IProps> {
                                 sizes.settingsWindow.width,
                                 sizes.settingsWindow.height
                             );
-                            return <SettingsPage dataStore={dataStore} />;
+                            return (
+                                <SettingsPage
+                                    dataStore={dataStore}
+                                    apiManager={apiManager}
+                                />
+                            );
                         }}
                     />
                     <Route

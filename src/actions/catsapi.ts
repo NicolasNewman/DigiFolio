@@ -1,4 +1,4 @@
-import { CatsAPIDataModel } from '../api/CatsAPI';
+import { CatsAPIData } from '../api/CatsAPI';
 
 export enum CatsAPITypeKeys {
     UPDATE = 'UPDATE',
@@ -6,12 +6,12 @@ export enum CatsAPITypeKeys {
 
 interface UpdateAction {
     type: CatsAPITypeKeys.UPDATE;
-    data: CatsAPIDataModel;
+    data: CatsAPIData;
 }
 
 export type CatsAPITypes = UpdateAction;
 
-export function updateCatsAPI(data: CatsAPIDataModel) {
+export function updateCatsAPI(data: CatsAPIData) {
     return {
         type: CatsAPITypeKeys.UPDATE,
         data,

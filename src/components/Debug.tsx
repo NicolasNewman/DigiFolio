@@ -33,7 +33,12 @@ export default class Debug extends Component<IProps> {
         return (
             <div>
                 <DebugAPIManager dataStore={this.props.dataStore} />
-                <Button onClick={(e) => this.toPage(routes.HOME, e)} />
+                <Button
+                    type="primary"
+                    onClick={(e) => this.toPage(routes.HOME, e)}
+                >
+                    Home
+                </Button>
             </div>
         );
     }

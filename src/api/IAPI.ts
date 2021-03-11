@@ -47,9 +47,10 @@ export default abstract class IAPI<DM> {
             newURL = `${url}?${key}=${body[key]}`;
         });
         const res = await fetch(newURL, this.opt);
-        this.opt.body = '';
         return res.json();
     }
 
     abstract parse_api(): Promise<DM>;
+
+    // abstract valid_key(): boolean;
 }
