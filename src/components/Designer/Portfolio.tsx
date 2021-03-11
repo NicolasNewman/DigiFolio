@@ -15,7 +15,7 @@ export default class Portfolio extends PureComponent<IProps> {
 
     render() {
         return (
-            <div className="portfolio">
+            <div className="portfolio" id="portfolio">
                 <div className="portfolio__page">
                     <p>This is my page</p>
                 </div>
