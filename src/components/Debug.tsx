@@ -10,6 +10,7 @@ import { RouteComponentProps } from 'react-router';
 // import { Redirect } from 'react-router';
 import { Button } from 'antd';
 import DebugAPIManager from './debug/DebugAPIManager';
+import DebugRecharts from './debug/DebugRecharts';
 import DataStore from '../classes/DataStore';
 import routes from '../constants/routes';
 
@@ -32,8 +33,13 @@ export default class Debug extends Component<IProps> {
     render() {
         return (
             <div>
-                <DebugAPIManager dataStore={this.props.dataStore} />
-                <Button onClick={(e) => this.toPage(routes.HOME, e)} />
+                <DebugRecharts dataStore={this.props.dataStore} />
+                <Button
+                    type="primary"
+                    onClick={(e) => this.toPage(routes.HOME, e)}
+                >
+                    Home
+                </Button>
             </div>
         );
     }
