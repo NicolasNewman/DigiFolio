@@ -4,12 +4,13 @@ import { Switch, Route, Redirect } from 'react-router';
 import routes from './constants/routes';
 import App from './containers/App';
 import HomePage from './containers/HomePage';
+import SettingsPage from './containers/SettingsPage';
+import DebugPage from './containers/DebugPage';
+import DesignerPage from './containers/DesignerPage';
 // import CounterPage from './containers/CounterPage';
 import DataStore from './classes/DataStore';
 import IpcInterface from './classes/IpcInterface';
 import sizes from './constants/sizes';
-import SettingsPage from './containers/SettingsPage';
-import DebugPage from './containers/DebugPage';
 import APIManager from './api/APIManager';
 
 interface IProps {
@@ -63,6 +64,16 @@ export default class Routes extends PureComponent<IProps> {
                                 sizes.debugWindow.height
                             );
                             return <DebugPage dataStore={dataStore} />;
+                        }}
+                    />
+                    <Route
+                        path={routes.DESIGNER}
+                        component={() => {
+                            IpcInterface.resizeWindow(
+                                sizes.designerWindow.width,
+                                sizes.designerWindow.height
+                            );
+                            return <DesignerPage dataStore={dataStore} />;
                         }}
                     />
                     <Redirect from="/" to="/home" />

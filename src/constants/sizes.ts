@@ -11,6 +11,10 @@ const sizes = {
         width: 600,
         height: 600,
     },
+    designerWindow: {
+        width: 1100,
+        height: 700,
+    },
 };
 
 export default sizes;

@@ -3,6 +3,7 @@ const routes = {
     COUNTER: '/counter',
     SETTINGS: '/settings',
     DEBUG: '/debug',
+    DESIGNER: '/designer',
 };
 
 export default routes;
