@@ -8,11 +8,13 @@ import { writeFile } from 'fs';
 import { join } from 'path';
 import { RouteComponentProps } from 'react-router';
 // import { Redirect } from 'react-router';
-import { Button } from 'antd';
+import { Button, Tabs } from 'antd';
 import DebugAPIManager from './debug/DebugAPIManager';
 import DebugRecharts from './debug/DebugRecharts';
 import DataStore from '../classes/DataStore';
 import routes from '../constants/routes';
+
+const { TabPane } = Tabs;
 
 interface IProps extends RouteComponentProps<any> {
     dataStore: DataStore;
@@ -33,7 +35,17 @@ export default class Debug extends Component<IProps> {
     render() {
         return (
             <div>
-                <DebugRecharts dataStore={this.props.dataStore} />
+                <Tabs defaultActiveKey="1">
+                    <TabPane tab="Tab 1" key="1">
+                        <DebugRecharts dataStore={this.props.dataStore} />
+                    </TabPane>
+                    <TabPane tab="Tab 2" key="2">
+                        Content of Tab Pane 2
+                    </TabPane>
+                    <TabPane tab="Tab 3" key="3">
+                        Content of Tab Pane 3
+                    </TabPane>
+                </Tabs>
                 <Button
                     type="primary"
                     onClick={(e) => this.toPage(routes.HOME, e)}
