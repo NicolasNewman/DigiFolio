@@ -1,4 +1,8 @@
-import * as Store from 'electron-store';
+import Store from 'electron-store';
+
+export enum SchemaFields {
+    catsAPIKey = 'catsAPIKey',
+}
 
 /**
  * Wrapper for electron-store\'s Store object
@@ -12,8 +16,16 @@ export default class DataStore {
      * Creates the data schema and initializes it
      * @constructor
      */
-    constructor() {
+    constructor(key) {
         this.schema = {
+            catsAPIKey: {
+                type: 'string',
+                description: 'The API key used for the catsapi',
+            },
+            reduxSave: {
+                type: 'object',
+                description: 'The saved state of the redux store',
+            },
             key: {
                 type: 'string',
                 description:
@@ -38,6 +50,7 @@ export default class DataStore {
             },
         };
         this.store = new Store({ schema: this.schema });
+        this.schema.key = key;
     }
 
     /**
@@ -47,7 +60,7 @@ export default class DataStore {
      */
     set = (key: string, value: any): void => {
         if (this.schema[key]) {
-            console.log('contains key ', key);
+            // console.log('contains key ', key);
             this.store.set(key, value);
         }
     };

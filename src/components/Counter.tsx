@@ -5,16 +5,20 @@ import { Link } from 'react-router-dom';
 const routes = require('../constants/routes.json');
 // const styles = require('./Counter.css');
 
-type Props = {
+interface IProps {
     increment: () => void;
     incrementIfOdd: () => void;
     incrementAsync: () => void;
     decrement: () => void;
     counter: number;
-};
+}
 
-export default class Counter extends PureComponent<Props> {
-    props: Props;
+export default class Counter extends PureComponent<IProps> {
+    props!: IProps;
+
+    constructor(props, history) {
+        super(props);
+    }
 
     render() {
         const {
@@ -26,33 +30,20 @@ export default class Counter extends PureComponent<Props> {
         } = this.props;
         return (
             <div>
-                <div className={styles.backButton} data-tid="backButton">
+                <div data-tid="backButton">
                     <Link to={routes.HOME}>
                         <i className="fa fa-arrow-left fa-3x" />
                     </Link>
                 </div>
-                <div className={`counter ${styles.counter}`} data-tid="counter">
-                    {counter}
-                </div>
-                <div className={styles.btnGroup}>
-                    <button
-                        className={styles.btn}
-                        onClick={increment}
-                        data-tclass="btn"
-                        type="button"
-                    >
+                <div data-tid="counter">{counter}</div>
+                <div>
+                    <button onClick={increment} data-tclass="btn" type="button">
                         <i className="fa fa-plus" />
                     </button>
-                    <button
-                        className={styles.btn}
-                        onClick={decrement}
-                        data-tclass="btn"
-                        type="button"
-                    >
+                    <button onClick={decrement} data-tclass="btn" type="button">
                         <i className="fa fa-minus" />
                     </button>
                     <button
-                        className={styles.btn}
                         onClick={incrementIfOdd}
                         data-tclass="btn"
                         type="button"
@@ -60,7 +51,6 @@ export default class Counter extends PureComponent<Props> {
                         odd
                     </button>
                     <button
-                        className={styles.btn}
                         onClick={() => incrementAsync()}
                         data-tclass="btn"
                         type="button"
