@@ -19,10 +19,10 @@ export default class CatsAPI extends IAPI<CatsAPIDataModel> {
 
     match_key(key: string) {
         // a29b31ec-be45-4bc7-87d4-b4221a80fae0
-        const isValid = /[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}/g.test(
-            key
-        );
-        return isValid;
+        // const isValid = /[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}/g.test(
+        //     key
+        // );
+        return true;
     }
 
     async parse_api(): Promise<CatsAPIDataModel> {
