@@ -2,8 +2,9 @@
 /* eslint-disable new-cap */
 /* eslint-disable promise/always-return */
 /* eslint-disable promise/catch-or-return */
-import { ipcRenderer } from 'electron';
+import { ipcRenderer, remote } from 'electron';
 import { Store } from 'redux';
+import { join } from 'path';
 import html2canvas from 'html2canvas';
 import cloneDeep from 'clone-deep';
 import jsPDF from 'jspdf';

@@ -1,13 +1,17 @@
 import {
     app,
-    remote,
+    dialog,
     Menu,
     shell,
     BrowserWindow,
     MenuItemConstructorOptions,
+    ipcMain,
+    ipcRenderer,
 } from 'electron';
-import { writeFile } from 'fs';
 import { join } from 'path';
+import { electron } from 'process';
+
+import routes from './Routes';
 
 interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
     selector?: string;
@@ -230,8 +234,7 @@ export default class MenuBuilder {
 
     buildDefaultTemplate() {
         const saveClickHandler = () => {
-            // Resolves to a Promise<Object>
-            remote.dialog
+            dialog
                 .showSaveDialog({
                     title: 'Select the File Path to save',
                     defaultPath: join(__dirname, '../assets/sample.txt'),
@@ -240,40 +243,39 @@ export default class MenuBuilder {
                     // Restricting the user to only Text Files.
                     filters: [
                         {
-                            name: 'Text Files',
+                            name: '.difo Files',
                             extensions: ['txt', 'docx'],
                         },
                     ],
                     properties: [],
                 })
                 .then((file) => {
-                    // Stating whether dialog operation was cancelled or not.
-                    console.log(file.canceled);
                     // eslint-disable-next-line promise/always-return
                     if (!file.canceled && file.filePath) {
-                        console.log(file.filePath.toString());
-
-                        // Creating and Writing to the sample.txt file
-                        writeFile(
-                            file.filePath.toString(),
-                            'This is a Sample File',
-                            function (err) {
-                                if (err) throw err;
-                                console.log('Saved!');
-                            }
+                        ipcRenderer.send(
+                            'save-file',
+                            (file.filePath, 'file-name')
                         );
                     }
                 })
                 .catch((err) => {
-                    console.log(err);
+                    ipcRenderer.send('error', err);
                 });
         };
 
+        const createNewPortfolio = () => {
+            // Do nothing
+            // eslint-disable-next-line no-console
+            console.log('Create New Portfolio');
+            /*
+                history.push(routes.DESIGNER);
+            */
+        };
+
         const exportClickHandler = () => {
-            // Resolves to a Promise<Object>
-            remote.dialog
+            dialog
                 .showSaveDialog({
-                    title: 'Select the File Path to Export to',
+                    title: 'Select the File Path to export',
                     defaultPath: join(__dirname, '../assets/sample.txt'),
                     // defaultPath: path.join(__dirname, '../assets/'),
                     buttonLabel: 'Export',
@@ -281,31 +283,22 @@ export default class MenuBuilder {
                     filters: [
                         {
                             name: 'Text Files',
-                            extensions: ['txt', 'docx'],
+                            extensions: ['txt', 'docx', 'pdf'],
                         },
                     ],
                     properties: [],
                 })
                 .then((file) => {
-                    // Stating whether dialog operation was cancelled or not.
-                    console.log(file.canceled);
                     // eslint-disable-next-line promise/always-return
                     if (!file.canceled && file.filePath) {
-                        console.log(file.filePath.toString());
-
-                        // Creating and Writing to the sample.txt file
-                        writeFile(
-                            file.filePath.toString(),
-                            'This is a Sample File',
-                            function (err) {
-                                if (err) throw err;
-                                console.log('Exported!');
-                            }
+                        ipcRenderer.send(
+                            'save-file',
+                            (file.filePath, 'file-name')
                         );
                     }
                 })
                 .catch((err) => {
-                    console.log(err);
+                    ipcRenderer.send('error', err);
                 });
         };
 
@@ -316,6 +309,7 @@ export default class MenuBuilder {
                     {
                         label: 'New Portfolio',
                         accelerator: 'Ctrl+N',
+                        click: createNewPortfolio,
                     },
                     {
                         label: 'Open Portfolio',
