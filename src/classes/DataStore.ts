@@ -17,7 +17,7 @@ export default class DataStore {
      * Creates the data schema and initializes it
      * @constructor
      */
-    constructor() {
+    constructor(key) {
         this.schema = {
             catsAPIKey: {
                 type: 'string',
@@ -51,6 +51,7 @@ export default class DataStore {
             },
         };
         this.store = new Store({ schema: this.schema });
+        this.schema.key = key;
     }
 
     /**
