@@ -19,7 +19,7 @@ export default class IpcInterface {
             this.readyToClose();
         });
 
-        ipcRenderer.on('save-as', (path, filename) => {
+        ipcRenderer.on('save-as', (e, path, filename) => {
             const portfolio = document.getElementById('portfolio');
             // if (portfolio) {
             //     html2canvas(portfolio).then((canvas) => {
