@@ -26,11 +26,15 @@ interface IState {
     newY: number;
 }
 
-export default class LineCharts extends Component<IProps, IState> {
+export default class Scatterplots extends Component<IProps, IState> {
     props!: IProps;
+    scatterplotsInputX: React.RefObject<Input>;
+    scatterplotsInputY: React.RefObject<Input>;
 
     constructor(props, history) {
         super(props);
+        this.scatterplotsInputX = React.createRef();
+        this.scatterplotsInputY = React.createRef();
         this.state = {
             newX: 0,
             newY: 0,
@@ -93,27 +97,44 @@ export default class LineCharts extends Component<IProps, IState> {
                         fill="#82ca9d"
                     />
                 </ScatterChart>
-                <Input
-                    placeholder="x value"
-                    onChange={(e) =>
-                        this.setState({ newX: parseInt(e.target.value) })
-                    }
-                />
-                <Input
-                    placeholder="y value"
-                    onChange={(e) =>
-                        this.setState({ newY: parseInt(e.target.value) })
-                    }
-                />
+                <Input placeholder="x value" ref={this.scatterplotsInputX} />
+                <Input placeholder="y value" ref={this.scatterplotsInputY} />
                 <Button
                     type="primary"
                     onClick={(e) => {
-                        let copy = JSON.parse(JSON.stringify(this.state.data));
-                        copy.push({
-                            x: this.state.newX,
-                            y: this.state.newY,
-                        });
-                        this.setState({ data: copy });
+                        if (
+                            isNaN(
+                                parseInt(
+                                    this.scatterplotsInputX.current?.state.value
+                                )
+                            ) ||
+                            isNaN(
+                                parseInt(
+                                    this.scatterplotsInputY.current?.state.value
+                                )
+                            )
+                        ) {
+                            alert('Invalid Input');
+                        } else {
+                            let copy = JSON.parse(
+                                JSON.stringify(this.state.data)
+                            );
+                            copy.push({
+                                x: parseInt(
+                                    this.scatterplotsInputX.current?.state.value
+                                ),
+                                y: parseInt(
+                                    this.scatterplotsInputY.current?.state.value
+                                ),
+                            });
+                            this.scatterplotsInputX.current?.setState({
+                                value: '',
+                            });
+                            this.scatterplotsInputY.current?.setState({
+                                value: '',
+                            });
+                            this.setState({ data: copy });
+                        }
                     }}
                 >
                     Push
@@ -127,6 +148,21 @@ export default class LineCharts extends Component<IProps, IState> {
                     }}
                 >
                     Pop
+                </Button>
+                <Button
+                    type="primary"
+                    onClick={(e) => {
+                        let copy = [];
+                        this.setState({ data: copy });
+                        this.scatterplotsInputX.current?.setState({
+                            value: '',
+                        });
+                        this.scatterplotsInputY.current?.setState({
+                            value: '',
+                        });
+                    }}
+                >
+                    Clear
                 </Button>
             </div>
         );

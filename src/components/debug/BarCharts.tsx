@@ -28,9 +28,13 @@ interface IState {
 
 export default class BarCharts extends Component<IProps, IState> {
     props!: IProps;
+    barChartsInputName: React.RefObject<Input>;
+    barChartsInputValue: React.RefObject<Input>;
 
     constructor(props, history) {
         super(props);
+        this.barChartsInputName = React.createRef();
+        this.barChartsInputValue = React.createRef();
         this.state = {
             newName: 'group',
             newValue: 0,
@@ -79,40 +83,42 @@ export default class BarCharts extends Component<IProps, IState> {
                     <Legend />
                     <Bar dataKey="value" fill="#82ca9d" />
                 </BarChart>
-                <Input
-                    placeholder="Name"
-                    onChange={(e) => this.setState({ newName: e.target.value })}
-                />
-                <Input
-                    placeholder="Value"
-                    onChange={(e) =>
-                        this.setState({ newValue: parseInt(e.target.value) })
-                    }
-                />
+                <Input placeholder="Name" ref={this.barChartsInputName} />
+                <Input placeholder="Value" ref={this.barChartsInputValue} />
                 <Button
                     type="primary"
                     onClick={(e) => {
-                        // if (
-                        //     this.state.newName.length == 0 ||
-                        //     this.state.newValue == NaN
-                        // ) {
-                        //     console.log('Invalid input');
-                        // } else {
-                        //     let copy = JSON.parse(
-                        //         JSON.stringify(this.state.data)
-                        //     );
-                        //     copy.push({
-                        //         name: this.state.newName,
-                        //         value: this.state.newValue,
-                        //     });
-                        //     this.setState({ data: copy });
-                        // }
-                        let copy = JSON.parse(JSON.stringify(this.state.data));
-                        copy.push({
-                            name: this.state.newName,
-                            value: this.state.newValue,
-                        });
-                        this.setState({ data: copy });
+                        if (
+                            this.barChartsInputName.current?.state.value
+                                .length === 0 ||
+                            isNaN(
+                                parseInt(
+                                    this.barChartsInputValue.current?.state
+                                        .value
+                                )
+                            )
+                        ) {
+                            alert('Invalid Input');
+                        } else {
+                            let copy = JSON.parse(
+                                JSON.stringify(this.state.data)
+                            );
+                            copy.push({
+                                name: this.barChartsInputName.current?.state
+                                    .value,
+                                value: parseInt(
+                                    this.barChartsInputValue.current?.state
+                                        .value
+                                ),
+                            });
+                            this.barChartsInputName.current?.setState({
+                                value: '',
+                            });
+                            this.barChartsInputValue.current?.setState({
+                                value: '',
+                            });
+                            this.setState({ data: copy });
+                        }
                     }}
                 >
                     Push
@@ -126,6 +132,21 @@ export default class BarCharts extends Component<IProps, IState> {
                     }}
                 >
                     Pop
+                </Button>
+                <Button
+                    type="primary"
+                    onClick={(e) => {
+                        let copy = [];
+                        this.setState({ data: copy });
+                        this.barChartsInputName.current?.setState({
+                            value: '',
+                        });
+                        this.barChartsInputValue.current?.setState({
+                            value: '',
+                        });
+                    }}
+                >
+                    Clear
                 </Button>
             </div>
         );

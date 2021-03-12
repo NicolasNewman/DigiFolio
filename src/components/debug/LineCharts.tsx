@@ -32,9 +32,13 @@ interface IState {
 
 export default class LineCharts extends Component<IProps, IState> {
     props!: IProps;
+    lineChartsInputName: React.RefObject<Input>;
+    lineChartsInputValue: React.RefObject<Input>;
 
     constructor(props, history) {
         super(props);
+        this.lineChartsInputName = React.createRef();
+        this.lineChartsInputValue = React.createRef();
         this.state = {
             newName: 'group',
             newValue: 0,
@@ -88,25 +92,42 @@ export default class LineCharts extends Component<IProps, IState> {
                     <Legend />
                     <Line type="monotone" dataKey="value" stroke="#82ca9d" />
                 </LineChart>
-                <Input
-                    placeholder="Name"
-                    onChange={(e) => this.setState({ newName: e.target.value })}
-                />
-                <Input
-                    placeholder="Value"
-                    onChange={(e) =>
-                        this.setState({ newValue: parseInt(e.target.value) })
-                    }
-                />
+                <Input placeholder="Name" ref={this.lineChartsInputName} />
+                <Input placeholder="Value" ref={this.lineChartsInputValue} />
                 <Button
                     type="primary"
                     onClick={(e) => {
-                        let copy = JSON.parse(JSON.stringify(this.state.data));
-                        copy.push({
-                            name: this.state.newName,
-                            value: this.state.newValue,
-                        });
-                        this.setState({ data: copy });
+                        if (
+                            this.lineChartsInputName.current?.state.value
+                                .length === 0 ||
+                            isNaN(
+                                parseInt(
+                                    this.lineChartsInputValue.current?.state
+                                        .value
+                                )
+                            )
+                        ) {
+                            alert('Invalid Input');
+                        } else {
+                            let copy = JSON.parse(
+                                JSON.stringify(this.state.data)
+                            );
+                            copy.push({
+                                name: this.lineChartsInputName.current?.state
+                                    .value,
+                                value: parseInt(
+                                    this.lineChartsInputValue.current?.state
+                                        .value
+                                ),
+                            });
+                            this.lineChartsInputName.current?.setState({
+                                value: '',
+                            });
+                            this.lineChartsInputValue.current?.setState({
+                                value: '',
+                            });
+                            this.setState({ data: copy });
+                        }
                     }}
                 >
                     Push
@@ -120,6 +141,21 @@ export default class LineCharts extends Component<IProps, IState> {
                     }}
                 >
                     Pop
+                </Button>
+                <Button
+                    type="primary"
+                    onClick={(e) => {
+                        let copy = [];
+                        this.setState({ data: copy });
+                        this.lineChartsInputName.current?.setState({
+                            value: '',
+                        });
+                        this.lineChartsInputValue.current?.setState({
+                            value: '',
+                        });
+                    }}
+                >
+                    Clear
                 </Button>
             </div>
         );

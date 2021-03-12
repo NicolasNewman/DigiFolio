@@ -17,11 +17,16 @@ interface IState {
     newValue: number;
 }
 
-export default class LineCharts extends Component<IProps, IState> {
+export default class PieCharts extends Component<IProps, IState> {
     props!: IProps;
+    pieChartsInputName: React.RefObject<Input>;
+    pieChartsInputValue: React.RefObject<Input>;
 
     constructor(props, history) {
         super(props);
+        this.pieChartsInputName = React.createRef();
+        this.pieChartsInputValue = React.createRef();
+
         this.state = {
             newName: 'group',
             newValue: 0,
@@ -55,7 +60,7 @@ export default class LineCharts extends Component<IProps, IState> {
             //         name: 'Page G',
             //         value: 3490,
             //     },
-            // ],
+            //],
         };
     }
 
@@ -102,25 +107,42 @@ export default class LineCharts extends Component<IProps, IState> {
                         }}
                     />
                 </PieChart>
-                <Input
-                    placeholder="Name"
-                    onChange={(e) => this.setState({ newName: e.target.value })}
-                />
-                <Input
-                    placeholder="Value"
-                    onChange={(e) =>
-                        this.setState({ newValue: parseInt(e.target.value) })
-                    }
-                />
+                <Input placeholder="Name" ref={this.pieChartsInputName} />
+                <Input placeholder="Value" ref={this.pieChartsInputValue} />
                 <Button
                     type="primary"
                     onClick={(e) => {
-                        let copy = JSON.parse(JSON.stringify(this.state.data));
-                        copy.push({
-                            name: this.state.newName,
-                            value: this.state.newValue,
-                        });
-                        this.setState({ data: copy });
+                        if (
+                            this.pieChartsInputName.current?.state.value
+                                .length === 0 ||
+                            isNaN(
+                                parseInt(
+                                    this.pieChartsInputValue.current?.state
+                                        .value
+                                )
+                            )
+                        ) {
+                            alert('Invalid Input');
+                        } else {
+                            let copy = JSON.parse(
+                                JSON.stringify(this.state.data)
+                            );
+                            copy.push({
+                                name: this.pieChartsInputName.current?.state
+                                    .value,
+                                value: parseInt(
+                                    this.pieChartsInputValue.current?.state
+                                        .value
+                                ),
+                            });
+                            this.pieChartsInputName.current?.setState({
+                                value: '',
+                            });
+                            this.pieChartsInputValue.current?.setState({
+                                value: '',
+                            });
+                            this.setState({ data: copy });
+                        }
                     }}
                 >
                     Push
@@ -134,6 +156,21 @@ export default class LineCharts extends Component<IProps, IState> {
                     }}
                 >
                     Pop
+                </Button>
+                <Button
+                    type="primary"
+                    onClick={(e) => {
+                        let copy = [];
+                        this.setState({ data: copy });
+                        this.pieChartsInputName.current?.setState({
+                            value: '',
+                        });
+                        this.pieChartsInputValue.current?.setState({
+                            value: '',
+                        });
+                    }}
+                >
+                    Clear
                 </Button>
             </div>
         );
