@@ -42,7 +42,7 @@ class Portfolio extends Component<IProps> {
                     className="portfolio__page"
                     style={{ background: backgroundColor }}
                 >
-                    <p>This is my page</p>
+                    <p style={{ color: '#000000' }}>This is my page</p>
                 </div>
             </div>
         );
