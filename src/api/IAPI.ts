@@ -52,5 +52,7 @@ export default abstract class IAPI<DM> {
 
     abstract parse_api(): Promise<DM>;
 
+    abstract match_key(key: string): boolean;
+
     // abstract valid_key(): boolean;
 }

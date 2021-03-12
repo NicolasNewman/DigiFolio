@@ -1,5 +1,6 @@
 /* eslint-disable promise/always-return */
 import { Store } from 'redux';
+import { message } from 'antd';
 import DataStore, { SchemaFields } from '../classes/DataStore';
 import CatsAPI, { CatsAPIData } from './CatsAPI';
 import { updateCatsAPI } from '../actions/catsapi';
@@ -40,6 +41,13 @@ export default class APIManager {
     }
 
     updateKey(api: SchemaFields, key: string | null = null) {
+        if (key && !this.apis[api]?.api.match_key(key)) {
+            message.error(
+                `Error: the key does not follow the proper format for ${api}`
+            );
+            return;
+        }
+
         const savedKey = this.dataStore.get(api);
         console.log(`The currently saved key is: ${savedKey}`);
         if (key === null) {
