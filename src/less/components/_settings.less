@@ -1,0 +1,53 @@
+.settings {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+
+    &__label {
+        margin-right: 0.5rem;
+    }
+
+    &__input {
+        padding: 0.5rem;
+        margin: 0.5rem 0rem;
+        border: 1px solid white;
+        width: 35%;
+    }
+
+    &__tab {
+        &-container {
+            padding-top: 1rem;
+            padding-bottom: 2rem;
+        }
+        &--api {
+            padding: 1rem 0rem;
+        }
+
+        &--general {
+            padding: 1rem 0rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 20vh;
+        }
+    }
+
+    &__button-container {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+    }
+}
+
+.tab {
+    &-general {
+        &__colorTheme {
+            display: flex;
+        }
+        &__themeButton {
+            background: grey;
+            padding: 0.25rem 1rem;
+            border-radius: 12px;
+        }
+    }
+}

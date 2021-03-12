@@ -1,10 +1,17 @@
 import {
     app,
+    dialog,
     Menu,
     shell,
     BrowserWindow,
     MenuItemConstructorOptions,
+    ipcMain,
+    ipcRenderer,
 } from 'electron';
+import { join, basename } from 'path';
+import { electron } from 'process';
+
+import routes from './Routes';
 
 interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
     selector?: string;
@@ -12,7 +19,14 @@ interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
 }
 
 export default class MenuBuilder {
-    mainWindow: BrowserWindow;
+    // mainWindow: BrowserWindow;
+
+    mainWindow = new BrowserWindow({
+        webPreferences: {
+            enableRemoteModule: true,
+            nodeIntegration: true,
+        },
+    });
 
     constructor(mainWindow: BrowserWindow) {
         this.mainWindow = mainWindow;
@@ -219,51 +233,137 @@ export default class MenuBuilder {
     }
 
     buildDefaultTemplate() {
+        const saveClickHandler = () => {
+            dialog
+                .showSaveDialog({
+                    title: 'Select the File Path to save',
+                    defaultPath: join(__dirname, '../assets/sample.txt'),
+                    // defaultPath: path.join(__dirname, '../assets/'),
+                    buttonLabel: 'Save',
+                    // Restricting the user to only Text Files.
+                    filters: [
+                        {
+                            name: '.difo Files',
+                            extensions: ['txt', 'docx'],
+                        },
+                    ],
+                    properties: [],
+                })
+                .then((file) => {
+                    // eslint-disable-next-line promise/always-return
+                    if (!file.canceled && file.filePath) {
+                        this.mainWindow.webContents.send(
+                            'save-as',
+                            file.filePath,
+                            basename(file.filePath)
+                        );
+                    }
+                })
+                .catch((err) => {
+                    ipcRenderer.send('error', err);
+                });
+        };
+
+        const createNewPortfolio = () => {
+            // Do nothing
+            // eslint-disable-next-line no-console
+            console.log('Create New Portfolio');
+            /*
+                history.push(routes.DESIGNER);
+            */
+        };
+
+        const exportClickHandler = () => {
+            dialog
+                .showSaveDialog({
+                    title: 'Select the File Path to export',
+                    defaultPath: join(__dirname, '../assets/sample.txt'),
+                    // defaultPath: path.join(__dirname, '../assets/'),
+                    buttonLabel: 'Export',
+                    // Restricting the user to only Text Files.
+                    filters: [
+                        {
+                            name: '.pdf Files',
+                            extensions: ['pdf'],
+                        },
+                    ],
+                    properties: [],
+                })
+                .then((file) => {
+                    // eslint-disable-next-line promise/always-return
+                    if (!file.canceled && file.filePath) {
+                        this.mainWindow.webContents.send(
+                            'save-as',
+                            file.filePath,
+                            basename(file.filePath)
+                        );
+                    }
+                })
+                .catch((err) => {
+                    ipcRenderer.send('error', err);
+                });
+        };
+
         const templateDefault = [
             {
                 label: '&File',
                 submenu: [
                     {
-                        label: '&Open',
-                        accelerator: 'Ctrl+O',
+                        label: 'New Portfolio',
+                        accelerator: 'Ctrl+N',
+                        click: createNewPortfolio,
                     },
                     {
-                        label: '&Close',
-                        accelerator: 'Ctrl+W',
-                        click: () => {
-                            this.mainWindow.close();
-                        },
+                        label: 'Open Portfolio',
+                        accelerator: 'Ctrl+O',
+                    },
+                    // {
+                    //     label: 'Save Portfolio',
+                    //     accelerator: 'Ctrl+S',
+                    //     click: saveClickHandler,
+                    // },
+                    {
+                        label: 'Save Portfolio As',
+                        accelerator: 'Ctrl+Shift+S',
+                        click: saveClickHandler,
+                    },
+                    // {
+                    //     label: 'Export Portfolio',
+                    //     accelerator: 'Ctrl+E',
+                    //     click: exportClickHandler,
+                    // },
+                    {
+                        label: 'Export Portfolio As',
+                        accelerator: 'Ctrl+Shift+E',
+                        click: exportClickHandler,
+                    },
+                    {
+                        label: 'Print',
+                        accelerator: 'Ctrl+P',
                     },
                 ],
             },
             {
-                label: '&View',
+                label: 'Edit',
                 submenu:
                     process.env.NODE_ENV === 'development' ||
                     process.env.DEBUG_PROD === 'true'
                         ? [
                               {
-                                  label: '&Reload',
-                                  accelerator: 'Ctrl+R',
-                                  click: () => {
-                                      this.mainWindow.webContents.reload();
-                                  },
+                                  label: 'Add Theme',
+                                  accelerator: 'F1',
                               },
                               {
-                                  label: 'Toggle &Full Screen',
-                                  accelerator: 'F11',
-                                  click: () => {
-                                      this.mainWindow.setFullScreen(
-                                          !this.mainWindow.isFullScreen()
-                                      );
-                                  },
+                                  label: 'Edit Theme',
+                                  accelerator: 'F2',
                               },
                               {
-                                  label: 'Toggle &Developer Tools',
-                                  accelerator: 'Alt+Ctrl+I',
-                                  click: () => {
-                                      this.mainWindow.webContents.toggleDevTools();
-                                  },
+                                  label: 'Change Theme',
+                                  accelerator: 'F3',
+                              },
+                              {
+                                  label: 'Edit Widgets',
+                                  accelerator: 'F4',
                               },
                           ]
                         : [
@@ -279,7 +379,20 @@ export default class MenuBuilder {
                           ],
             },
             {
-                label: 'Help',
+                label: 'Insert',
+                submenu: [
+                    {
+                        label: 'Service',
+                        accelerator: 'Alt+Ctrl+S',
+                    },
+                    {
+                        label: 'Widgets',
+                        accelerator: 'Alt+Ctrl+W',
+                    },
+                ],
+            },
+            {
+                label: 'Tools',
                 submenu: [
                     {
                         label: 'Learn More',
