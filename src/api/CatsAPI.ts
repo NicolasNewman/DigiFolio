@@ -1,4 +1,5 @@
 /* eslint-disable class-methods-use-this */
+/* eslint-disable class-methods-use-this */
 import IAPI from './IAPI';
 
 export interface CatsAPIDataModel {
