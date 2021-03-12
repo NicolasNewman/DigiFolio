@@ -49,8 +49,11 @@ export default class DataStore {
                 description: 'The targeted theme for the UI',
             },
         };
-        this.store = new Store({ schema: this.schema });
-        this.schema.key = key;
+        this.store = new Store({
+            schema: this.schema,
+            encryptionKey: key,
+        });
+        // this.schema.key = key;
     }
 
     /**
