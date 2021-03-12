@@ -1,3 +1,4 @@
+/* eslint-disable react/self-closing-comp */
 import * as React from 'react';
 import { Component } from 'react';
 import { RouteComponentProps } from 'react-router';
@@ -26,7 +27,7 @@ interface IProps {
 class Portfolio extends Component<IProps> {
     props!: IProps;
 
-    constructor(props, history) {
+    constructor(props) {
         super(props);
     }
 
@@ -41,7 +42,7 @@ class Portfolio extends Component<IProps> {
                     className="portfolio__page"
                     style={{ background: backgroundColor }}
                 >
-                    <div>This is my page</div>
+                    <p>This is my page</p>
                 </div>
             </div>
         );

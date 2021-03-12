@@ -8,8 +8,8 @@ const sizes = {
         height: 500,
     },
     designerWindow: {
-        width: 900,
-        height: 500,
+        width: 1100,
+        height: 700,
     },
 };
 
