@@ -2,15 +2,14 @@
 /* eslint-disable promise/always-return */
 /* eslint-disable @typescript-eslint/no-empty-interface */
 import * as React from 'react';
-import { app, remote, BrowserWindow } from 'electron';
 import { Component } from 'react';
-import { writeFile } from 'fs';
-import { join } from 'path';
 import { RouteComponentProps } from 'react-router';
 // import { Redirect } from 'react-router';
 import { Button, Tabs } from 'antd';
-import DebugAPIManager from './debug/DebugAPIManager';
-import DebugRecharts from './debug/DebugRecharts';
+import BarCharts from './debug/BarCharts';
+import LineCharts from './debug/LineCharts';
+import PieCharts from './debug/PieCharts';
+import Scatterplots from './debug/Scatterplots';
 import DataStore from '../classes/DataStore';
 import routes from '../constants/routes';
 
@@ -36,14 +35,17 @@ export default class Debug extends Component<IProps> {
         return (
             <div>
                 <Tabs defaultActiveKey="1">
-                    <TabPane tab="Tab 1" key="1">
-                        <DebugRecharts dataStore={this.props.dataStore} />
+                    <TabPane tab="Bar Chart" key="1">
+                        <BarCharts dataStore={this.props.dataStore} />
                     </TabPane>
-                    <TabPane tab="Tab 2" key="2">
-                        Content of Tab Pane 2
+                    <TabPane tab="Line Chart" key="2">
+                        <LineCharts dataStore={this.props.dataStore} />
                     </TabPane>
-                    <TabPane tab="Tab 3" key="3">
-                        Content of Tab Pane 3
+                    <TabPane tab="Pie Chart" key="3">
+                        <PieCharts dataStore={this.props.dataStore} />
+                    </TabPane>
+                    <TabPane tab="Scatterplot" key="4">
+                        <Scatterplots dataStore={this.props.dataStore} />
                     </TabPane>
                 </Tabs>
                 <Button
