@@ -92,6 +92,21 @@ export default class BarCharts extends Component<IProps, IState> {
                 <Button
                     type="primary"
                     onClick={(e) => {
+                        // if (
+                        //     this.state.newName.length == 0 ||
+                        //     this.state.newValue == NaN
+                        // ) {
+                        //     console.log('Invalid input');
+                        // } else {
+                        //     let copy = JSON.parse(
+                        //         JSON.stringify(this.state.data)
+                        //     );
+                        //     copy.push({
+                        //         name: this.state.newName,
+                        //         value: this.state.newValue,
+                        //     });
+                        //     this.setState({ data: copy });
+                        // }
                         let copy = JSON.parse(JSON.stringify(this.state.data));
                         copy.push({
                             name: this.state.newName,

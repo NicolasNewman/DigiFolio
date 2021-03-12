@@ -9,6 +9,7 @@ import {
     CartesianGrid,
     XAxis,
     YAxis,
+    ZAxis,
     Tooltip,
     Legend,
     Scatter,
@@ -72,8 +73,18 @@ export default class LineCharts extends Component<IProps, IState> {
                     margin={{ top: 20, right: 20, bottom: 10, left: 10 }}
                 >
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="x" name="X axis" unit=" x units" />
-                    <YAxis dataKey="y" name="Y axis" unit=" y units" />
+                    <XAxis
+                        type="number"
+                        dataKey="x"
+                        name="X axis"
+                        unit=" x units"
+                    />
+                    <YAxis
+                        type="number"
+                        dataKey="y"
+                        name="Y axis"
+                        unit=" y units"
+                    />
                     <Tooltip cursor={{ strokeDasharray: '3 3' }} />
                     <Legend />
                     <Scatter
