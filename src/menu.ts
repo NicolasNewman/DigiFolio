@@ -8,7 +8,7 @@ import {
     ipcMain,
     ipcRenderer,
 } from 'electron';
-import { join } from 'path';
+import { join, basename } from 'path';
 import { electron } from 'process';
 
 import routes from './Routes';
@@ -252,9 +252,10 @@ export default class MenuBuilder {
                 .then((file) => {
                     // eslint-disable-next-line promise/always-return
                     if (!file.canceled && file.filePath) {
-                        ipcRenderer.send(
-                            'save-file',
-                            (file.filePath, 'file-name')
+                        this.mainWindow.webContents.send(
+                            'save-as',
+                            file.filePath,
+                            basename(file.filePath)
                         );
                     }
                 })
@@ -282,8 +283,8 @@ export default class MenuBuilder {
                     // Restricting the user to only Text Files.
                     filters: [
                         {
-                            name: 'Text Files',
-                            extensions: ['txt', 'docx', 'pdf'],
+                            name: '.pdf Files',
+                            extensions: ['pdf'],
                         },
                     ],
                     properties: [],
@@ -291,9 +292,10 @@ export default class MenuBuilder {
                 .then((file) => {
                     // eslint-disable-next-line promise/always-return
                     if (!file.canceled && file.filePath) {
-                        ipcRenderer.send(
-                            'save-file',
-                            (file.filePath, 'file-name')
+                        this.mainWindow.webContents.send(
+                            'save-as',
+                            file.filePath,
+                            basename(file.filePath)
                         );
                     }
                 })

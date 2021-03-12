@@ -21,14 +21,15 @@ export default class IpcInterface {
 
         ipcRenderer.on('save-as', (path, filename) => {
             const portfolio = document.getElementById('portfolio');
-            if (portfolio) {
-                html2canvas(portfolio).then((canvas) => {
-                    const imgData = canvas.toDataURL('image/png');
-                    const pdf = new jsPDF('p', 'in');
-                    pdf.addImage(imgData, 'JPEG', 0, 0, 8.5, 11);
-                    pdf.save('download.pdf');
-                });
-            }
+            // if (portfolio) {
+            //     html2canvas(portfolio).then((canvas) => {
+            //         const imgData = canvas.toDataURL('image/png');
+            //         const pdf = new jsPDF('p', 'in');
+            //         pdf.addImage(imgData, 'JPEG', 0, 0, 8.5, 11);
+            //         pdf.save('download.pdf');
+            //     });
+            // }
+            console.log(`Filename: ${filename}, File Path: ${path}`);
         });
     }
 
