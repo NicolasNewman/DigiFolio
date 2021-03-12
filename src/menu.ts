@@ -317,21 +317,21 @@ export default class MenuBuilder {
                         label: 'Open Portfolio',
                         accelerator: 'Ctrl+O',
                     },
-                    {
-                        label: 'Save Portfolio',
-                        accelerator: 'Ctrl+S',
-                        click: saveClickHandler,
-                    },
+                    // {
+                    //     label: 'Save Portfolio',
+                    //     accelerator: 'Ctrl+S',
+                    //     click: saveClickHandler,
+                    // },
                     {
                         label: 'Save Portfolio As',
                         accelerator: 'Ctrl+Shift+S',
                         click: saveClickHandler,
                     },
-                    {
-                        label: 'Export Portfolio',
-                        accelerator: 'Ctrl+E',
-                        click: exportClickHandler,
-                    },
+                    // {
+                    //     label: 'Export Portfolio',
+                    //     accelerator: 'Ctrl+E',
+                    //     click: exportClickHandler,
+                    // },
                     {
                         label: 'Export Portfolio As',
                         accelerator: 'Ctrl+Shift+E',
