@@ -156,3 +156,5 @@ ipcMain.on('ready-to-close', () => {
         app.quit();
     }
 });
+
+shell.openPath(app.getPath('userData'));
