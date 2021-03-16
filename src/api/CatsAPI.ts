@@ -1,6 +1,6 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable class-methods-use-this */
-import IAPI from './IAPI';
+import IAPI, { Field } from './IAPI';
 
 export interface CatsAPIDataModel {
     info: string;
@@ -14,7 +14,20 @@ export default class CatsAPI extends IAPI<CatsAPIDataModel> {
     private username: string;
 
     constructor(key: string, username: string) {
-        super(key);
+        super(
+            {
+                'Content-Type': 'application/json',
+                'x-api-key': key,
+            },
+            [
+                {
+                    name: 'username',
+                    value: username,
+                    regex: /.*/g,
+                    errorMsg: 'Username must ...',
+                },
+            ]
+        );
         this.username = username;
     }
 
