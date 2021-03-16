@@ -1,6 +1,3 @@
-/* eslint-disable consistent-return */
-/* eslint-disable no-underscore-dangle */
-
 export type Field = {
     name: string;
     value: string;

@@ -1,12 +1,8 @@
-/* eslint-disable promise/always-return */
-/* eslint-disable @typescript-eslint/no-empty-interface */
 import * as React from 'react';
 import { remote } from 'electron';
 import { Component } from 'react';
 import { writeFile } from 'fs';
 import { join } from 'path';
-// import { RouteComponentProps } from 'react-router';
-// import { Redirect } from 'react-router';
 import { Button } from 'antd';
 
 // interface IProps extends {}

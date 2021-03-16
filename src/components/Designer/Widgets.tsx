@@ -14,7 +14,6 @@ function callback(key) {
     console.log(key);
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface IProps {}
 
 export default class Widgets extends Component<IProps> {

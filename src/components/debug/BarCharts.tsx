@@ -1,12 +1,6 @@
-/* eslint-disable prefer-const */
 /* eslint-disable react/no-access-state-in-setstate */
-/* eslint-disable radix */
-/* eslint-disable react/destructuring-assignment */
-/* eslint-disable promise/always-return */
-/* eslint-disable @typescript-eslint/no-empty-interface */
 import * as React from 'react';
 import { Component } from 'react';
-// import { Redirect } from 'react-router';
 import { Button, Input } from 'antd';
 
 import {
@@ -96,7 +90,8 @@ export default class BarCharts extends Component<IProps, IState> {
                             Number.isNaN(
                                 parseInt(
                                     this.barChartsInputValue.current?.state
-                                        .value
+                                        .value,
+                                    10
                                 )
                             )
                         ) {
@@ -110,7 +105,8 @@ export default class BarCharts extends Component<IProps, IState> {
                                     .value,
                                 value: parseInt(
                                     this.barChartsInputValue.current?.state
-                                        .value
+                                        .value,
+                                    10
                                 ),
                             });
                             this.barChartsInputName.current?.setState({
@@ -140,7 +136,7 @@ export default class BarCharts extends Component<IProps, IState> {
                 <Button
                     type="primary"
                     onClick={(e) => {
-                        let copy = [];
+                        const copy = [];
                         this.setState({ data: copy });
                         this.barChartsInputName.current?.setState({
                             value: '',

@@ -1,9 +1,4 @@
-/* eslint-disable prefer-const */
 /* eslint-disable react/no-access-state-in-setstate */
-/* eslint-disable radix */
-/* eslint-disable react/destructuring-assignment */
-/* eslint-disable promise/always-return */
-/* eslint-disable @typescript-eslint/no-empty-interface */
 
 import * as React from 'react';
 import { Component } from 'react';
@@ -108,26 +103,34 @@ export default class Scatterplots extends Component<IProps, IState> {
                         if (
                             Number.isNaN(
                                 parseInt(
-                                    this.scatterplotsInputX.current?.state.value
+                                    this.scatterplotsInputX.current?.state
+                                        .value,
+                                    10
                                 )
                             ) ||
                             Number.isNaN(
                                 parseInt(
-                                    this.scatterplotsInputY.current?.state.value
+                                    this.scatterplotsInputY.current?.state
+                                        .value,
+                                    10
                                 )
                             )
                         ) {
                             alert('Invalid Input');
                         } else {
-                            let copy = JSON.parse(
+                            const copy = JSON.parse(
                                 JSON.stringify(this.state.data)
                             );
                             copy.push({
                                 x: parseInt(
-                                    this.scatterplotsInputX.current?.state.value
+                                    this.scatterplotsInputX.current?.state
+                                        .value,
+                                    10
                                 ),
                                 y: parseInt(
-                                    this.scatterplotsInputY.current?.state.value
+                                    this.scatterplotsInputY.current?.state
+                                        .value,
+                                    10
                                 ),
                             });
                             this.scatterplotsInputX.current?.setState({
@@ -145,7 +148,9 @@ export default class Scatterplots extends Component<IProps, IState> {
                 <Button
                     type="primary"
                     onClick={(e) => {
-                        let copy = JSON.parse(JSON.stringify(this.state.data));
+                        const copy = JSON.parse(
+                            JSON.stringify(this.state.data)
+                        );
                         copy.pop();
                         this.setState({ data: copy });
                     }}
@@ -155,7 +160,7 @@ export default class Scatterplots extends Component<IProps, IState> {
                 <Button
                     type="primary"
                     onClick={(e) => {
-                        let copy = [];
+                        const copy = [];
                         this.setState({ data: copy });
                         this.scatterplotsInputX.current?.setState({
                             value: '',

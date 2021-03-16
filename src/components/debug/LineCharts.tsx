@@ -1,11 +1,4 @@
-/* eslint-disable @typescript-eslint/lines-between-class-members */
-/* eslint-disable no-restricted-globals */
-/* eslint-disable prefer-const */
 /* eslint-disable react/no-access-state-in-setstate */
-/* eslint-disable radix */
-/* eslint-disable react/destructuring-assignment */
-/* eslint-disable promise/always-return */
-/* eslint-disable @typescript-eslint/no-empty-interface */
 import * as React from 'react';
 import { app, remote, BrowserWindow } from 'electron';
 import { Component } from 'react';
@@ -36,7 +29,9 @@ interface IState {
 
 export default class LineCharts extends Component<IProps, IState> {
     props!: IProps;
+
     lineChartsInputName: React.RefObject<Input>;
+
     lineChartsInputValue: React.RefObject<Input>;
 
     constructor(props, history) {
@@ -102,16 +97,17 @@ export default class LineCharts extends Component<IProps, IState> {
                         if (
                             this.lineChartsInputName.current?.state.value
                                 .length === 0 ||
-                            isNaN(
+                            Number.isNaN(
                                 parseInt(
                                     this.lineChartsInputValue.current?.state
-                                        .value
+                                        .value,
+                                    10
                                 )
                             )
                         ) {
                             alert('Invalid Input');
                         } else {
-                            let copy = JSON.parse(
+                            const copy = JSON.parse(
                                 JSON.stringify(this.state.data)
                             );
                             copy.push({
@@ -119,7 +115,8 @@ export default class LineCharts extends Component<IProps, IState> {
                                     .value,
                                 value: parseInt(
                                     this.lineChartsInputValue.current?.state
-                                        .value
+                                        .value,
+                                    10
                                 ),
                             });
                             this.lineChartsInputName.current?.setState({
@@ -137,7 +134,9 @@ export default class LineCharts extends Component<IProps, IState> {
                 <Button
                     type="primary"
                     onClick={(e) => {
-                        let copy = JSON.parse(JSON.stringify(this.state.data));
+                        const copy = JSON.parse(
+                            JSON.stringify(this.state.data)
+                        );
                         copy.pop();
                         this.setState({ data: copy });
                     }}
@@ -147,7 +146,7 @@ export default class LineCharts extends Component<IProps, IState> {
                 <Button
                     type="primary"
                     onClick={(e) => {
-                        let copy = [];
+                        const copy = [];
                         this.setState({ data: copy });
                         this.lineChartsInputName.current?.setState({
                             value: '',

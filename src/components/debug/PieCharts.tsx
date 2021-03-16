@@ -1,9 +1,4 @@
-/* eslint-disable prefer-const */
 /* eslint-disable react/no-access-state-in-setstate */
-/* eslint-disable radix */
-/* eslint-disable react/destructuring-assignment */
-/* eslint-disable promise/always-return */
-/* eslint-disable @typescript-eslint/no-empty-interface */
 
 import * as React from 'react';
 import { Component } from 'react';
@@ -121,13 +116,14 @@ export default class PieCharts extends Component<IProps, IState> {
                             Number.isNaN(
                                 parseInt(
                                     this.pieChartsInputValue.current?.state
-                                        .value
+                                        .value,
+                                    10
                                 )
                             )
                         ) {
                             alert('Invalid Input');
                         } else {
-                            let copy = JSON.parse(
+                            const copy = JSON.parse(
                                 JSON.stringify(this.state.data)
                             );
                             copy.push({
@@ -135,7 +131,8 @@ export default class PieCharts extends Component<IProps, IState> {
                                     .value,
                                 value: parseInt(
                                     this.pieChartsInputValue.current?.state
-                                        .value
+                                        .value,
+                                    10
                                 ),
                             });
                             this.pieChartsInputName.current?.setState({
@@ -153,7 +150,9 @@ export default class PieCharts extends Component<IProps, IState> {
                 <Button
                     type="primary"
                     onClick={(e) => {
-                        let copy = JSON.parse(JSON.stringify(this.state.data));
+                        const copy = JSON.parse(
+                            JSON.stringify(this.state.data)
+                        );
                         copy.pop();
                         this.setState({ data: copy });
                     }}
@@ -163,7 +162,7 @@ export default class PieCharts extends Component<IProps, IState> {
                 <Button
                     type="primary"
                     onClick={(e) => {
-                        let copy = [];
+                        const copy = [];
                         this.setState({ data: copy });
                         this.pieChartsInputName.current?.setState({
                             value: '',

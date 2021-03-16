@@ -1,4 +1,3 @@
-/* eslint-disable promise/always-return */
 import { Store } from 'redux';
 import { message } from 'antd';
 import DataStore, { SchemaFields } from '../classes/DataStore';
@@ -54,10 +53,12 @@ export default class APIManager {
             console.log(
                 `The new key is empty, removing the api and saved data`
             );
-            // eslint-disable-next-line default-case
             switch (api) {
                 case SchemaFields.catsAPIKey:
                     this.apis[SchemaFields.catsAPIKey]?.dispatch(null);
+                    break;
+                default:
+                    return;
             }
             this.apis[api] = null;
             this.dataStore.set(api, '');
@@ -65,7 +66,6 @@ export default class APIManager {
             console.log(
                 `The passed key is different from the saved key, updating`
             );
-            // eslint-disable-next-line default-case
             switch (api) {
                 case SchemaFields.catsAPIKey:
                     this.apis[SchemaFields.catsAPIKey] = {
@@ -80,6 +80,8 @@ export default class APIManager {
                             this.printState('State after parsing...');
                         });
                     break;
+                default:
+                    return;
             }
             this.dataStore.set(api, key);
         } else {

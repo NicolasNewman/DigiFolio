@@ -1,4 +1,3 @@
-/* eslint-disable react/self-closing-comp */
 import * as React from 'react';
 import { Component } from 'react';
 import { RouteComponentProps } from 'react-router';

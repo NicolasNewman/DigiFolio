@@ -1,7 +1,3 @@
-/* eslint-disable no-magic-numbers */
-/* eslint-disable new-cap */
-/* eslint-disable promise/always-return */
-/* eslint-disable promise/catch-or-return */
 import { ipcRenderer, remote } from 'electron';
 import { Store } from 'redux';
 import { join } from 'path';
@@ -22,19 +18,23 @@ export default class IpcInterface {
         ipcRenderer.on('save-as', (e, path, filename) => {
             const portfolio = document.getElementById('portfolio');
             if (portfolio) {
-                html2canvas(portfolio).then((canvas) => {
-                    const imgData = canvas.toDataURL('image/png');
-                    const pdf = new jsPDF('p', 'in');
-                    pdf.addImage(imgData, 'JPEG', 0, 0, 8.5, 11);
-                    console.log(path);
-                    pdf.save(path);
-                });
+                html2canvas(portfolio)
+                    .then((canvas) => {
+                        const imgData = canvas.toDataURL('image/png');
+                        // eslint-disable-next-line new-cap
+                        const pdf = new jsPDF('p', 'in');
+                        pdf.addImage(imgData, 'JPEG', 0, 0, 8.5, 11);
+                        console.log(path);
+                        pdf.save(path);
+                    })
+                    .catch((err) => {
+                        //TODO handle error
+                    });
             }
             console.log(`Filename: ${filename}, File Path: ${path}`);
         });
     }
 
-    // eslint-disable-next-line class-methods-use-this
     private readyToClose() {
         ipcRenderer.send('ready-to-close');
     }

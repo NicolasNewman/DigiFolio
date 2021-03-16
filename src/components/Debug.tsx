@@ -1,6 +1,3 @@
-/* eslint-disable react/destructuring-assignment */
-/* eslint-disable promise/always-return */
-/* eslint-disable @typescript-eslint/no-empty-interface */
 import * as React from 'react';
 import { Component } from 'react';
 import { RouteComponentProps } from 'react-router';

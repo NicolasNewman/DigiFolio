@@ -250,7 +250,6 @@ export default class MenuBuilder {
                     properties: [],
                 })
                 .then((file) => {
-                    // eslint-disable-next-line promise/always-return
                     if (!file.canceled && file.filePath) {
                         this.mainWindow.webContents.send(
                             'save-as',
@@ -266,7 +265,6 @@ export default class MenuBuilder {
 
         const createNewPortfolio = () => {
             // Do nothing
-            // eslint-disable-next-line no-console
             console.log('Create New Portfolio');
             /*
                 history.push(routes.DESIGNER);
@@ -290,7 +288,6 @@ export default class MenuBuilder {
                     properties: [],
                 })
                 .then((file) => {
-                    // eslint-disable-next-line promise/always-return
                     if (!file.canceled && file.filePath) {
                         this.mainWindow.webContents.send(
                             'save-as',
