@@ -99,7 +99,7 @@ export default class Settings extends Component<IProps> {
                     <Tabs defaultActiveKey="1" onChange={callback}>
                         <TabPane
                             className="settings__tab--api"
-                            tab="API Keys"
+                            tab="Github"
                             key="1"
                         >
                             <div>
@@ -112,12 +112,85 @@ export default class Settings extends Component<IProps> {
                                     ref={this.catsAPIInput}
                                 />
                             </div>
-                            <Button onClick={this.saveKeys}>Save</Button>
+                            <div>
+                                <span className="settings-label">
+                                    Github ID:{' '}
+                                </span>
+                                <Input
+                                    className="settings__input"
+                                    placeholder="Github ID"
+                                    ref={this.catsAPIInput}
+                                />
+                            </div>
+                            <div className="button-container">
+                                <Button onClick={this.saveKeys}>Save</Button>
+                                <Button>Refresh Data</Button>
+                            </div>
+                        </TabPane>
+                        <TabPane
+                            className="settings__tab--api"
+                            tab="Steam"
+                            key="2"
+                        >
+                            <div>
+                                <span className="settings__label">
+                                    CatsAPI:{' '}
+                                </span>
+                                <Input
+                                    className="settings__input"
+                                    placeholder="Catsapi Key"
+                                    ref={this.catsAPIInput}
+                                />
+                            </div>
+                            <div>
+                                <span className="settings-label">
+                                    Github ID:{' '}
+                                </span>
+                                <Input
+                                    className="settings__input"
+                                    placeholder="Steam ID"
+                                    ref={this.catsAPIInput}
+                                />
+                            </div>
+                            <div className="button-container">
+                                <Button onClick={this.saveKeys}>Save</Button>
+                                <Button>Refresh Data</Button>
+                            </div>
+                        </TabPane>
+                        <TabPane
+                            className="settings__tab--api"
+                            tab="Reddit"
+                            key="3"
+                        >
+                            <div>
+                                <span className="settings__label">
+                                    CatsAPI:{' '}
+                                </span>
+                                <Input
+                                    className="settings__input"
+                                    placeholder="Catsapi Key"
+                                    ref={this.catsAPIInput}
+                                />
+                            </div>
+                            <div>
+                                <span className="settings-label">
+                                    Github ID:{' '}
+                                </span>
+                                <Input
+                                    className="settings__input"
+                                    placeholder="Reddit ID"
+                                    ref={this.catsAPIInput}
+                                />
+                            </div>
+                            <div className="button-container">
+                                <Button onClick={this.saveKeys}>Save</Button>
+                                <Button>Refresh Data</Button>
+                            </div>
                         </TabPane>
                         <TabPane
                             className="settings__tab--general"
                             tab="General"
-                            key="2"
+                            key="4"
                         >
                             General Settings
                             <div className="tab-general__colorTheme">
