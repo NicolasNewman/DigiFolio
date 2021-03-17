@@ -28,4 +28,13 @@ export default class GithubAPI extends IAPI<GithubDataModel> {
         );
         this.username = username;
     }
+
+    parse_api(): Promise<GithubDataModel> {
+        throw new Error('Method not implemented.');
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    match_key(_key: string): boolean {
+        throw new Error('Method not implemented.');
+    }
 }
