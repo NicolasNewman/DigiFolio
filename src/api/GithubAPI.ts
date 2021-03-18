@@ -2,8 +2,7 @@ import IAPI, { Field } from './IAPI';
 
 export interface GithubDataModel {
     info: string;
-    commitData: any;
-    contributionData: any;
+    repos: any;
 }
 
 export type GithubData = GithubDataModel | null;
@@ -29,8 +28,13 @@ export default class GithubAPI extends IAPI<GithubDataModel> {
         this.username = username;
     }
 
-    parse_api(): Promise<GithubDataModel> {
-        throw new Error('Method not implemented.');
+    async parse_api(): Promise<GithubDataModel> {
+        const temp: GithubDataModel = {
+            info: 'Github User',
+            repos: await this.fetch_user_repos,
+        };
+        console.log(temp);
+        return temp;
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
