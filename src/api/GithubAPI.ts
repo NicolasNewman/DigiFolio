@@ -37,4 +37,14 @@ export default class GithubAPI extends IAPI<GithubDataModel> {
     match_key(_key: string): boolean {
         throw new Error('Method not implemented.');
     }
+
+    async fetch_user_repos() {
+        const repos = await this.fetch(
+            `https://api.github.com/${this.username}/repos`,
+            {
+                sub_id: this.username,
+            }
+        );
+        return repos;
+    }
 }
