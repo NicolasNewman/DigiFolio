@@ -6,6 +6,10 @@ import Store from 'electron-store';
 
 export enum SchemaFields {
     catsAPIKey = 'catsAPIKey',
+    catsAPIUser = 'catsAPIUser',
+    githubAPIKey = 'githubAPIKey',
+    steamAPIKey = 'steamAPIKey',
+    steamAPIUser = 'steamAPIUser',
 }
 
 export default class DataStore {
@@ -22,6 +26,22 @@ export default class DataStore {
             catsAPIKey: {
                 type: 'string',
                 description: 'The API key used for the catsapi',
+            },
+            catsAPIUser: {
+                type: 'string',
+                description: 'Username used for the catsapi',
+            },
+            githubAPIKey: {
+                type: 'string',
+                description: 'The API key used for Github',
+            },
+            steamAPIKey: {
+                type: 'string',
+                description: 'The API key used for Steam',
+            },
+            steamAPIUser: {
+                type: 'string',
+                description: 'SteamID of the user',
             },
             key: {
                 type: 'string',

@@ -1,3 +1,4 @@
+/* eslint-disable react/destructuring-assignment */
 import * as React from 'react';
 import { Component } from 'react';
 import { RouteComponentProps } from 'react-router';
@@ -19,6 +20,17 @@ const menu = (
         <Menu.Item>Light Mode</Menu.Item>
         <Menu.Item>Dark Mode</Menu.Item>
     </Menu>
+);
+
+const InputLabel = (props: { label: string; ref: React.RefObject<Input> }) => (
+    <div>
+        <span className="settings-label">{props.label}: </span>
+        <Input
+            className="settings__input"
+            placeholder="Steam ID"
+            ref={props.ref}
+        />
+    </div>
 );
 
 function callback(key) {
@@ -59,12 +71,29 @@ function callback(key) {
 export default class Settings extends Component<IProps> {
     props!: IProps;
 
+    // Cats API Input Refs
+
     /** React reference to the catsapi key input */
-    catsAPIInput: React.RefObject<Input>;
+    catsAPIKey: React.RefObject<Input>;
+
+    catsAPIUser: React.RefObject<Input>;
+
+    // Github API Input Refs
+    githubAPIKey: React.RefObject<Input>;
+
+    // Steam API Input Refs
+
+    steamAPIKey: React.RefObject<Input>;
+
+    steamAPIUser: React.RefObject<Input>;
 
     constructor(props, history) {
         super(props);
-        this.catsAPIInput = React.createRef();
+        this.catsAPIKey = React.createRef();
+        this.catsAPIUser = React.createRef();
+        this.githubAPIKey = React.createRef();
+        this.steamAPIKey = React.createRef();
+        this.steamAPIUser = React.createRef();
     }
 
     toPage(route: string, e) {
@@ -85,10 +114,10 @@ export default class Settings extends Component<IProps> {
                 dataStore.set(name, value);
             }
         };
-        saveKey(
-            SchemaFields.catsAPIKey,
-            this.catsAPIInput.current?.state.value
-        );
+        // saveKey(
+        //     SchemaFields.catsAPIKey,
+        //     this.catsAPIInput.current?.state.value
+        // );
     }
 
     render() {
@@ -97,31 +126,36 @@ export default class Settings extends Component<IProps> {
                 <h2>Settings</h2>
                 <div className="settings__tab-container">
                     <Tabs defaultActiveKey="1" onChange={callback}>
+                        {(() => {
+                            if (process.env.NODE_ENV === 'development') {
+                                return (
+                                    <TabPane
+                                        className="settings__tab--api"
+                                        tab="catsapi"
+                                        key="cats"
+                                    >
+                                        <InputLabel
+                                            label="API Key"
+                                            ref={this.catsAPIKey}
+                                        />
+                                        <InputLabel
+                                            label="Username"
+                                            ref={this.catsAPIUser}
+                                        />
+                                    </TabPane>
+                                );
+                            }
+                            return <span />;
+                        })()}
                         <TabPane
                             className="settings__tab--api"
                             tab="Github"
                             key="1"
                         >
-                            <div>
-                                <span className="settings__label">
-                                    CatsAPI:{' '}
-                                </span>
-                                <Input
-                                    className="settings__input"
-                                    placeholder="Catsapi Key"
-                                    ref={this.catsAPIInput}
-                                />
-                            </div>
-                            <div>
-                                <span className="settings-label">
-                                    Github ID:{' '}
-                                </span>
-                                <Input
-                                    className="settings__input"
-                                    placeholder="Github ID"
-                                    ref={this.catsAPIInput}
-                                />
-                            </div>
+                            <InputLabel
+                                label="Personal Access Token"
+                                ref={this.githubAPIKey}
+                            />
                             <div className="button-container">
                                 <Button onClick={this.saveKeys}>Save</Button>
                                 <Button>Refresh Data</Button>
@@ -133,25 +167,23 @@ export default class Settings extends Component<IProps> {
                             key="2"
                         >
                             <div>
-                                <span className="settings__label">
-                                    CatsAPI:{' '}
-                                </span>
-                                <Input
-                                    className="settings__input"
-                                    placeholder="Catsapi Key"
-                                    ref={this.catsAPIInput}
-                                />
-                            </div>
-                            <div>
                                 <span className="settings-label">
-                                    Github ID:{' '}
+                                    Steam API Key:{' '}
                                 </span>
                                 <Input
                                     className="settings__input"
                                     placeholder="Steam ID"
-                                    ref={this.catsAPIInput}
+                                    ref={this.steamAPIKey}
                                 />
                             </div>
+                            <InputLabel
+                                label="API Key"
+                                ref={this.steamAPIKey}
+                            />
+                            <InputLabel
+                                label="SteamID"
+                                ref={this.steamAPIUser}
+                            />
                             <div className="button-container">
                                 <Button onClick={this.saveKeys}>Save</Button>
                                 <Button>Refresh Data</Button>
@@ -162,26 +194,6 @@ export default class Settings extends Component<IProps> {
                             tab="Reddit"
                             key="3"
                         >
-                            <div>
-                                <span className="settings__label">
-                                    CatsAPI:{' '}
-                                </span>
-                                <Input
-                                    className="settings__input"
-                                    placeholder="Catsapi Key"
-                                    ref={this.catsAPIInput}
-                                />
-                            </div>
-                            <div>
-                                <span className="settings-label">
-                                    Github ID:{' '}
-                                </span>
-                                <Input
-                                    className="settings__input"
-                                    placeholder="Reddit ID"
-                                    ref={this.catsAPIInput}
-                                />
-                            </div>
                             <div className="button-container">
                                 <Button onClick={this.saveKeys}>Save</Button>
                                 <Button>Refresh Data</Button>
