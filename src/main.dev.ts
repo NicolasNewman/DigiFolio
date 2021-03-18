@@ -99,8 +99,13 @@ const createWindow = async () => {
         }
     });
 
-    mainWindow.on('closed', () => {
-        mainWindow = null;
+    mainWindow.on('close', (e) => {
+        if (mainWindow) {
+            e.preventDefault();
+            mainWindow.webContents.send('closing');
+        }
+        // ipcMain.emit('quitting');
+        // mainWindow = null;
     });
 
     const menuBuilder = new MenuBuilder(mainWindow);
@@ -144,3 +149,12 @@ ipcMain.on('resize', (e, width: number, height: number) => {
         mainWindow.setSize(width, height);
     }
 });
+
+ipcMain.on('ready-to-close', () => {
+    mainWindow = null;
+    if (process.platform !== 'darwin') {
+        app.quit();
+    }
+});
+
+shell.openPath(app.getPath('userData'));

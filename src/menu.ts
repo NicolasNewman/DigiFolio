@@ -1,10 +1,17 @@
 import {
     app,
+    dialog,
     Menu,
     shell,
     BrowserWindow,
     MenuItemConstructorOptions,
+    ipcMain,
+    ipcRenderer,
 } from 'electron';
+import { join, basename } from 'path';
+import { electron } from 'process';
+
+import routes from './Routes';
 
 interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
     selector?: string;
@@ -12,7 +19,14 @@ interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
 }
 
 export default class MenuBuilder {
-    mainWindow: BrowserWindow;
+    // mainWindow: BrowserWindow;
+
+    mainWindow = new BrowserWindow({
+        webPreferences: {
+            enableRemoteModule: true,
+            nodeIntegration: true,
+        },
+    });
 
     constructor(mainWindow: BrowserWindow) {
         this.mainWindow = mainWindow;
@@ -219,6 +233,74 @@ export default class MenuBuilder {
     }
 
     buildDefaultTemplate() {
+        const saveClickHandler = () => {
+            dialog
+                .showSaveDialog({
+                    title: 'Select the File Path to save',
+                    defaultPath: join(__dirname, '../assets/sample.txt'),
+                    // defaultPath: path.join(__dirname, '../assets/'),
+                    buttonLabel: 'Save',
+                    // Restricting the user to only Text Files.
+                    filters: [
+                        {
+                            name: '.difo Files',
+                            extensions: ['txt', 'docx'],
+                        },
+                    ],
+                    properties: [],
+                })
+                .then((file) => {
+                    if (!file.canceled && file.filePath) {
+                        this.mainWindow.webContents.send(
+                            'save-as',
+                            file.filePath,
+                            basename(file.filePath)
+                        );
+                    }
+                })
+                .catch((err) => {
+                    ipcRenderer.send('error', err);
+                });
+        };
+
+        const createNewPortfolio = () => {
+            // Do nothing
+            console.log('Create New Portfolio');
+            /*
+                history.push(routes.DESIGNER);
+            */
+        };
+
+        const exportClickHandler = () => {
+            dialog
+                .showSaveDialog({
+                    title: 'Select the File Path to export',
+                    defaultPath: join(__dirname, '../assets/sample.txt'),
+                    // defaultPath: path.join(__dirname, '../assets/'),
+                    buttonLabel: 'Export',
+                    // Restricting the user to only Text Files.
+                    filters: [
+                        {
+                            name: '.pdf Files',
+                            extensions: ['pdf'],
+                        },
+                    ],
+                    properties: [],
+                })
+                .then((file) => {
+                    if (!file.canceled && file.filePath) {
+                        this.mainWindow.webContents.send(
+                            'save-as',
+                            file.filePath,
+                            basename(file.filePath)
+                        );
+                    }
+                })
+                .catch((err) => {
+                    ipcRenderer.send('error', err);
+                });
+        };
+
         const templateDefault = [
             {
                 label: '&File',
@@ -226,26 +308,31 @@ export default class MenuBuilder {
                     {
                         label: 'New Portfolio',
                         accelerator: 'Ctrl+N',
+                        click: createNewPortfolio,
                     },
                     {
                         label: 'Open Portfolio',
                         accelerator: 'Ctrl+O',
                     },
-                    {
-                        label: 'Save Portfolio',
-                        accelerator: 'Ctrl+S',
-                    },
+                    // {
+                    //     label: 'Save Portfolio',
+                    //     accelerator: 'Ctrl+S',
+                    //     click: saveClickHandler,
+                    // },
                     {
                         label: 'Save Portfolio As',
                         accelerator: 'Ctrl+Shift+S',
+                        click: saveClickHandler,
                     },
-                    {
-                        label: 'Export Portfolio',
-                        accelerator: 'Ctrl+E',
-                    },
+                    // {
+                    //     label: 'Export Portfolio',
+                    //     accelerator: 'Ctrl+E',
+                    //     click: exportClickHandler,
+                    // },
                     {
                         label: 'Export Portfolio As',
                         accelerator: 'Ctrl+Shift+E',
+                        click: exportClickHandler,
                     },
                     {
                         label: 'Print',

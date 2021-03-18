@@ -47,6 +47,13 @@ export default class Home extends Component<IProps> {
                 >
                     Settings
                 </Button>
+                <Button
+                    className="home__button"
+                    type="primary"
+                    onClick={(e) => this.toPage(routes.DEBUG, e)}
+                >
+                    Grafhs
+                </Button>
             </div>
         );
     }

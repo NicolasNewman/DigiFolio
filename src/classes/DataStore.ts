@@ -1,9 +1,5 @@
 import Store from 'electron-store';
 
-/**
- * Wrapper for electron-store\'s Store object
- */
-
 export enum SchemaFields {
     catsAPIKey = 'catsAPIKey',
     catsAPIUser = 'catsAPIUser',
@@ -12,6 +8,9 @@ export enum SchemaFields {
     steamAPIUser = 'steamAPIUser',
 }
 
+/**
+ * Wrapper for electron-store\'s Store object
+ */
 export default class DataStore {
     private store;
 
@@ -21,7 +20,7 @@ export default class DataStore {
      * Creates the data schema and initializes it
      * @constructor
      */
-    constructor() {
+    constructor(key) {
         this.schema = {
             catsAPIKey: {
                 type: 'string',
@@ -42,6 +41,10 @@ export default class DataStore {
             steamAPIUser: {
                 type: 'string',
                 description: 'SteamID of the user',
+            },
+            reduxSave: {
+                type: 'object',
+                description: 'The saved state of the redux store',
             },
             key: {
                 type: 'string',
@@ -66,7 +69,12 @@ export default class DataStore {
                 description: 'The targeted theme for the UI',
             },
         };
-        this.store = new Store({ schema: this.schema });
+
+        this.store = new Store({
+            schema: this.schema,
+            encryptionKey: key,
+        });
+        // this.schema.key = key;
     }
 
     /**
@@ -76,7 +84,7 @@ export default class DataStore {
      */
     set = (key: string, value: any): void => {
         if (this.schema[key]) {
-            console.log('contains key ', key);
+            // console.log('contains key ', key);
             this.store.set(key, value);
         }
     };

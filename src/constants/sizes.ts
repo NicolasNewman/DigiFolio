@@ -7,9 +7,13 @@ const sizes = {
         width: 750,
         height: 500,
     },
+    debugWindow: {
+        width: 600,
+        height: 600,
+    },
     designerWindow: {
-        width: 900,
-        height: 500,
+        width: 1200,
+        height: 700,
     },
 };
 

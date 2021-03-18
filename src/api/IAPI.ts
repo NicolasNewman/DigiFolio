@@ -1,4 +1,9 @@
-/* eslint-disable no-underscore-dangle */
+export type Field = {
+    name: string;
+    value: string;
+    regex: RegExp;
+    errorMsg: string;
+};
 
 /**
  * Abstract class for a services integration
@@ -8,6 +13,8 @@ export default abstract class IAPI<DM> {
     /** the variable storing the processed data */
     private _data: DM | null = null;
 
+    private fields: Field[] = [];
+
     /** The options containing the header information for the request */
     private opt: RequestInit;
 
@@ -15,15 +22,13 @@ export default abstract class IAPI<DM> {
      * @param _name - the name of the integrated service
      * @param _key - the API key used to access the service
      */
-    constructor(private _key: string) {
+    constructor(private headers: HeadersInit, fields: Field[]) {
         this.opt = {
             method: 'GET',
             mode: 'cors',
-            headers: {
-                'Content-Type': 'application/json',
-                'x-api-key': _key,
-            },
+            headers,
         };
+        this.fields = fields;
     }
 
     set data(data: DM | null) {
@@ -41,12 +46,28 @@ export default abstract class IAPI<DM> {
      * @param url - the url of the route to request to
      * @param body - the data to be given through the request
      */
-    async fetch(url, body): Promise<any> {
-        this.opt.body = JSON.stringify(body);
-        const res = await fetch(url, this.opt);
-        this.opt.body = '';
+    async fetch(url, body: { [key: string]: any }): Promise<any> {
+        let newURL = '';
+        Object.keys(body).forEach((key) => {
+            newURL = `${url}?${key}=${body[key]}`;
+        });
+        const res = await fetch(newURL, this.opt);
         return res.json();
     }
 
     abstract parse_api(): Promise<DM>;
+
+    abstract match_key(key: string): boolean;
+
+    match_fields(): string[] {
+        const errors: string[] = [];
+        this.fields.forEach((field: Field) => {
+            if (!field.regex.test(field.value)) {
+                errors.push(field.errorMsg);
+            }
+        });
+        return errors;
+    }
+
+    // abstract valid_key(): boolean;
 }
