@@ -13,8 +13,6 @@ export default abstract class IAPI<DM> {
     /** the variable storing the processed data */
     private _data: DM | null = null;
 
-    private fields: Field[] = [];
-
     /** The options containing the header information for the request */
     private opt: RequestInit;
 
@@ -22,13 +20,12 @@ export default abstract class IAPI<DM> {
      * @param _name - the name of the integrated service
      * @param _key - the API key used to access the service
      */
-    constructor(private headers: HeadersInit, fields: Field[]) {
+    constructor(private headers: HeadersInit) {
         this.opt = {
             method: 'GET',
             mode: 'cors',
             headers,
         };
-        this.fields = fields;
     }
 
     set data(data: DM | null) {
@@ -56,18 +53,4 @@ export default abstract class IAPI<DM> {
     }
 
     abstract parse_api(): Promise<DM>;
-
-    abstract match_key(key: string): boolean;
-
-    match_fields(): string[] {
-        const errors: string[] = [];
-        this.fields.forEach((field: Field) => {
-            if (!field.regex.test(field.value)) {
-                errors.push(field.errorMsg);
-            }
-        });
-        return errors;
-    }
-
-    // abstract valid_key(): boolean;
 }

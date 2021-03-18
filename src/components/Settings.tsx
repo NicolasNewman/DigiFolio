@@ -5,7 +5,7 @@ import { Tabs, Input, Menu, Dropdown, Button } from 'antd';
 import 'antd/dist/antd.css';
 
 import { DownOutlined, LeftCircleOutlined } from '@ant-design/icons';
-import DataStore, { SchemaFields } from '../classes/DataStore';
+import DataStore, { APIInfo, SchemaFields } from '../classes/DataStore';
 import routes from '../constants/routes';
 import APIManager from '../api/APIManager';
 
@@ -23,13 +23,17 @@ const menu = (
     </Menu>
 );
 
-const InputLabel = (props: { label: string; ref: React.RefObject<Input> }) => (
+const InputLabel = (props: {
+    label: string;
+    defaultVal: string;
+    inputRef: React.RefObject<Input>;
+}) => (
     <div>
         <span className="settings-label">{props.label}: </span>
         <Input
             className="settings__input"
-            placeholder="Steam ID"
-            ref={props.ref}
+            ref={props.inputRef}
+            defaultValue={props.defaultVal}
         />
     </div>
 );
@@ -100,37 +104,13 @@ export default class Settings extends Component<IProps> {
     /**
      * Saves or updates the keys specified by the API tab to the Electron data store
      */
-    saveKeys = () => {
-        const { dataStore, apiManager } = this.props;
-        const saveKey = (name, value) => {
-            console.log(`Saving key: ${name}`);
-            // console.log(`Processing key for ${name}`);
-            // const savedKey = dataStore.get(name);
-            // console.log(`Stored value is: ${savedKey}`);
-            if (value === '') {
-                apiManager.updateKey(name);
-            } else {
-                apiManager.updateKey(name, value);
-            }
-            // if (!savedKey) {
-            //     console.log('Setting value...');
-            //     apiManager.updateKey(name, value);
-            //     // dataStore.set(name, value);
-            // } else if (savedKey !== value) {
-            //     console.log('Updating value...');
-            //     apiManager.updateKey(name, value);
-            //     // dataStore.set(name, value);
-            // } else {
-            //     console.log('No change');
-            //     return;
-            // }
-            // console.log(`New value is: ${dataStore.get(name)}`);
-        };
-
-        // saveKey(
-        //     SchemaFields.catsAPIKey,
-        //     this.catsAPIInput.current?.state.value
-        // );
+    saveKeys = (api: SchemaFields, options: APIInfo) => {
+        console.log(options);
+        if (options.key === '') {
+            this.props.apiManager.updateKey(api, { key: '', username: '' });
+        } else {
+            this.props.apiManager.updateKey(api, options);
+        }
     };
 
     toPage(route: string, e) {
@@ -155,12 +135,43 @@ export default class Settings extends Component<IProps> {
                                     >
                                         <InputLabel
                                             label="API Key"
-                                            ref={this.catsAPIKey}
+                                            inputRef={this.catsAPIKey}
+                                            defaultVal={
+                                                dataStore.getAPIInfo(
+                                                    SchemaFields.catsAPI
+                                                ).key
+                                            }
                                         />
                                         <InputLabel
                                             label="Username"
-                                            ref={this.catsAPIUser}
+                                            inputRef={this.catsAPIUser}
+                                            defaultVal={
+                                                dataStore.getAPIInfo(
+                                                    SchemaFields.catsAPI
+                                                ).username
+                                            }
                                         />
+                                        <div className="button-container">
+                                            <Button
+                                                onClick={() =>
+                                                    this.saveKeys(
+                                                        SchemaFields.catsAPI,
+                                                        {
+                                                            key: this.catsAPIKey
+                                                                .current?.state
+                                                                .value,
+                                                            username: this
+                                                                .catsAPIUser
+                                                                .current?.state
+                                                                .value,
+                                                        }
+                                                    )
+                                                }
+                                            >
+                                                Save
+                                            </Button>
+                                            <Button>Refresh Data</Button>
+                                        </div>
                                     </TabPane>
                                 );
                             }
@@ -173,10 +184,23 @@ export default class Settings extends Component<IProps> {
                         >
                             <InputLabel
                                 label="Personal Access Token"
-                                ref={this.githubAPIKey}
+                                inputRef={this.githubAPIKey}
+                                defaultVal={
+                                    this.githubAPIKey.current?.state.value
+                                }
                             />
                             <div className="button-container">
-                                <Button onClick={this.saveKeys}>Save</Button>
+                                <Button
+                                    onClick={() =>
+                                        this.saveKeys(SchemaFields.catsAPI, {
+                                            key: this.githubAPIKey.current
+                                                ?.state.value,
+                                            username: '',
+                                        })
+                                    }
+                                >
+                                    Save
+                                </Button>
                                 <Button>Refresh Data</Button>
                             </div>
                         </TabPane>
@@ -185,38 +209,28 @@ export default class Settings extends Component<IProps> {
                             tab="Steam"
                             key="2"
                         >
-                            <div>
-                                <span className="settings-label">
-                                    Steam API Key:{' '}
-                                </span>
-                                <Input
-                                    className="settings__input"
-                                    placeholder="Steam ID"
-                                    ref={this.steamAPIKey}
-                                />
-                            </div>
-                            <InputLabel
+                            {/* <InputLabel
                                 label="API Key"
-                                ref={this.steamAPIKey}
+                                inputRef={this.steamAPIKey}
                             />
                             <InputLabel
                                 label="SteamID"
-                                ref={this.steamAPIUser}
-                            />
-                            <div className="button-container">
+                                inputRef={this.steamAPIUser}
+                            /> */}
+                            {/* <div className="button-container">
                                 <Button onClick={this.saveKeys}>Save</Button>
                                 <Button>Refresh Data</Button>
-                            </div>
+                            </div> */}
                         </TabPane>
                         <TabPane
                             className="settings__tab--api"
                             tab="Reddit"
                             key="3"
                         >
-                            <div className="button-container">
+                            {/* <div className="button-container">
                                 <Button onClick={this.saveKeys}>Save</Button>
                                 <Button>Refresh Data</Button>
-                            </div>
+                            </div> */}
                         </TabPane>
                         <TabPane
                             className="settings__tab--general"

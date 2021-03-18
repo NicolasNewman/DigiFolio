@@ -20,10 +20,12 @@ import genKey from './helper/random';
     const dataStore: DataStore = new DataStore(storedKey);
     const initialState = dataStore.get('reduxSave');
     console.log('INITIAL STATE: ');
+    console.log('of electron store: ');
     console.log(initialState);
     const store = initialState
         ? configureStore(initialState)
         : configureStore();
+    console.log('of redux store: ');
     console.log(store.getState());
     const ipc = new IpcInterface(dataStore, store);
 
