@@ -193,7 +193,7 @@ export default class Settings extends Component<IProps> {
                             <div className="button-container">
                                 <Button
                                     onClick={() =>
-                                        this.saveKeys(SchemaFields.catsAPI, {
+                                        this.saveKeys(SchemaFields.githubAPI, {
                                             key: this.githubAPIUser.current
                                                 ?.state.value,
                                             username: '',

@@ -137,15 +137,15 @@ export default class APIManager {
                     }
                     break;
                 case SchemaFields.githubAPI:
-                    if (options.username) {
-                        if (!GithubAPI.verify_username(options.username)) {
+                    if (options.key) {
+                        if (!GithubAPI.verify_username(options.key)) {
                             message.error('The username is not valid');
                             canCommit = false;
                         }
 
                         if (canCommit) {
                             this.apis[SchemaFields.githubAPI] = {
-                                api: new GithubAPI(options.username),
+                                api: new GithubAPI(options.key),
                                 dispatch: (data: GithubData) =>
                                     this.reduxStore.dispatch(
                                         updateGithubAPI(data)

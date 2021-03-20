@@ -13,14 +13,15 @@ export default class GithubAPI extends IAPI<GithubDataModel> {
     constructor(username: string) {
         super({
             'Content-Type': 'application/json',
+            Accept: 'application/vnd.github.v3+json',
         });
         this.username = username;
     }
 
     async parse_api(): Promise<GithubDataModel> {
         const temp: GithubDataModel = {
-            info: await this.fetch_user_info,
-            repos: await this.fetch_user_repos,
+            info: await this.fetch_user_info(),
+            repos: await this.fetch_user_repos(),
         };
         return temp;
     }
@@ -38,20 +39,14 @@ export default class GithubAPI extends IAPI<GithubDataModel> {
 
     async fetch_user_info() {
         const info = await this.fetch(
-            `https://api.github.com/users/${this.username}`,
-            {
-                sub_id: this.username,
-            }
+            `https://api.github.com/users/${this.username}`
         );
         return info;
     }
 
     async fetch_user_repos() {
         const repos = await this.fetch(
-            `https://api.github.com/users/${this.username}/repos`,
-            {
-                sub_id: this.username,
-            }
+            `https://api.github.com/users/${this.username}/repos`
         );
         return repos;
     }
