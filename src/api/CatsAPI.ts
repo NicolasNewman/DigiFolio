@@ -1,4 +1,4 @@
-import IAPI, { Field } from './IAPI';
+import IAPI from './IAPI';
 
 export interface CatsAPIDataModel {
     info: string;

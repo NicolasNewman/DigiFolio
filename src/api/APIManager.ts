@@ -30,8 +30,6 @@ export interface APIMap {
     } | null;
 }
 
-type APIUnion = CatsAPI;
-
 export default class APIManager {
     private dataStore: DataStore;
 
