@@ -1,7 +1,17 @@
 import Store from 'electron-store';
 
+export interface APIInfo {
+    key: string;
+    username: string;
+}
 export enum SchemaFields {
-    catsAPIKey = 'catsAPIKey',
+    // catsAPIKey = 'catsAPIKey',
+    // catsAPIUser = 'catsAPIUser',
+    // githubAPIKey = 'githubAPIKey',
+    // steamAPIKey = 'steamAPIKey',
+    // steamAPIUser = 'steamAPIUser',
+    catsAPI = 'catsAPI',
+    githubAPI = 'githubAPI',
 }
 
 /**
@@ -18,9 +28,33 @@ export default class DataStore {
      */
     constructor(key) {
         this.schema = {
-            catsAPIKey: {
-                type: 'string',
-                description: 'The API key used for the catsapi',
+            // catsAPIKey: {
+            //     type: 'string',
+            //     description: 'The API key used for the catsapi',
+            // },
+            // catsAPIUser: {
+            //     type: 'string',
+            //     description: 'Username used for the catsapi',
+            // },
+            // githubAPIKey: {
+            //     type: 'string',
+            //     description: 'The API key used for Github',
+            // },
+            // steamAPIKey: {
+            //     type: 'string',
+            //     description: 'The API key used for Steam',
+            // },
+            // steamAPIUser: {
+            //     type: 'string',
+            //     description: 'SteamID of the user',
+            // },
+            catsAPI: {
+                type: 'object',
+                description: 'The object containing the cats API key',
+            },
+            githubAPI: {
+                type: 'object',
+                description: 'The object containing github key information',
             },
             reduxSave: {
                 type: 'object',
@@ -49,6 +83,7 @@ export default class DataStore {
                 description: 'The targeted theme for the UI',
             },
         };
+
         this.store = new Store({
             schema: this.schema,
             encryptionKey: key,
@@ -74,5 +109,9 @@ export default class DataStore {
      */
     get = (key: string): any => {
         return this.schema[key] ? this.store.get(key) : undefined;
+    };
+
+    getAPIInfo = (api: SchemaFields): APIInfo => {
+        return this.schema[api] ? this.store.get(api) : undefined;
     };
 }
