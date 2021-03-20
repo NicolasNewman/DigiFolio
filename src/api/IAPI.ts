@@ -1,10 +1,3 @@
-export type Field = {
-    name: string;
-    value: string;
-    regex: RegExp;
-    errorMsg: string;
-};
-
 /**
  * Abstract class for a services integration
  * @param DM - generic interface for the format of the processed data
