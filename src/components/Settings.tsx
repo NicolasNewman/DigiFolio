@@ -84,7 +84,8 @@ export default class Settings extends Component<IProps> {
     catsAPIUser: React.RefObject<Input>;
 
     // Github API Input Refs
-    githubAPIKey: React.RefObject<Input>;
+    // githubAPIKey: React.RefObject<Input>;
+    githubAPIUser: React.RefObject<Input>;
 
     // Steam API Input Refs
 
@@ -96,7 +97,7 @@ export default class Settings extends Component<IProps> {
         super(props);
         this.catsAPIKey = React.createRef();
         this.catsAPIUser = React.createRef();
-        this.githubAPIKey = React.createRef();
+        this.githubAPIUser = React.createRef();
         this.steamAPIKey = React.createRef();
         this.steamAPIUser = React.createRef();
     }
@@ -139,7 +140,7 @@ export default class Settings extends Component<IProps> {
                                             defaultVal={
                                                 dataStore.getAPIInfo(
                                                     SchemaFields.catsAPI
-                                                ).key
+                                                )?.key
                                             }
                                         />
                                         <InputLabel
@@ -148,7 +149,7 @@ export default class Settings extends Component<IProps> {
                                             defaultVal={
                                                 dataStore.getAPIInfo(
                                                     SchemaFields.catsAPI
-                                                ).username
+                                                )?.username
                                             }
                                         />
                                         <div className="button-container">
@@ -183,17 +184,17 @@ export default class Settings extends Component<IProps> {
                             key="1"
                         >
                             <InputLabel
-                                label="Personal Access Token"
-                                inputRef={this.githubAPIKey}
+                                label="Username"
+                                inputRef={this.githubAPIUser}
                                 defaultVal={
-                                    this.githubAPIKey.current?.state.value
+                                    this.githubAPIUser.current?.state.value
                                 }
                             />
                             <div className="button-container">
                                 <Button
                                     onClick={() =>
                                         this.saveKeys(SchemaFields.catsAPI, {
-                                            key: this.githubAPIKey.current
+                                            key: this.githubAPIUser.current
                                                 ?.state.value,
                                             username: '',
                                         })

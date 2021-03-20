@@ -10,21 +10,10 @@ export type GithubData = GithubDataModel | null;
 export default class GithubAPI extends IAPI<GithubDataModel> {
     private username: string;
 
-    constructor(authToken: string, username: string) {
-        super(
-            {
-                'Content-Type': 'application/json',
-                'x-api-key': authToken,
-            },
-            [
-                {
-                    name: 'username',
-                    value: username,
-                    regex: /.*/g,
-                    errorMsg: 'Username must ',
-                },
-            ]
-        );
+    constructor(username: string) {
+        super({
+            'Content-Type': 'application/json',
+        });
         this.username = username;
     }
 
@@ -36,10 +25,15 @@ export default class GithubAPI extends IAPI<GithubDataModel> {
         return temp;
     }
 
-    match_key(_key: string): boolean {
-        //1c4fb1a1c2b92e14710c6358b17e2e21470b00cb
-        const isValid = /[a-z0-9]{40}/g.test(_key);
-        return isValid;
+    static verify_username(name: string) {
+        if (name.length === 0 || name.length > 39) return false;
+        return /(?:(?![-]{2})[\w\d-])+/g.test(name);
+        // const url = `https://api.github.com/users/${name}`;
+        // const res = await fetch(url);
+        // if (res.message && res.message === 'Not Found') {
+        //     return false;
+        // }
+        // return true;
     }
 
     async fetch_user_info() {
