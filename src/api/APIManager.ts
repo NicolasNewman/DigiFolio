@@ -87,7 +87,11 @@ export default class APIManager {
         let canCommit = true;
 
         // console.log(`The currently saved key is: ${savedKey}`);
-        if (options.key === null || options.key === '') {
+        if (
+            options.key === null ||
+            options.key === undefined ||
+            options.key === ''
+        ) {
             // The user wants to delete an integration
             console.log(
                 `The new key is empty, removing the api and saved data`
