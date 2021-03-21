@@ -104,6 +104,7 @@ export default class APIManager {
             console.log(
                 `The passed key is different from the saved key, updating`
             );
+            console.log('api ', api);
             switch (api) {
                 case SchemaFields.catsAPI:
                     if (options.key && options.username) {
