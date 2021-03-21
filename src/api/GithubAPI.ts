@@ -1,8 +1,10 @@
+import { REPL_MODE_SLOPPY } from 'repl';
 import IAPI from './IAPI';
 
 export interface GithubDataModel {
     info: any;
     repos: any;
+    followers: any;
 }
 
 export type GithubData = GithubDataModel | null;
@@ -22,6 +24,7 @@ export default class GithubAPI extends IAPI<GithubDataModel> {
         const temp: GithubDataModel = {
             info: await this.fetch_user_info(),
             repos: await this.fetch_user_repos(),
+            followers: await this.fetch_user_followers(),
         };
         return temp;
     }
@@ -49,5 +52,12 @@ export default class GithubAPI extends IAPI<GithubDataModel> {
             `https://api.github.com/users/${this.username}/repos`
         );
         return repos;
+    }
+
+    async fetch_user_followers() {
+        const followers = await this.fetch(
+            `https://api.github.com/users/${this.username}/followers`
+        );
+        return followers;
     }
 }
