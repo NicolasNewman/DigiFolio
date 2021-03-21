@@ -41,8 +41,6 @@ export default class Widgets extends Component<IProps> {
                                 key="1"
                             >
                                 <Widget />
-                                <Widget />
-                                <Widget />
                             </TabPane>
                             <TabPane
                                 className="settings__tab--general"
