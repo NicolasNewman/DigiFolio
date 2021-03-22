@@ -1,7 +1,7 @@
 import { GithubData } from '../api/GithubAPI';
 
 export enum GithubAPITypeKeys {
-    UPDATE = 'UPDATE',
+    UPDATE = 'UPDATE_GITHUB',
 }
 
 interface UpdateAction {
