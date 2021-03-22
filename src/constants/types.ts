@@ -1,12 +1,9 @@
-import { constants } from 'http2';
+/* eslint-disable import/no-cycle */
+import { WidgetComponentType } from '../components/Designer/IWidget';
 
-const ItemTypes = {
-    WIDGET: 'widget',
-};
 export interface BoxDragItem {
     id: string;
     left: number;
     top: number;
+    component: WidgetComponentType;
 }
-
-export default ItemTypes;

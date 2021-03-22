@@ -1,10 +1,11 @@
+/* eslint-disable react/require-default-props */
+/* eslint-disable react/no-unused-prop-types */
 import * as React from 'react';
 import { CSSProperties, FC } from 'react';
 import { useDrag, ConnectDragSource, DragSource } from 'react-dnd';
 import { RouteComponentProps } from 'react-router';
 import { Disposable } from 'custom-electron-titlebar/lib/common/lifecycle';
 // import DataStore from '../classes/DataStore';
-import ITEM_TYPE from '../../constants/types';
 
 const style: CSSProperties = {
     position: 'absolute',
@@ -50,7 +51,7 @@ const Widget: FC<WidgetProps> = ({
 };
 
 export default DragSource(
-    ITEM_TYPE.WIDGET,
+    'widget',
     {
         beginDrag(props: WidgetProps) {
             const { id, left, top } = props;

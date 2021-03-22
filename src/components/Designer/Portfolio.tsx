@@ -1,19 +1,22 @@
+/* eslint-disable react/no-access-state-in-setstate */
+/* eslint-disable react/state-in-constructor */
+/* eslint-disable react/no-unused-state */
 import * as React from 'react';
 import { Component } from 'react';
-import { RouteComponentProps } from 'react-router';
-import { Button } from 'antd';
-import { DropTarget, DropTargetMonitor, XYCoord } from 'react-dnd';
-import PropTypes from 'prop-types';
-import { Connect } from 'react-redux';
+
+import {
+    DropTarget,
+    ConnectDropTarget,
+    DropTargetMonitor,
+    XYCoord,
+    DropTargetConnector,
+} from 'react-dnd';
 import update from 'immutability-helper';
-import { BoxDragItem } from '../../constants/types';
-//import ItemTypes from '../../constants/types';
 import Widget from './Widget';
+import { BoxDragItem } from '../../constants/types';
+import { WidgetComponentType } from './IWidget';
 
-//import Item from 'antd/lib/list/Item';
-// import DataStore from '../classes/DataStore';
-
-function collect(connect, monitor) {
+function collect(connect: DropTargetConnector, monitor: DropTargetMonitor) {
     return {
         connectDropTarget: connect.dropTarget(),
         hovered: monitor.isOver(),
@@ -22,34 +25,46 @@ function collect(connect, monitor) {
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface IProps {
-    connectDropTarget;
     hovered;
+    hideSourceOnDrag: boolean;
+    connectDropTarget: ConnectDropTarget;
 }
 
-export interface ContainerState {
-    boxes: { [key: string]: { top: number; left: number; title: string } };
+interface IState {
+    boxes: {
+        [key: string]: {
+            top: number;
+            left: number;
+            title: string;
+            component: WidgetComponentType;
+        };
+    };
 }
 
-class Portfolio extends Component<IProps, ContainerState> {
+class Portfolio extends Component<IProps, IState> {
     props!: IProps;
+
+    state: IState;
 
     constructor(props) {
         super(props);
         this.state = {
-            boxes: {
-                a: { top: 200, left: 80, title: 'Drag me around' },
-                b: { top: 180, left: 20, title: 'Drag me too' },
-            },
+            boxes: {},
         };
     }
 
-    public moveBox(id: string, left: number, top: number) {
+    moveBox(id: string, left: number, top: number) {
         this.setState(
-            // eslint-disable-next-line react/no-access-state-in-setstate
+            update(this.state, { boxes: { [id]: { $merge: { left, top } } } })
+        );
+    }
+
+    addBox(id, left, top, component: WidgetComponentType) {
+        this.setState(
             update(this.state, {
                 boxes: {
-                    [id]: {
-                        $merge: { left, top },
+                    $merge: {
+                        [id]: { title: 'hi', left, top, component },
                     },
                 },
             })
@@ -57,9 +72,7 @@ class Portfolio extends Component<IProps, ContainerState> {
     }
 
     render() {
-        const { connectDropTarget, hovered } = this.props;
-        //const { connectDropTarget } = this.props;
-        //const hovered = this.props;
+        const { hideSourceOnDrag, connectDropTarget, hovered } = this.props;
         const backgroundColor = hovered ? '#F0F02D' : 'white';
         const { boxes } = this.state;
         return connectDropTarget(
@@ -67,25 +80,25 @@ class Portfolio extends Component<IProps, ContainerState> {
                 <div
                     className="portfolio__page"
                     id="portfolio"
-                    style={{ background: backgroundColor }}
+                    style={{
+                        background: backgroundColor,
+                        position: 'relative',
+                    }}
                 >
                     <p style={{ color: '#000000' }}>This is my page</p>
-                    <div>
-                        {Object.keys(boxes).map((key) => {
-                            const { left, top, title } = boxes[key];
-                            return (
-                                <Widget
-                                    key={key}
-                                    id={key}
-                                    left={left}
-                                    top={top}
-                                    //hideSourceOnDrag={hideSourceOnDrag}
-                                >
-                                    {title}
-                                </Widget>
-                            );
-                        })}
-                    </div>
+                    {Object.keys(boxes).map((key) => {
+                        const { left, top, title, component } = boxes[key];
+                        const WidgetComponent = component;
+                        return (
+                            <WidgetComponent
+                                key={key}
+                                id={key}
+                                left={left}
+                                top={top}
+                                hideSourceOnDrag={hideSourceOnDrag}
+                            />
+                        );
+                    })}
                 </div>
             </div>
         );
@@ -102,12 +115,19 @@ export default DropTarget(
             if (!component) {
                 return;
             }
-            const item = monitor.getItem<BoxDragItem>();
-            const delta = monitor.getDifferenceFromInitialOffset() as XYCoord;
-            const left = Math.round(item.left + delta.x);
-            const top = Math.round(item.top + delta.y);
 
-            component.moveBox(item.id, left, top);
+            const item = monitor.getItem<BoxDragItem>();
+            if (!component.state.boxes[item.id]) {
+                const delta = monitor.getClientOffset() as XYCoord;
+                const left = Math.round(delta.x - 64); // TODO figure out where this value (64) comes from. It will cause issues if we change the styling
+                const top = Math.round(delta.y - 64);
+                component.addBox(item.id, left, top, item.component);
+            } else {
+                const delta = monitor.getDifferenceFromInitialOffset() as XYCoord;
+                const left = Math.round(item.left + delta.x);
+                const top = Math.round(item.top + delta.y);
+                component.moveBox(item.id, left, top);
+            }
         },
     },
     collect
