@@ -30,16 +30,16 @@ export default class Designer extends Component<IProps> {
     render() {
         return (
             <div>
-                <DndProvider backend={HTML5Backend}>
-                    <div className="designer">
+                <div className="designer">
+                    <DndProvider backend={HTML5Backend}>
                         <div className="designer__portfolio">
-                            <Portfolio />
+                            <Portfolio hideSourceOnDrag />
                         </div>
                         <div className="designer__widgets">
                             <Widgets />
                         </div>
-                    </div>
-                </DndProvider>
+                    </DndProvider>
+                </div>
 
                 <div className="designer-button-container">
                     <Button

@@ -6,6 +6,8 @@ import { Disposable } from 'custom-electron-titlebar/lib/common/lifecycle';
 import { Tabs, Button, Layout } from 'antd';
 import 'antd/dist/antd.css';
 import Widget from './Widget';
+import Demo from './TestWidget';
+import Demo2 from './TestWidget2';
 
 const { TabPane } = Tabs;
 const { Header, Content } = Layout;
@@ -40,27 +42,29 @@ export default class Widgets extends Component<IProps> {
                                 tab="Github"
                                 key="1"
                             >
+                                {/* <Widget />
                                 <Widget />
-                                <Widget />
-                                <Widget />
+                                <Widget /> */}
+                                <Demo id="bob" component={Demo} />
+                                <Demo2 id="bob2" component={Demo2} />
                             </TabPane>
                             <TabPane
                                 className="settings__tab--general"
                                 tab="Stream"
                                 key="2"
                             >
+                                {/* <Widget />
                                 <Widget />
-                                <Widget />
-                                <Widget />
+                                <Widget /> */}
                             </TabPane>
                             <TabPane
                                 className="settings__tab--general"
                                 tab="Reddit"
                                 key="3"
                             >
+                                {/* <Widget />
                                 <Widget />
-                                <Widget />
-                                <Widget />
+                                <Widget /> */}
                             </TabPane>
                         </Tabs>
                     </div>
