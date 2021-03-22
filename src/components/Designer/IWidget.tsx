@@ -22,6 +22,7 @@ export interface ExternalProps {
     left?: number;
     top?: number;
     hideSourceOnDrag?: boolean;
+    onWidgetList?: boolean;
 
     connectDragSource: ConnectDragSource;
     isDragging?: boolean;
@@ -55,11 +56,15 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
             any,
             string | React.JSXElementConstructor<any>
         > | null {
-            const { connectDragSource, left, top } = this.props;
+            const { isDragging } = this.props;
+            if (isDragging) {
+                return null;
+            }
+
+            const { connectDragSource, left, top, onWidgetList } = this.props;
+            const position = onWidgetList ? 'relative' : 'absolute';
             return connectDragSource(
-                <div
-                    style={{ left, top, position: 'absolute', color: 'black' }}
-                >
+                <div style={{ left, top, position, color: 'black' }}>
                     <Component {...this.props} />
                 </div>
             );

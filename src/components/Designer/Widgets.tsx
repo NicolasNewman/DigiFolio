@@ -45,8 +45,12 @@ export default class Widgets extends Component<IProps> {
                                 {/* <Widget />
                                 <Widget />
                                 <Widget /> */}
-                                <Demo id="bob" component={Demo} />
-                                <Demo2 id="bob2" component={Demo2} />
+                                <Demo id="bob" component={Demo} onWidgetList />
+                                <Demo2
+                                    id="bob2"
+                                    component={Demo2}
+                                    onWidgetList
+                                />
                             </TabPane>
                             <TabPane
                                 className="settings__tab--general"
