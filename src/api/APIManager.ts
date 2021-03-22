@@ -64,7 +64,7 @@ export default class APIManager {
 
         // ==== init GithubAPi ====
         const githubAPIObjct = dataStore.getAPIInfo(SchemaFields.githubAPI);
-        if (validateAPIObject(githubAPIObjct, ['username'])) {
+        if (validateAPIObject(githubAPIObjct, ['key'])) {
             this.apis[SchemaFields.githubAPI] = {
                 api: new GithubAPI(githubAPIObjct.username),
                 dispatch: (data: GithubData) =>
@@ -99,7 +99,11 @@ export default class APIManager {
             this.apis[api]?.dispatch(null);
             this.apis[api] = null;
             this.dataStore.set(api, {});
-        } else if (!apiInfo || !validateAPIObject(apiInfo, ['key'])) {
+        } else if (
+            !apiInfo ||
+            !validateAPIObject(apiInfo, ['key']) ||
+            apiInfo.key !== options.key
+        ) {
             // There is no record of the api existing
             console.log(
                 `The passed key is different from the saved key, updating`
