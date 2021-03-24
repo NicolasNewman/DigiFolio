@@ -42,7 +42,7 @@ export default class GithubAPI extends IAPI<GithubDataModel> {
 
     static async verify_username(name: string) {
         if (name.length === 0 || name.length > 39) return false;
-        if (/(?:(?![-]{2})[\w\d-])+/g.test(name) === false) return false;
+        if (/^(?:(?![-]{2})[\w\d-])+$/g.test(name) === false) return false;
         const url = `https://api.github.com/users/${name}`;
         console.log('response being fetched');
         const res = await fetch(url);
