@@ -261,6 +261,7 @@
     "yarn-deduplicate": "^3.1.0"
   },
   "dependencies": {
+    "@amcharts/amcharts4": "^4.10.17",
     "@fortawesome/fontawesome-free": "^5.15.1",
     "antd": "^4.9.4",
     "clone-deep": "^4.0.1",

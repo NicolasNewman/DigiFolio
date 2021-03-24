@@ -8,6 +8,7 @@ import 'antd/dist/antd.css';
 import Widget from './Widget';
 import Demo from '../widgets/TestWidget';
 import Demo2 from '../widgets/TestWidget2';
+import DemoChart from '../widgets/Tests/AmchartTest';
 
 const { TabPane } = Tabs;
 const { Header, Content } = Layout;
@@ -49,6 +50,11 @@ export default class Widgets extends Component<IProps> {
                                 <Demo2
                                     id="bob2"
                                     component={Demo2}
+                                    onWidgetList
+                                />
+                                <DemoChart
+                                    id="demo"
+                                    component={DemoChart}
                                     onWidgetList
                                 />
                             </TabPane>
