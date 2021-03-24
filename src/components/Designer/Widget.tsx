@@ -63,26 +63,3 @@ export default DragSource(
         isDragging: monitor.isDragging(),
     })
 )(Widget);
-
-// function Widget() {
-//     const [{ isDragging }, drag] = useDrag(() => ({
-//         type: ITEM_TYPE.WIDGET,
-//         collect: (monitor) => ({
-//             isDragging: !!monitor.isDragging(),
-//         }),
-//     }));
-
-//     return (
-//         <div
-//             className="widgetContainer"
-//             ref={drag}
-//             style={{
-//                 opacity: isDragging ? 0 : 1,
-//                 cursor: 'move',
-//             }}
-//         >
-//             Widget
-//         </div>
-//     );
-// }
-// export default Widget;

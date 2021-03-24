@@ -6,8 +6,8 @@ import { Disposable } from 'custom-electron-titlebar/lib/common/lifecycle';
 import { Tabs, Button, Layout } from 'antd';
 import 'antd/dist/antd.css';
 import Widget from './Widget';
-import Demo from './TestWidget';
-import Demo2 from './TestWidget2';
+import Demo from '../widgets/TestWidget';
+import Demo2 from '../widgets/TestWidget2';
 
 const { TabPane } = Tabs;
 const { Header, Content } = Layout;

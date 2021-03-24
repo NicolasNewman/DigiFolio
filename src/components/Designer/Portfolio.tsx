@@ -14,7 +14,7 @@ import {
 import update from 'immutability-helper';
 import Widget from './Widget';
 import { BoxDragItem } from '../../constants/types';
-import { WidgetComponentType } from './IWidget';
+import { WidgetComponentType } from '../widgets/IWidget';
 
 function collect(connect: DropTargetConnector, monitor: DropTargetMonitor) {
     return {
