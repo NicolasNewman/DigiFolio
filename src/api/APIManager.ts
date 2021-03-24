@@ -84,7 +84,7 @@ export default class APIManager {
         // }
 
         const apiInfo = this.dataStore.getAPIInfo(api);
-        let canCommit = true;
+        let canCommit = false;
 
         // console.log(`The currently saved key is: ${savedKey}`);
         if (
@@ -119,6 +119,8 @@ export default class APIManager {
                         if (!CatsAPI.verify_username(options.username)) {
                             message.error('The username is not valid');
                             canCommit = false;
+                        } else {
+                            canCommit = true;
                         }
 
                         if (canCommit) {
@@ -147,10 +149,19 @@ export default class APIManager {
                     break;
                 case SchemaFields.githubAPI:
                     if (options.key) {
-                        if (!GithubAPI.verify_username(options.key)) {
-                            message.error('The username is not valid');
+                        try {
+                            if (GithubAPI.verify_username(options.key)) {
+                                canCommit = true;
+                            } else {
+                                message.error('The username is not valid');
+                                canCommit = false;
+                            }
+                        } catch (err) {
+                            message.error('Username does not exist');
                             canCommit = false;
                         }
+
+                        console.log('canCommit is ', canCommit);
 
                         if (canCommit) {
                             this.apis[SchemaFields.githubAPI] = {

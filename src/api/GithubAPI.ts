@@ -40,22 +40,14 @@ export default class GithubAPI extends IAPI<GithubDataModel> {
         return temp;
     }
 
-    static verify_username(name: string) {
+    static async verify_username(name: string) {
         if (name.length === 0 || name.length > 39) return false;
         if (/(?:(?![-]{2})[\w\d-])+/g.test(name) === false) return false;
         const url = `https://api.github.com/users/${name}`;
         console.log('response being fetched');
-        // const res = fetch(url)
-        //     .then((result) => {
-        //         console.log('result is ', result);
-        //         return true;
-        //     })
-        //     .catch((err) => {
-        //         console.log('error is ', err);
-        //         return false;
-        //     });
-        // return res;
-        return true;
+        const res = await fetch(url);
+        console.log('returning ', res.status === 404);
+        return !(res.status === 404);
     }
 
     async fetch_user_info() {
