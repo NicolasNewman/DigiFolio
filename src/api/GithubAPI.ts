@@ -29,15 +29,16 @@ export default class GithubAPI extends IAPI<GithubDataModel> {
         return temp;
     }
 
-    static verify_username(name: string) {
+    static async verify_username(name: string) {
         if (name.length === 0 || name.length > 39) return false;
-        return /(?:(?![-]{2})[\w\d-])+/g.test(name);
-        // const url = `https://api.github.com/users/${name}`;
-        // const res = await fetch(url);
-        // if (res.message && res.message === 'Not Found') {
-        //     return false;
-        // }
-        // return true;
+        if (/(?:(?![-]{2})[\w\d-])+/g.test(name) === false) return false;
+        const url = `https://api.github.com/users/${name}`;
+        const res = await fetch(url);
+        const response = await res.json();
+        if (response.message && response.message === 'Not Found') {
+            return false;
+        }
+        return true;
     }
 
     async fetch_user_info() {
@@ -59,5 +60,12 @@ export default class GithubAPI extends IAPI<GithubDataModel> {
             `https://api.github.com/users/${this.username}/followers`
         );
         return followers;
+    }
+
+    async fetch_repo_commits(repo_id) {
+        const commits = await this.fetch(
+            `https://api.github.com/users/${this.username}/${repo_id}/commits`
+        );
+        return commits;
     }
 }
