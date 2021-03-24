@@ -179,7 +179,7 @@ export default class APIManager {
             }
 
             if (canCommit) {
-                this.dataStore.set(api, options);
+                this.dataStore.setAPIInfo(api, options);
                 message.success('Successfully updated API information');
             }
         } else {

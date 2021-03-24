@@ -1,8 +1,18 @@
-import { REPL_MODE_SLOPPY } from 'repl';
+import { APIInfo } from '../classes/DataStore';
 import IAPI from './IAPI';
 
+export interface GithubInfoModel {
+    avatar_url: string;
+    bio: string;
+    company: string;
+    created_at: string;
+    followers: string;
+    name: string;
+    public_repos: number;
+}
+
 export interface GithubDataModel {
-    info: any;
+    info: GithubInfoModel;
     repos: any;
     followers: any;
 }
@@ -21,6 +31,7 @@ export default class GithubAPI extends IAPI<GithubDataModel> {
     }
 
     async parse_api(): Promise<GithubDataModel> {
+        // const userInfo = await this.fetch_user_info();
         const temp: GithubDataModel = {
             info: await this.fetch_user_info(),
             repos: await this.fetch_user_repos(),

@@ -186,7 +186,8 @@ export default class Settings extends Component<IProps> {
                                 label="Username"
                                 inputRef={this.githubAPIUser}
                                 defaultVal={
-                                    this.githubAPIUser.current?.state.value
+                                    dataStore.getAPIInfo(SchemaFields.githubAPI)
+                                        .key
                                 }
                             />
                             <div className="button-container">
