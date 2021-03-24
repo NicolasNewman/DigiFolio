@@ -50,7 +50,7 @@ export default class GithubAPI extends IAPI<GithubDataModel> {
     }
 
     async fetch_user_info() {
-        const info = await this.fetch(
+        const info = await this.fetch<GithubInfoModel>(
             `https://api.github.com/users/${this.username}`
         );
         return info;
