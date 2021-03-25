@@ -5,7 +5,6 @@ import { Disposable } from 'custom-electron-titlebar/lib/common/lifecycle';
 // import DataStore from '../classes/DataStore';
 import { Tabs, Button, Layout } from 'antd';
 import 'antd/dist/antd.css';
-import Widget from './Widget';
 import Demo from './TestWidget';
 import Demo2 from './TestWidget2';
 

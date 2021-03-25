@@ -12,7 +12,6 @@ import {
     DropTargetConnector,
 } from 'react-dnd';
 import update from 'immutability-helper';
-import Widget from './Widget';
 import { BoxDragItem } from '../../constants/types';
 import { WidgetComponentType } from './IWidget';
 
@@ -72,8 +71,10 @@ class Portfolio extends Component<IProps, IState> {
     }
 
     render() {
+        // eslint-disable-next-line prettier/prettier
         const { hideSourceOnDrag, connectDropTarget, hovered } = this.props;
-        const backgroundColor = hovered ? '#F0F02D' : 'white';
+        //const backgroundColor = hovered ? '#F0F02D' : 'white';
+        const backgroundColor = hovered ? '0px 0px 40px black' : '';
         const { boxes } = this.state;
         return connectDropTarget(
             <div className="portfolio">
@@ -81,7 +82,7 @@ class Portfolio extends Component<IProps, IState> {
                     className="portfolio__page"
                     id="portfolio"
                     style={{
-                        background: backgroundColor,
+                        boxShadow: backgroundColor,
                         position: 'relative',
                     }}
                 >
