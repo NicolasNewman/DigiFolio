@@ -2,17 +2,18 @@ import { APIInfo } from '../classes/DataStore';
 import IAPI from './IAPI';
 
 export interface GithubInfoModel {
+    info: GithubInfoModel;
     avatar_url: string;
     bio: string;
     company: string;
     created_at: string;
     followers: string;
     name: string;
-    public_repos: number;
+    public_repos: Array<any>;
 }
 
 export interface GithubDataModel {
-    info: GithubInfoModel;
+    info: any;
     repos: any;
     followers: any;
 }
@@ -55,6 +56,38 @@ export default class GithubAPI extends IAPI<GithubDataModel> {
             `https://api.github.com/users/${this.username}`
         );
         return info;
+    }
+
+    async fetch_avatar_url() {
+        const res = await fetch(
+            `https://api.github.com/users/${this.username}`
+        );
+        const response = await res.json();
+        return response.avatar_url;
+    }
+
+    async fetch_user_bio() {
+        const res = await fetch(
+            `https://api.github.com/users/${this.username}`
+        );
+        const response = await res.json();
+        return response.bio;
+    }
+
+    async fetch_user_company() {
+        const res = await fetch(
+            `https://api.github.com/users/${this.username}`
+        );
+        const response = await res.json();
+        return response.company;
+    }
+
+    async fetch_created_at() {
+        const res = await fetch(
+            `https://api.github.com/users/${this.username}`
+        );
+        const response = await res.json();
+        return response.created_at;
     }
 
     async fetch_user_repos() {
