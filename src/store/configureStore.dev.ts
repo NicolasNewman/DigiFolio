@@ -5,6 +5,7 @@ import { routerMiddleware, routerActions } from 'connected-react-router';
 import { createLogger } from 'redux-logger';
 import createRootReducer from '../reducers';
 import * as catsapiActions from '../actions/catsapi';
+import * as githubapiActions from '../actions/githubapi';
 
 const history = createHashHistory();
 
@@ -36,6 +37,7 @@ const configureStore = (initialState?: any) => {
     // Redux DevTools Configuration
     const actionCreators = {
         ...catsapiActions,
+        ...githubapiActions,
         ...routerActions,
     };
     // If Redux DevTools Extension is installed use it, otherwise use Redux compose
