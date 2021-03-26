@@ -139,7 +139,7 @@ export default class Settings extends Component<IProps> {
                                             defaultVal={
                                                 dataStore.getAPIInfo(
                                                     SchemaFields.catsAPI
-                                                )?.key
+                                                )?.key || ''
                                             }
                                         />
                                         <InputLabel
@@ -148,7 +148,7 @@ export default class Settings extends Component<IProps> {
                                             defaultVal={
                                                 dataStore.getAPIInfo(
                                                     SchemaFields.catsAPI
-                                                )?.username
+                                                )?.username || ''
                                             }
                                         />
                                         <div className="button-container">
@@ -187,7 +187,7 @@ export default class Settings extends Component<IProps> {
                                 inputRef={this.githubAPIUser}
                                 defaultVal={
                                     dataStore.getAPIInfo(SchemaFields.githubAPI)
-                                        .key
+                                        ?.key || ''
                                 }
                             />
                             <div className="button-container">
