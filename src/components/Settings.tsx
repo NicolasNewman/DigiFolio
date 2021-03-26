@@ -91,7 +91,7 @@ export default class Settings extends Component<IProps> {
 
     steamAPIKey: React.RefObject<Input>;
 
-    steamAPIUser: React.RefObject<Input>;
+    steamID64: React.RefObject<Input>;
 
     constructor(props, history) {
         super(props);
@@ -99,7 +99,7 @@ export default class Settings extends Component<IProps> {
         this.catsAPIUser = React.createRef();
         this.githubAPIUser = React.createRef();
         this.steamAPIKey = React.createRef();
-        this.steamAPIUser = React.createRef();
+        this.steamID64 = React.createRef();
     }
 
     /**
@@ -211,14 +211,20 @@ export default class Settings extends Component<IProps> {
                             key="2"
                         >
                             <InputLabel
-                                label="API Key"
+                                label="Web API Key"
                                 inputRef={this.steamAPIKey}
-                                defaultVal=""
+                                defaultVal={
+                                    dataStore.getAPIInfo(SchemaFields.steamAPI)
+                                        ?.key || ''
+                                }
                             />
                             <InputLabel
-                                label="SteamID"
-                                inputRef={this.steamAPIUser}
-                                defaultVal=""
+                                label="SteamID64"
+                                inputRef={this.steamID64}
+                                defaultVal={
+                                    dataStore.getAPIInfo(SchemaFields.steamAPI)
+                                        ?.username || ''
+                                }
                             />
                             <div className="button-container">
                                 <Button
@@ -226,7 +232,7 @@ export default class Settings extends Component<IProps> {
                                         this.saveKeys(SchemaFields.steamAPI, {
                                             key: this.steamAPIKey.current?.state
                                                 .value,
-                                            username: this.steamAPIUser.current
+                                            username: this.steamID64.current
                                                 ?.state.value,
                                         })
                                     }

@@ -57,6 +57,10 @@ export default class DataStore {
                 type: 'object',
                 description: 'The object containing github key information',
             },
+            steamAPI: {
+                type: 'object',
+                description: 'The object containing steam key information',
+            },
             reduxSave: {
                 type: 'object',
                 description: 'The saved state of the redux store',

@@ -1,4 +1,4 @@
-import SteamAPIData from '../api/SteamAPI';
+import { SteamAPIData } from '../api/SteamAPI';
 
 export enum SteamAPITypeKeys {
     UPDATE = 'UPDATE_STEAM',
@@ -11,7 +11,7 @@ interface UpdateAction {
 
 export type SteamAPITypes = UpdateAction;
 
-export function updateCatsAPI(data: SteamAPIData) {
+export function updateSteamAPI(data: SteamAPIData) {
     return {
         type: SteamAPITypeKeys.UPDATE,
         data,

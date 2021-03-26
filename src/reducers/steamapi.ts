@@ -1,5 +1,5 @@
 import { SteamAPITypeKeys, SteamAPITypes } from '../actions/steamapi';
-import { SteamAPIData } from '../api/CatsAPI';
+import { SteamAPIData } from '../api/SteamAPI';
 
 const initialState: SteamAPIData = null;
 
