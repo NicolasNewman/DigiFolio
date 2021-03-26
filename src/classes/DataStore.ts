@@ -12,6 +12,7 @@ export enum SchemaFields {
     // steamAPIUser = 'steamAPIUser',
     catsAPI = 'catsAPI',
     githubAPI = 'githubAPI',
+    steamAPI = 'steamAPI',
 }
 
 /**

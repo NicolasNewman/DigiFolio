@@ -210,18 +210,31 @@ export default class Settings extends Component<IProps> {
                             tab="Steam"
                             key="2"
                         >
-                            {/* <InputLabel
+                            <InputLabel
                                 label="API Key"
                                 inputRef={this.steamAPIKey}
+                                defaultVal=""
                             />
                             <InputLabel
                                 label="SteamID"
                                 inputRef={this.steamAPIUser}
-                            /> */}
-                            {/* <div className="button-container">
-                                <Button onClick={this.saveKeys}>Save</Button>
+                                defaultVal=""
+                            />
+                            <div className="button-container">
+                                <Button
+                                    onClick={() =>
+                                        this.saveKeys(SchemaFields.steamAPI, {
+                                            key: this.steamAPIKey.current?.state
+                                                .value,
+                                            username: this.steamAPIUser.current
+                                                ?.state.value,
+                                        })
+                                    }
+                                >
+                                    Save
+                                </Button>
                                 <Button>Refresh Data</Button>
-                            </div> */}
+                            </div>
                         </TabPane>
                         <TabPane
                             className="settings__tab--api"
