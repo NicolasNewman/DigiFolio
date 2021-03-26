@@ -8,7 +8,7 @@ import { Button } from 'antd';
 import { LeftCircleOutlined } from '@ant-design/icons';
 import DataStore from '../classes/DataStore';
 import routes from '../constants/routes';
-import Portfolio from './Designer/Portfolio';
+import Portfolio from './designer/Portfolio';
 import Widgets from './Designer/Widgets';
 
 interface IProps extends RouteComponentProps<any> {

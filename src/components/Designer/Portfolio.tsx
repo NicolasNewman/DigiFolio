@@ -13,7 +13,7 @@ import {
 } from 'react-dnd';
 import update from 'immutability-helper';
 import { BoxDragItem } from '../../constants/types';
-import { WidgetComponentType } from './IWidget';
+import { WidgetComponentType } from '../widgets/IWidget';
 
 function collect(connect: DropTargetConnector, monitor: DropTargetMonitor) {
     return {
