@@ -10,6 +10,10 @@ export interface GithubInfoModel {
     public_repos: number;
 }
 
+interface GithubCommits {}
+
+export type GithubCommitsModel = GithubCommits[];
+
 interface GithubRepo {
     fork: boolean;
     created_at: string;
@@ -33,7 +37,7 @@ interface GithubRepo {
     url: string;
     branches_url: string;
     commits_url: string;
-    data_commits: any;
+    data_commits: GithubCommitsModel;
     contributors_url: string;
     forks_url: string;
     issues_url: string;
@@ -97,7 +101,9 @@ export default class GithubAPI extends IAPI<GithubDataModel> {
             this.filter_url(repos[0].branches_url)
         );
         console.log(branches);
-        const commits = await this.fetch(this.filter_url(repos[0].commits_url));
+        const commits = await this.fetch<GithubCommitsModel>(
+            this.filter_url(repos[0].commits_url)
+        );
         repos[0].data_commits = commits;
         return repos;
     }
