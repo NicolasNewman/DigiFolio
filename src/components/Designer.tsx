@@ -8,8 +8,8 @@ import { Button } from 'antd';
 import { LeftCircleOutlined } from '@ant-design/icons';
 import DataStore from '../classes/DataStore';
 import routes from '../constants/routes';
-import Portfolio from './Designer/Portfolio';
-import Widgets from './Designer/Widgets';
+import Portfolio from './designer/Portfolio';
+import Widgets from './designer/Widgets';
 
 interface IProps extends RouteComponentProps<any> {
     dataStore: DataStore;
@@ -30,16 +30,16 @@ export default class Designer extends Component<IProps> {
     render() {
         return (
             <div>
-                <DndProvider backend={HTML5Backend}>
-                    <div className="designer">
+                <div className="designer">
+                    <DndProvider backend={HTML5Backend}>
                         <div className="designer__portfolio">
-                            <Portfolio />
+                            <Portfolio hideSourceOnDrag />
                         </div>
                         <div className="designer__widgets">
                             <Widgets />
                         </div>
-                    </div>
-                </DndProvider>
+                    </DndProvider>
+                </div>
 
                 <div className="designer-button-container">
                     <Button
