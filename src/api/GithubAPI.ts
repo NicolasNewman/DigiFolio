@@ -31,7 +31,9 @@ interface GithubRepo {
     };
     private: boolean;
     url: string;
+    branches_url: string;
     commits_url: string;
+    data_commits: any;
     contributors_url: string;
     forks_url: string;
     issues_url: string;
@@ -55,6 +57,11 @@ export default class GithubAPI extends IAPI<GithubDataModel> {
             Accept: 'application/vnd.github.v3+json',
         });
         this.username = username;
+    }
+
+    private filter_url(url: string): string {
+        // replace {/foobar} from the string
+        return url.replace(/\{\/.*\}/g, '');
     }
 
     async parse_api(): Promise<GithubDataModel> {
@@ -86,6 +93,12 @@ export default class GithubAPI extends IAPI<GithubDataModel> {
         const repos = await this.fetch<GithubRepoModel>(
             `https://api.github.com/users/${this.username}/repos`
         );
+        const branches = await this.fetch(
+            this.filter_url(repos[0].branches_url)
+        );
+        console.log(branches);
+        const commits = await this.fetch(this.filter_url(repos[0].commits_url));
+        repos[0].data_commits = commits;
         return repos;
     }
 
