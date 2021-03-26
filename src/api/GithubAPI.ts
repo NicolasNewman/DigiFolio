@@ -12,12 +12,6 @@ export interface GithubInfoModel {
     public_repos: any;
 }
 
-// export interface GithubDataModel {
-//     info: any;
-//     repos: any;
-//     followers: any;
-// }
-
 export type GithubData = GithubInfoModel | null;
 
 export default class GithubAPI extends IAPI<GithubInfoModel> {
@@ -32,12 +26,6 @@ export default class GithubAPI extends IAPI<GithubInfoModel> {
     }
 
     async parse_api(): Promise<GithubInfoModel> {
-        // const userInfo = await this.fetch_user_info();
-        // const temp: GithubDataModel = {
-        //     info: await this.fetch_user_info(),
-        //     repos: await this.fetch_user_repos(),
-        //     followers: await this.fetch_user_followers(),
-        // };
         const temp: GithubInfoModel = {
             info: await this.fetch_user_info(),
             avatar_url: await this.fetch_avatar_url(),
