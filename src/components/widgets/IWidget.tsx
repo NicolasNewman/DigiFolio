@@ -11,6 +11,8 @@ import {
     DragSourceConnector,
     DragSourceMonitor,
 } from 'react-dnd';
+//import Portfolio from '../Designer/Portfolio';
+import { deleteBox } from '../Designer/Portfolio';
 
 export type WidgetComponentType =
     | React.ComponentClass<any>
@@ -30,6 +32,12 @@ export interface ExternalProps {
 
 interface Options {
     test?: string;
+}
+
+function handleRemove(id) {
+    // Remove widget from page
+    console.log(id);
+    deleteBox(id);
 }
 
 export const widgetFactory = ({ test = '' }: Options = {}) => <
@@ -61,11 +69,20 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
                 return null;
             }
 
-            const { connectDragSource, left, top, onWidgetList } = this.props;
+            const {
+                connectDragSource,
+                left,
+                top,
+                onWidgetList,
+                id,
+            } = this.props;
             const position = onWidgetList ? 'relative' : 'absolute';
             return connectDragSource(
                 <div style={{ left, top, position, color: 'black' }}>
                     <Component {...this.props} />
+                    <button type="button" onClick={() => handleRemove(id)}>
+                        remove
+                    </button>
                 </div>
             );
         }

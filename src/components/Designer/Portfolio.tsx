@@ -12,7 +12,9 @@ import {
     DropTargetConnector,
 } from 'react-dnd';
 import update from 'immutability-helper';
+// eslint-disable-next-line import/no-cycle
 import { BoxDragItem } from '../../constants/types';
+// eslint-disable-next-line import/no-cycle
 import { WidgetComponentType } from '../widgets/IWidget';
 
 function collect(connect: DropTargetConnector, monitor: DropTargetMonitor) {
@@ -40,6 +42,19 @@ interface IState {
     };
 }
 
+// export function deleteBox(this: any, id) {
+//     // Handle removal of a widget from the page
+//     this.setState(
+//         update(this.state, {
+//             boxes: {
+//                 $merge: {
+//                     [id]: undefined,
+//                 },
+//             },
+//         })
+//     );
+// }
+
 class Portfolio extends Component<IProps, IState> {
     props!: IProps;
 
@@ -64,6 +79,19 @@ class Portfolio extends Component<IProps, IState> {
                 boxes: {
                     $merge: {
                         [id]: { title: 'hi', left, top, component },
+                    },
+                },
+            })
+        );
+    }
+
+    deleteBox(id) {
+        // Handle removal of a widget from the page
+        this.setState(
+            update(this.state, {
+                boxes: {
+                    $merge: {
+                        [id]: undefined,
                     },
                 },
             })
