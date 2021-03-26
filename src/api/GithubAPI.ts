@@ -1,20 +1,52 @@
-import { APIInfo } from '../classes/DataStore';
 import IAPI from './IAPI';
 
 export interface GithubInfoModel {
-    info: GithubInfoModel;
     avatar_url: string;
     bio: string;
     company: string;
     created_at: string;
-    followers: any;
+    followers: string;
     name: string;
-    public_repos: any;
+    public_repos: number;
 }
 
-export type GithubData = GithubInfoModel | null;
+interface GithubRepo {
+    fork: boolean;
+    created_at: string;
+    default_branch: string;
+    description: string;
+    forks: number;
+    forks_count: number;
+    full_name: string;
+    languages: string;
+    license: {
+        key: string;
+        name: string;
+    };
+    name: string;
+    open_issues: number;
+    open_issues_count: number;
+    owner: {
+        login: string;
+    };
+    private: boolean;
+    url: string;
+    commits_url: string;
+    contributors_url: string;
+    forks_url: string;
+    issues_url: string;
+}
 
-export default class GithubAPI extends IAPI<GithubInfoModel> {
+export type GithubRepoModel = GithubRepo[];
+
+export interface GithubDataModel {
+    info: GithubInfoModel;
+    repos: GithubRepoModel;
+}
+
+export type GithubData = GithubDataModel | null;
+
+export default class GithubAPI extends IAPI<GithubDataModel> {
     private username: string;
 
     constructor(username: string) {
@@ -25,16 +57,10 @@ export default class GithubAPI extends IAPI<GithubInfoModel> {
         this.username = username;
     }
 
-    async parse_api(): Promise<GithubInfoModel> {
-        const temp: GithubInfoModel = {
+    async parse_api(): Promise<GithubDataModel> {
+        const temp: GithubDataModel = {
             info: await this.fetch_user_info(),
-            avatar_url: await this.fetch_avatar_url(),
-            bio: await this.fetch_user_bio(),
-            company: await this.fetch_user_company(),
-            created_at: await this.fetch_created_at(),
-            followers: await this.fetch_user_followers(),
-            name: await this.fetch_user_name(),
-            public_repos: await this.fetch_user_repos(),
+            repos: await this.fetch_user_repos(),
         };
         return temp;
     }
@@ -56,64 +82,78 @@ export default class GithubAPI extends IAPI<GithubInfoModel> {
         return info;
     }
 
-    async fetch_user_name() {
-        const res = await fetch(
-            `https://api.github.com/users/${this.username}`
-        );
-        const response = await res.json();
-        return response.name;
-    }
-
-    async fetch_avatar_url() {
-        const res = await fetch(
-            `https://api.github.com/users/${this.username}`
-        );
-        const response = await res.json();
-        return response.avatar_url;
-    }
-
-    async fetch_user_bio() {
-        const res = await fetch(
-            `https://api.github.com/users/${this.username}`
-        );
-        const response = await res.json();
-        return response.bio;
-    }
-
-    async fetch_user_company() {
-        const res = await fetch(
-            `https://api.github.com/users/${this.username}`
-        );
-        const response = await res.json();
-        return response.company;
-    }
-
-    async fetch_created_at() {
-        const res = await fetch(
-            `https://api.github.com/users/${this.username}`
-        );
-        const response = await res.json();
-        return response.created_at;
-    }
-
     async fetch_user_repos() {
-        const repos = await this.fetch(
+        const repos = await this.fetch<GithubRepoModel>(
             `https://api.github.com/users/${this.username}/repos`
         );
         return repos;
     }
 
-    async fetch_user_followers() {
-        const followers = await this.fetch(
-            `https://api.github.com/users/${this.username}/followers`
-        );
-        return followers;
-    }
+    // async fetch_user_info() {
+    //     const info = await this.fetch<GithubDataModel>(
+    //         `https://api.github.com/users/${this.username}`
+    //     );
+    //     return info;
+    // }
 
-    async fetch_repo_commits(repo_id) {
-        const commits = await this.fetch(
-            `https://api.github.com/users/${this.username}/${repo_id}/commits`
-        );
-        return commits;
-    }
+    // async fetch_user_name() {
+    //     const res = await fetch(
+    //         `https://api.github.com/users/${this.username}`
+    //     );
+    //     const response = await res.json();
+    //     return response.name;
+    // }
+
+    // async fetch_avatar_url() {
+    //     const res = await fetch(
+    //         `https://api.github.com/users/${this.username}`
+    //     );
+    //     const response = await res.json();
+    //     return response.avatar_url;
+    // }
+
+    // async fetch_user_bio() {
+    //     const res = await fetch(
+    //         `https://api.github.com/users/${this.username}`
+    //     );
+    //     const response = await res.json();
+    //     return response.bio;
+    // }
+
+    // async fetch_user_company() {
+    //     const res = await fetch(
+    //         `https://api.github.com/users/${this.username}`
+    //     );
+    //     const response = await res.json();
+    //     return response.company;
+    // }
+
+    // async fetch_created_at() {
+    //     const res = await fetch(
+    //         `https://api.github.com/users/${this.username}`
+    //     );
+    //     const response = await res.json();
+    //     return response.created_at;
+    // }
+
+    // async fetch_user_repos() {
+    //     const repos = await this.fetch(
+    //         `https://api.github.com/users/${this.username}/repos`
+    //     );
+    //     return repos;
+    // }
+
+    // async fetch_user_followers() {
+    //     const followers = await this.fetch(
+    //         `https://api.github.com/users/${this.username}/followers`
+    //     );
+    //     return followers;
+    // }
+
+    // async fetch_repo_commits(repo_id) {
+    //     const commits = await this.fetch(
+    //         `https://api.github.com/users/${this.username}/${repo_id}/commits`
+    //     );
+    //     return commits;
+    // }
 }
