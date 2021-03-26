@@ -36,11 +36,16 @@ export default abstract class IAPI<DM> {
      * @param url - the url of the route to request to
      * @param body - the data to be given through the request
      */
-    async fetch(url, body: { [key: string]: any }): Promise<any> {
-        let newURL = '';
-        Object.keys(body).forEach((key) => {
-            newURL = `${url}?${key}=${body[key]}`;
-        });
+    async fetch<T>(url, body?: { [key: string]: any }): Promise<T> {
+        console.log(url, this.opt);
+        let newURL = url;
+        if (body) {
+            newURL = '';
+            Object.keys(body).forEach((key) => {
+                newURL = `${url}?${key}=${body[key]}`;
+            });
+            console.log(newURL);
+        }
         const res = await fetch(newURL, this.opt);
         return res.json();
     }

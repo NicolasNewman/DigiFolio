@@ -1,3 +1,4 @@
+import { APIInfo } from '../classes/DataStore';
 import IAPI from './IAPI';
 
 export interface CatsAPIDataModel {

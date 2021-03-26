@@ -1,7 +1,7 @@
 import { CatsAPIData } from '../api/CatsAPI';
 
 export enum CatsAPITypeKeys {
-    UPDATE = 'UPDATE',
+    UPDATE = 'UPDATE_CATS',
 }
 
 interface UpdateAction {
