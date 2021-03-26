@@ -7,20 +7,20 @@ export interface GithubInfoModel {
     bio: string;
     company: string;
     created_at: string;
-    followers: string;
-    name: string;
-    public_repos: Array<any>;
-}
-
-export interface GithubDataModel {
-    info: any;
-    repos: any;
     followers: any;
+    name: string;
+    public_repos: any;
 }
 
-export type GithubData = GithubDataModel | null;
+// export interface GithubDataModel {
+//     info: any;
+//     repos: any;
+//     followers: any;
+// }
 
-export default class GithubAPI extends IAPI<GithubDataModel> {
+export type GithubData = GithubInfoModel | null;
+
+export default class GithubAPI extends IAPI<GithubInfoModel> {
     private username: string;
 
     constructor(username: string) {
@@ -31,12 +31,22 @@ export default class GithubAPI extends IAPI<GithubDataModel> {
         this.username = username;
     }
 
-    async parse_api(): Promise<GithubDataModel> {
+    async parse_api(): Promise<GithubInfoModel> {
         // const userInfo = await this.fetch_user_info();
-        const temp: GithubDataModel = {
+        // const temp: GithubDataModel = {
+        //     info: await this.fetch_user_info(),
+        //     repos: await this.fetch_user_repos(),
+        //     followers: await this.fetch_user_followers(),
+        // };
+        const temp: GithubInfoModel = {
             info: await this.fetch_user_info(),
-            repos: await this.fetch_user_repos(),
+            avatar_url: await this.fetch_avatar_url(),
+            bio: await this.fetch_user_bio(),
+            company: await this.fetch_user_company(),
+            created_at: await this.fetch_created_at(),
             followers: await this.fetch_user_followers(),
+            name: await this.fetch_user_name(),
+            public_repos: await this.fetch_user_repos(),
         };
         return temp;
     }
@@ -56,6 +66,14 @@ export default class GithubAPI extends IAPI<GithubDataModel> {
             `https://api.github.com/users/${this.username}`
         );
         return info;
+    }
+
+    async fetch_user_name() {
+        const res = await fetch(
+            `https://api.github.com/users/${this.username}`
+        );
+        const response = await res.json();
+        return response.name;
     }
 
     async fetch_avatar_url() {
