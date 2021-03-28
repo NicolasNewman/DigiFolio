@@ -16,30 +16,37 @@ export type WidgetComponentType =
     | React.ComponentClass<any>
     | React.FunctionComponent<any>;
 
-export interface ExternalProps {
+export interface ExternalProps<T> {
     id: any;
+    // data: T;
     component: WidgetComponentType;
     left?: number;
     top?: number;
     hideSourceOnDrag?: boolean;
+    data: T;
     onWidgetList?: boolean;
 
     connectDragSource: ConnectDragSource;
     isDragging?: boolean;
 }
 
+// export interface InjectedProps<T> {
+//     data: T;
+// }
+
 interface Options {
     test?: string;
 }
 
 export const widgetFactory = ({ test = '' }: Options = {}) => <
+    T,
     TOriginalProps extends {}
 >(
     Component:
         | React.ComponentClass<TOriginalProps>
         | React.FunctionComponent<TOriginalProps>
 ) => {
-    type ResultProps = TOriginalProps & ExternalProps;
+    type ResultProps = TOriginalProps & ExternalProps<T>;
 
     class Widget extends PureComponent<ResultProps> {
         props!: ResultProps;
@@ -57,6 +64,8 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
             string | React.JSXElementConstructor<any>
         > | null {
             const { isDragging } = this.props;
+            console.log('HOC RENDER');
+            // console.log(this.props.data);
             if (isDragging) {
                 return null;
             }
@@ -75,8 +84,22 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
         'widget',
         {
             beginDrag: (props: ResultProps) => {
-                const { id, left, top, component } = props;
-                return { id, left, top, component };
+                console.log('========== BEING DRAG ==========');
+                console.log(props);
+                const { id, left, top, component, data } = props;
+                return { id, left, top, component, data };
+            },
+            endDrag: (
+                props: ResultProps,
+                monitor: DragSourceMonitor,
+                component:
+                    | React.ComponentClass<TOriginalProps>
+                    | React.FunctionComponent<TOriginalProps>
+            ) => {
+                console.log('========== END DRAG ==========');
+                console.log(props);
+                console.log(monitor);
+                console.log(component);
             },
         },
         (connect: DragSourceConnector, monitor: DragSourceMonitor) => ({

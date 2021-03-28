@@ -28,6 +28,7 @@ interface IProps {
     hovered;
     hideSourceOnDrag: boolean;
     connectDropTarget: ConnectDropTarget;
+    updateActiveWidgets: (id: string, active: boolean) => void;
 }
 
 interface IState {
@@ -37,6 +38,7 @@ interface IState {
             left: number;
             title: string;
             component: WidgetComponentType;
+            data: any;
         };
     };
 }
@@ -59,16 +61,17 @@ class Portfolio extends Component<IProps, IState> {
         );
     }
 
-    addBox(id, left, top, component: WidgetComponentType) {
+    addBox(id, left, top, component: WidgetComponentType, data: any) {
         this.setState(
             update(this.state, {
                 boxes: {
                     $merge: {
-                        [id]: { title: 'hi', left, top, component },
+                        [id]: { title: 'hi', left, top, component, data },
                     },
                 },
             })
         );
+        this.props.updateActiveWidgets(id, true);
     }
 
     render() {
@@ -87,7 +90,9 @@ class Portfolio extends Component<IProps, IState> {
                 >
                     <p style={{ color: '#000000' }}>This is my page</p>
                     {Object.keys(boxes).map((key) => {
-                        const { left, top, title, component } = boxes[key];
+                        const { left, top, title, component, data } = boxes[
+                            key
+                        ];
                         const WidgetComponent = component;
                         return (
                             <WidgetComponent
@@ -96,6 +101,7 @@ class Portfolio extends Component<IProps, IState> {
                                 left={left}
                                 top={top}
                                 hideSourceOnDrag={hideSourceOnDrag}
+                                data={data}
                             />
                         );
                     })}
@@ -121,7 +127,7 @@ export default DropTarget(
                 const delta = monitor.getClientOffset() as XYCoord;
                 const left = Math.round(delta.x - 64); // TODO figure out where this value (64) comes from. It will cause issues if we change the styling
                 const top = Math.round(delta.y - 64);
-                component.addBox(item.id, left, top, item.component);
+                component.addBox(item.id, left, top, item.component, item.data);
             } else {
                 const delta = monitor.getDifferenceFromInitialOffset() as XYCoord;
                 const left = Math.round(item.left + delta.x);
