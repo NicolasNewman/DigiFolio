@@ -40,9 +40,9 @@ export default abstract class IAPI<DM> {
         console.log(url, this.opt);
         let newURL = url;
         if (body) {
-            newURL = '';
+            newURL += '?';
             Object.keys(body).forEach((key) => {
-                newURL = `${url}?${key}=${body[key]}`;
+                newURL = `${newURL}${key}=${body[key]}&`;
             });
             console.log(newURL);
         }
