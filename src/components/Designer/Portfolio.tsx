@@ -12,8 +12,9 @@ import {
     DropTargetConnector,
 } from 'react-dnd';
 import update from 'immutability-helper';
-import Widget from './Widget';
+// eslint-disable-next-line import/no-cycle
 import { BoxDragItem } from '../../constants/types';
+// eslint-disable-next-line import/no-cycle
 import { WidgetComponentType } from '../widgets/IWidget';
 
 function collect(connect: DropTargetConnector, monitor: DropTargetMonitor) {
@@ -43,6 +44,19 @@ interface IState {
     };
 }
 
+// export function deleteBox(this: any, id) {
+//     // Handle removal of a widget from the page
+//     this.setState(
+//         update(this.state, {
+//             boxes: {
+//                 $merge: {
+//                     [id]: undefined,
+//                 },
+//             },
+//         })
+//     );
+// }
+
 class Portfolio extends Component<IProps, IState> {
     props!: IProps;
 
@@ -54,6 +68,18 @@ class Portfolio extends Component<IProps, IState> {
             boxes: {},
         };
     }
+
+    deleteBox = (id: string) => {
+        // Handle removal of a widget from the page
+        this.setState(
+            update(this.state, {
+                boxes: {
+                    $unset: [id],
+                },
+            })
+        );
+        this.props.updateActiveWidgets(id, false);
+    };
 
     moveBox(id: string, left: number, top: number) {
         this.setState(
@@ -75,8 +101,10 @@ class Portfolio extends Component<IProps, IState> {
     }
 
     render() {
+        // eslint-disable-next-line prettier/prettier
         const { hideSourceOnDrag, connectDropTarget, hovered } = this.props;
-        const backgroundColor = hovered ? '#F0F02D' : 'white';
+        //const backgroundColor = hovered ? '#F0F02D' : 'white';
+        const backgroundColor = hovered ? '0px 0px 40px black' : '';
         const { boxes } = this.state;
         return connectDropTarget(
             <div className="portfolio">
@@ -84,7 +112,7 @@ class Portfolio extends Component<IProps, IState> {
                     className="portfolio__page"
                     id="portfolio"
                     style={{
-                        background: backgroundColor,
+                        boxShadow: backgroundColor,
                         position: 'relative',
                     }}
                 >
@@ -102,6 +130,7 @@ class Portfolio extends Component<IProps, IState> {
                                 top={top}
                                 hideSourceOnDrag={hideSourceOnDrag}
                                 data={data}
+                                delete={this.deleteBox}
                             />
                         );
                     })}

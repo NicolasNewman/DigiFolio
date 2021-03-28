@@ -1,3 +1,4 @@
+/* eslint-disable react/state-in-constructor */
 /* eslint-disable import/no-cycle */
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable @typescript-eslint/ban-types */
@@ -11,6 +12,16 @@ import {
     DragSourceConnector,
     DragSourceMonitor,
 } from 'react-dnd';
+import { CloseCircleOutlined } from '@ant-design/icons';
+//import Portfolio from '../Designer/Portfolio';
+// import { deleteBox } from '../Designer/Portfolio';
+
+const widgetStyle: React.CSSProperties = {
+    background: '#ddd',
+    border: '1px solid black',
+    borderRadius: '5px',
+    padding: '0.5rem',
+};
 
 export type WidgetComponentType =
     | React.ComponentClass<any>
@@ -23,6 +34,7 @@ export interface ExternalProps<T> {
     left?: number;
     top?: number;
     hideSourceOnDrag?: boolean;
+    delete?: (id: string) => void;
     data: T;
     onWidgetList?: boolean;
 
@@ -30,9 +42,9 @@ export interface ExternalProps<T> {
     isDragging?: boolean;
 }
 
-// export interface InjectedProps<T> {
-//     data: T;
-// }
+interface IState {
+    hover: boolean;
+}
 
 interface Options {
     test?: string;
@@ -48,8 +60,10 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
 ) => {
     type ResultProps = TOriginalProps & ExternalProps<T>;
 
-    class Widget extends PureComponent<ResultProps> {
+    class Widget extends React.Component<ResultProps, IState> {
         props!: ResultProps;
+
+        state: IState;
 
         static displayName = `Widget(${
             Component.displayName || Component.name
@@ -57,6 +71,9 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
 
         constructor(props: ResultProps) {
             super(props);
+            this.state = {
+                hover: false,
+            };
         }
 
         render(): React.ReactElement<
@@ -70,11 +87,41 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
                 return null;
             }
 
-            const { connectDragSource, left, top, onWidgetList } = this.props;
+            const {
+                connectDragSource,
+                left,
+                top,
+                onWidgetList,
+                id,
+            } = this.props;
             const position = onWidgetList ? 'relative' : 'absolute';
             return connectDragSource(
-                <div style={{ left, top, position, color: 'black' }}>
-                    <Component {...this.props} />
+                <div
+                    style={{
+                        left,
+                        top,
+                        position,
+                        color: 'black',
+                        ...widgetStyle,
+                    }}
+                    onMouseEnter={() => this.setState({ hover: true })}
+                    onMouseLeave={() => this.setState({ hover: false })}
+                >
+                    <div style={{ position: 'relative' }}>
+                        <Component {...this.props} />
+                        {!this.props.onWidgetList && this.state.hover ? (
+                            <CloseCircleOutlined
+                                onClick={() => {
+                                    if (this.props.delete) {
+                                        this.props.delete(this.props.id);
+                                    }
+                                }}
+                                className="btn-close"
+                            />
+                        ) : (
+                            <span />
+                        )}
+                    </div>
                 </div>
             );
         }
