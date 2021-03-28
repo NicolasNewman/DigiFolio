@@ -42,7 +42,9 @@ class ChartWidget extends PureComponent<IProps> {
         dateAxis.renderer.grid.template.location = 0;
 
         const valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
-        valueAxis.tooltip.disabled = true;
+        if (valueAxis.tooltip) {
+            valueAxis.tooltip.disabled = true;
+        }
         valueAxis.renderer.minWidth = 35;
 
         const series = chart.series.push(new am4charts.LineSeries());

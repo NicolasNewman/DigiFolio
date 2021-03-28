@@ -9,6 +9,7 @@ import Widget from './Widget';
 import Demo from '../widgets/TestWidget';
 import Demo2 from '../widgets/TestWidget2';
 import DemoChart from '../widgets/Tests/AmchartTest';
+import HeartChart from '../widgets/Tests/HeatMapWidget';
 
 const { TabPane } = Tabs;
 const { Header, Content } = Layout;
@@ -57,10 +58,15 @@ export default class Widgets extends Component<IProps> {
                                     component={DemoChart}
                                     onWidgetList
                                 />
+                                <HeartChart
+                                    id="heatmap"
+                                    component={HeartChart}
+                                    onWidgetList
+                                />
                             </TabPane>
                             <TabPane
                                 className="settings__tab--general"
-                                tab="Stream"
+                                tab="Steam"
                                 key="2"
                             >
                                 {/* <Widget />
