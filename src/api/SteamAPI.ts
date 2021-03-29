@@ -56,12 +56,15 @@ export interface SteamFriendsModel {
     }[];
 }
 
+export interface Temp {
+    bob: string;
+}
 /**
  * https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?key=XXX&steamid=XXX&include_appinfo=1&include_played_free_games=1
  *
  * @returns \{ response: SteamOwnedGamesModel }
  */
-export interface SteamLibraryModel {
+export interface SteamLibraryModel extends Temp {
     game_count: number;
     games: {
         appid: number; //need to reference this to make a string from it somehow
@@ -79,15 +82,17 @@ export interface SteamLibraryModel {
 /**
  * https://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v1/?key=XXX&steamid=XXX&appid=XXX
  *
- * @returns \{ playerstats: SteamGameSchema }
+ * @returns \{ playerstats: SteamPlayerAchievementsModel }
+ * @error \{ playerstats: { error: string, success: boolean } }
+ * @causes private profile
  */
 export interface SteamPlayerAchievementsModel {
     gameName: string;
     achievements: {
         apiname: string;
         achieved: boolean;
-        name: string;
-        description: string;
+        unlocktime: number;
+        // description: string;
     }[];
 }
 
@@ -182,5 +187,35 @@ export default class SteamAPI extends IAPI<SteamDataModel> {
         });
         //console.log(data);
         return data.response;
+    }
+
+    async fetch_player_achievement_for_game(appid: string) {
+        const data = await this.fetch<{
+            playerstats: SteamPlayerAchievementsModel;
+        }>(
+            'https://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v1/',
+            {
+                key: this.key,
+                steamid: this.username,
+                appid,
+            }
+        );
+
+        return data.playerstats;
+    }
+
+    async fetch_game_schema(appid: string) {
+        const data = await this.fetch<{
+            game: SteamGameSchema;
+        }>(
+            'https://api.steampowered.com/ISteamUserStats/GetSchemaForGame/v2/',
+            {
+                key: this.key,
+                steamid: this.username,
+                appid,
+            }
+        );
+
+        return data.game;
     }
 }
