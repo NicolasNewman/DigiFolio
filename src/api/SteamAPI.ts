@@ -14,6 +14,14 @@ export interface SteamDataModel {
     // library: SteamLibraryModel;
 }
 
+export type SteamAPIData = SteamDataModel | null;
+
+/**
+ * https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=XXX&steamids=XXX
+ *
+ * @returns \{ response: players: PlayerSummaryModel[] }
+ *
+ */
 export interface PlayerSummaryModel {
     //publicly available info
     steamid: number; //steamid64
@@ -28,39 +36,80 @@ export interface PlayerSummaryModel {
     realname: string;
     primaryclanid: number; //primary group on community profile
     timecreated: number; //account creation unix time
-    gameserverip: string; //ip + port of current steam matchmaking
-    gameextrainfo: string; //name of current game being played
-    loccountrycode: string; //2 char country code
-    locstatecode: string; //2 char state code
-    loccityid: number;
+    // gameserverip: string; //ip + port of current steam matchmaking
+    // gameextrainfo: string; //name of current game being played
+    loccountrycode?: string; //2 char country code
+    locstatecode?: string; //2 char state code
+    loccityid?: number;
 }
 
-export interface SteamFriendModel {
-    steamid: number; //steamid64
-    relationship: string;
-    friend_since: number; //unix time stamp
+/**
+ * https://api.steampowered.com/ISteamUser/GetFriendList/v1/?key=XXX&steamid=XXX
+ *
+ * @returns \{ friendslist: SteamFriendsModel }
+ */
+export interface SteamFriendsModel {
+    friends: {
+        steamid: number; //steamid64
+        relationship: string;
+        friend_since: number; //unix time stamp
+    }[];
 }
 
-type SteamFriendListModel = SteamFriendModel[];
-
+/**
+ * https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?key=XXX&steamid=XXX&include_appinfo=1&include_played_free_games=1
+ *
+ * @returns \{ response: SteamOwnedGamesModel }
+ */
 export interface SteamOwnedGamesModel {
     game_count: number;
-    games: SteamOwnedGameModel[];
+    games: {
+        appid: number; //need to reference this to make a string from it somehow
+        name: string;
+        playtime_forever: number; //total playtime
+        img_icon_url: string; //alphanum hash
+        img_logo_url: string; //alphanum hash (not whole url)
+        playtime_2weeks?: number; //playtime last 2 weeks (minutes)
+        playtime_windows_forever: number;
+        playtime_mac_forever: number;
+        playtime_linux_forever: number;
+    }[];
 }
 
-export interface SteamOwnedGameModel {
-    appid: number; //need to reference this to make a string from it somehow
-    name: string;
-    img_icon_url: string; //alphanum hash
-    img_logo_url: string; //alphanum hash (not whole url)
-    playtime_2weeks: number; //playtime last 2 weeks (minutes)
-    playtime_forever: number; //total playtime
-    playtime_windows_forever: number;
-    playtime_mac_forever: number;
-    playtime_linux_forever: number;
+/**
+ * https://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v1/?key=XXX&steamid=XXX&appid=XXX
+ *
+ * @returns \{ playerstats: SteamGameSchema }
+ */
+export interface SteamPlayerAchievementsModel {
+    gameName: string;
+    achievements: {
+        apiname: string;
+        achieved: boolean;
+        name: string;
+        description: string;
+    }[];
 }
 
-export type SteamAPIData = SteamDataModel | null;
+/**
+ * https://api.steampowered.com/ISteamUserStats/GetSchemaForGame/v2/?key=XXX&appid=XXX
+ *
+ * @returns \{ game: SteamGameSchema }
+ */
+export interface SteamGameSchema {
+    gameName: string;
+    gameVersion: string;
+    availableGameStats: {
+        achievements: {
+            name: string;
+            displayName: string;
+            description: string;
+            hidden: number;
+            icon: string;
+            iconGray: string;
+        }[];
+    };
+}
 
 export default class SteamAPI extends IAPI<SteamDataModel> {
     private key: string;
