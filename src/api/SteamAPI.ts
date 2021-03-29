@@ -9,17 +9,12 @@ const STEAM_ID64_SIZE = 17;
 
 export interface SteamDataModel {
     //info: SteamInfoModel;
-    user: SteamUserModel;
+    user: PlayerSummaryModel;
     // friends: SteamFriendModel[];
     // library: SteamLibraryModel;
 }
 
-// export interface SteamInfoModel {
-//     web_api_key: string;
-//     steamID64: string;
-// }
-
-export interface SteamUserModel {
+export interface PlayerSummaryModel {
     //publicly available info
     steamid: number; //steamid64
     personaname: string; //gamertag
@@ -46,12 +41,14 @@ export interface SteamFriendModel {
     friend_since: number; //unix time stamp
 }
 
-export interface SteamLibraryModel {
+type SteamFriendListModel = SteamFriendModel[];
+
+export interface SteamOwnedGamesModel {
     game_count: number;
-    games: SteamGameModel[];
+    games: SteamOwnedGameModel[];
 }
 
-export interface SteamGameModel {
+export interface SteamOwnedGameModel {
     appid: number; //need to reference this to make a string from it somehow
     name: string;
     img_icon_url: string; //alphanum hash
@@ -103,7 +100,7 @@ export default class SteamAPI extends IAPI<SteamDataModel> {
 
     async fetch_user() {
         const data = await this.fetch<{
-            response: { players: SteamUserModel[] };
+            response: { players: PlayerSummaryModel[] };
         }>( //how does this.fetch work exactly?
         `http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/`, {
             key: this.key,
