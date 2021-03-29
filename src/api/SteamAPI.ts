@@ -10,8 +10,8 @@ const STEAM_ID64_SIZE = 17;
 export interface SteamDataModel {
     //info: SteamInfoModel;
     user: PlayerSummaryModel;
-    // friends: SteamFriendModel[];
-    // library: SteamLibraryModel;
+    friends: SteamFriendModel[];
+    library: SteamLibraryModel;
 }
 
 export interface PlayerSummaryModel {
@@ -43,7 +43,7 @@ export interface SteamFriendModel {
 
 type SteamFriendListModel = SteamFriendModel[];
 
-export interface SteamOwnedGamesModel {
+export interface SteamLibraryModel {
     game_count: number;
     games: SteamOwnedGameModel[];
 }
@@ -53,7 +53,7 @@ export interface SteamOwnedGameModel {
     name: string;
     img_icon_url: string; //alphanum hash
     img_logo_url: string; //alphanum hash (not whole url)
-    playtime_2weeks: number; //playtime last 2 weeks (minutes)
+    playtime_2weeks?: number; //playtime last 2 weeks (minutes)
     playtime_forever: number; //total playtime
     playtime_windows_forever: number;
     playtime_mac_forever: number;
@@ -94,6 +94,8 @@ export default class SteamAPI extends IAPI<SteamDataModel> {
         const temp: SteamDataModel = {
             //info: await this.fetch_info(),
             user: await this.fetch_user(),
+            friends: await this.fetch_friends(),
+            library: await this.fetch_library(),
         };
         return temp;
     }
@@ -107,6 +109,30 @@ export default class SteamAPI extends IAPI<SteamDataModel> {
             steamids: this.username,
         });
         return data.response.players[0];
+    }
+
+    async fetch_friends() {
+        const data = await this.fetch<{
+            friendslist: { friends: SteamFriendModel[] };
+        }>( //how does this.fetch work exactly?
+        `http://api.steampowered.com/ISteamUser/GetFriendList/v0001/`, {
+            key: this.key,
+            steamid: this.username,
+            relationship: 'friend',
+        });
+        return data.friendslist.friends;
+    }
+
+    async fetch_library() {
+        const data = await this.fetch<{
+            response: SteamLibraryModel;
+        }>( //how does this.fetch work exactly?
+        `http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/`, {
+            key: this.key,
+            steamid: this.username,
+        });
+        //console.log(data);
+        return data.response;
     }
 }
 
