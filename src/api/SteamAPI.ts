@@ -10,8 +10,8 @@ const STEAM_ID64_SIZE = 17;
 export interface SteamDataModel {
     //info: SteamInfoModel;
     user: PlayerSummaryModel;
-    // friends: SteamFriendModel[];
-    // library: SteamLibraryModel;
+    friends: SteamFriendsModel;
+    library: SteamLibraryModel;
 }
 
 export type SteamAPIData = SteamDataModel | null;
@@ -61,7 +61,7 @@ export interface SteamFriendsModel {
  *
  * @returns \{ response: SteamOwnedGamesModel }
  */
-export interface SteamOwnedGamesModel {
+export interface SteamLibraryModel {
     game_count: number;
     games: {
         appid: number; //need to reference this to make a string from it somehow
@@ -143,6 +143,8 @@ export default class SteamAPI extends IAPI<SteamDataModel> {
         const temp: SteamDataModel = {
             //info: await this.fetch_info(),
             user: await this.fetch_user(),
+            friends: await this.fetch_friends(),
+            library: await this.fetch_library(),
         };
         return temp;
     }
@@ -157,56 +159,28 @@ export default class SteamAPI extends IAPI<SteamDataModel> {
         });
         return data.response.players[0];
     }
+
+    async fetch_friends() {
+        const data = await this.fetch<{
+            friendslist: SteamFriendsModel;
+        }>( //how does this.fetch work exactly?
+        `http://api.steampowered.com/ISteamUser/GetFriendList/v0001/`, {
+            key: this.key,
+            steamid: this.username,
+            relationship: 'friend',
+        });
+        return data.friendslist;
+    }
+
+    async fetch_library() {
+        const data = await this.fetch<{
+            response: SteamLibraryModel;
+        }>( //how does this.fetch work exactly?
+        `http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/`, {
+            key: this.key,
+            steamid: this.username,
+        });
+        //console.log(data);
+        return data.response;
+    }
 }
-
-// console.log('testing');
-// let something: SteamAPI = new SteamAPI(
-//     '0FEB75D2E33E3CBA12F80C0B33745137',
-//     '76561198175022679'
-// );
-// something.fetch_user();
-// console.log('persona name:');
-// console.log(something.data?.user.personaname);
-
-// const API_KEY_SIZE = 32;
-// const STEAM_ID64_SIZE = 17;
-
-// function verifySteamAPIKey(key) {
-//     if (typeof key !== 'string') {
-//         return false;
-//     }
-//     key = key.toUpperCase();
-//     if (key.length !== API_KEY_SIZE) {
-//         return false;
-//     }
-//     // eslint-disable-next-line no-plusplus
-//     for (let i = 0; i < API_KEY_SIZE; i++) {
-//         // eslint-disable-next-line use-isnan
-//         if (parseInt(key[i]) === NaN && !(key[i] >= 'A' && key[i] <= 'Z')) {
-//             //not alphanum
-//             return false;
-//         }
-//     }
-//     return true;
-// }
-
-// function verifySteamID64(id) {
-//     if (typeof id !== 'string') {
-//         return false;
-//     }
-//     if (id.length !== STEAM_ID64_SIZE) {
-//         return false;
-//     }
-//     // eslint-disable-next-line no-plusplus
-//     for (let i = 0; i < API_KEY_SIZE; i++) {
-//         // eslint-disable-next-line use-isnan
-//         if (parseInt(id[i]) === NaN) {
-//             //not number
-//             return false;
-//         }
-//     }
-//     //more code to check if the ID exists here
-//     //
-//     //
-//     return true;
-// }
