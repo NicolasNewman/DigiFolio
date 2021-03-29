@@ -13,4 +13,24 @@
 @import './less/components/_home.less';
 @import './less/components/_settings.less';
 @import './less/components/_designer.less';
-@import './less/components/_widget.less';
+
+.btn-close {
+    color: #333;
+    font-size: 1.4rem;
+    position: absolute;
+    // margin: 0.3rem;
+    top: -2%;
+    left: 95.5%;
+    transition: color 0.25s, transform 0.25s;
+    transform: scale(1);
+}
+
+.btn-close:hover {
+    color: #dc3545;
+    transform: scale(1.1);
+}
+
+.btn-close:active {
+    color: #b42634;
+    transform: scale(1);
+}

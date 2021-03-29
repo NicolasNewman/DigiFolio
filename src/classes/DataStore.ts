@@ -114,4 +114,10 @@ export default class DataStore {
     getAPIInfo = (api: SchemaFields): APIInfo => {
         return this.schema[api] ? this.store.get(api) : undefined;
     };
+
+    setAPIInfo = (api: SchemaFields, value: APIInfo) => {
+        // const reduxSave = this.get('reduxSave');
+        // reduxSave[api] = value;
+        this.store.set(api, value);
+    };
 }

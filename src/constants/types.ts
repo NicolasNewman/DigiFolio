@@ -6,4 +6,5 @@ export interface BoxDragItem {
     left: number;
     top: number;
     component: WidgetComponentType;
+    data: any;
 }
