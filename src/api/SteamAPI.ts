@@ -1,3 +1,6 @@
+/* eslint-disable no-continue */
+/* eslint-disable no-await-in-loop */
+/* eslint-disable no-plusplus */
 // type SteamAPIData = string | number;
 
 // export default SteamAPIData;
@@ -11,7 +14,7 @@ export interface SteamDataModel {
     //info: SteamInfoModel;
     user: PlayerSummaryModel;
     friends: SteamFriendsModel;
-    library: SteamLibraryModel;
+    library: SteamLibraryModelMerge;
 }
 
 export type SteamAPIData = SteamDataModel | null;
@@ -56,15 +59,12 @@ export interface SteamFriendsModel {
     }[];
 }
 
-export interface Temp {
-    bob: string;
-}
 /**
  * https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?key=XXX&steamid=XXX&include_appinfo=1&include_played_free_games=1
  *
  * @returns \{ response: SteamOwnedGamesModel }
  */
-export interface SteamLibraryModel extends Temp {
+export interface SteamLibraryModel {
     game_count: number;
     games: {
         appid: number; //need to reference this to make a string from it somehow
@@ -78,6 +78,21 @@ export interface SteamLibraryModel extends Temp {
         playtime_linux_forever: number;
     }[];
 }
+
+export type SteamLibraryModelMerge = {
+    games: {
+        achievements: {
+            achievement_id: string;
+            achievement_name: string;
+            achievement_description: string;
+            achievement_icon: string;
+            achievement_icon_gray: string;
+            achievement_hidden: number;
+            achievement_achieved: boolean;
+            unlocktime: number;
+        }[];
+    }[];
+} & SteamLibraryModel;
 
 /**
  * https://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v1/?key=XXX&steamid=XXX&appid=XXX
@@ -185,11 +200,64 @@ export default class SteamAPI extends IAPI<SteamDataModel> {
             key: this.key,
             steamid: this.username,
         });
+
+        const library: SteamLibraryModelMerge = data.response as SteamLibraryModelMerge;
+
+        // loop through each game
+        for (let i = 0; i < library.games.length; i++) {
+            const game = library.games[i];
+            game.achievements = [];
+
+            // get the player achievement data for that game
+            const playerAchievements = (
+                await this.fetch_player_achievement_for_game(game.appid)
+            ).achievements;
+            // console.log(playerAchievements);
+
+            // if the game has no achievements, skip
+            if (!playerAchievements) {
+                continue;
+            }
+
+            // get the global achievement data for that game
+            const gameSchema = (await this.fetch_game_schema(game.appid))
+                .availableGameStats.achievements;
+            // console.log(gameSchema);
+
+            // loop through each achievement in playerAchievements
+            for (let j = 0; j < playerAchievements.length; j++) {
+                // loop through each achievement in gameSchema
+                for (let k = 0; k < gameSchema.length; k++) {
+                    // if the two found objects have the same identifier
+                    // let k2 = (j + k) % playerAchievements.length;
+                    // console.log(playerAchievements[j]);
+                    // console.log(gameSchema[k]);
+                    if (playerAchievements[j].apiname === gameSchema[k].name) {
+                        // console.log('MATCH');
+                        // console.log(playerAchievements[j]);
+                        // console.log(gameSchema[k]);
+                        game.achievements.push({
+                            achievement_id: playerAchievements[j].apiname,
+                            achievement_name: gameSchema[k].displayName,
+                            achievement_description: gameSchema[k].description,
+                            achievement_icon: gameSchema[k].icon,
+                            achievement_icon_gray: gameSchema[k].iconGray,
+                            achievement_hidden: gameSchema[k].hidden,
+                            achievement_achieved:
+                                playerAchievements[j].achieved,
+                            unlocktime: playerAchievements[j].unlocktime,
+                        });
+                        break;
+                    }
+                }
+            }
+            library.games[i] = game;
+        }
         //console.log(data);
-        return data.response;
+        return library;
     }
 
-    async fetch_player_achievement_for_game(appid: string) {
+    async fetch_player_achievement_for_game(appid: number) {
         const data = await this.fetch<{
             playerstats: SteamPlayerAchievementsModel;
         }>(
@@ -204,7 +272,7 @@ export default class SteamAPI extends IAPI<SteamDataModel> {
         return data.playerstats;
     }
 
-    async fetch_game_schema(appid: string) {
+    async fetch_game_schema(appid: number) {
         const data = await this.fetch<{
             game: SteamGameSchema;
         }>(
