@@ -8,10 +8,10 @@ import { Tabs, Button, Layout } from 'antd';
 import 'antd/dist/antd.css';
 import Demo from '../widgets/TestWidget';
 import Demo2 from '../widgets/TestWidget2';
-import DemoChart from '../widgets/Tests/AmchartTest';
-import HeartChart from '../widgets/Tests/HeatMapWidget';
+import DemoChart from '../widgets/Tests/NivoTest';
 import GithubUserOverview from '../widgets/Github/GithubUserOverview';
 import { GithubData } from '../../api/GithubAPI';
+import { SteamAPIData } from '../../api/SteamAPI';
 
 const { TabPane } = Tabs;
 const { Header, Content } = Layout;
@@ -22,6 +22,7 @@ function callback(key) {
 
 interface IProps {
     github: GithubData;
+    steam: SteamAPIData;
     active: { [key: string]: boolean };
 }
 
@@ -48,18 +49,14 @@ export default class Widgets extends Component<IProps> {
             //     <span>Widget 1</span>
             // </div>
             <div className="widgetPanel">
-                <Header>
+                {/* <Header>
                     <p>Add New Widget!</p>
-                </Header>
+                </Header> */}
                 <Content>
                     <div className="widgetTabs">
                         <Tabs defaultActiveKey="1" onChange={callback}>
                             {this.props.github ? (
-                                <TabPane
-                                    className="settings__tab--api"
-                                    tab="Github"
-                                    key="1"
-                                >
+                                <TabPane className="" tab="Github" key="1">
                                     {/* <Widget />
                                 <Widget />
                                 <Widget /> */}
@@ -72,18 +69,6 @@ export default class Widgets extends Component<IProps> {
                                     <Demo2
                                         id="bob2"
                                         component={Demo2}
-                                        onWidgetList
-                                        data={[]}
-                                    />
-                                    <DemoChart
-                                        id="demo"
-                                        component={DemoChart}
-                                        onWidgetList
-                                        data={[]}
-                                    />
-                                    <HeartChart
-                                        id="heatmap"
-                                        component={HeartChart}
                                         onWidgetList
                                         data={[]}
                                     />
@@ -102,15 +87,23 @@ export default class Widgets extends Component<IProps> {
                             ) : (
                                 <span />
                             )}
-                            <TabPane
-                                className="settings__tab--general"
-                                tab="Steam"
-                                key="2"
-                            >
-                                {/* <Widget />
-                                <Widget />
-                                <Widget /> */}
-                            </TabPane>
+                            {this.props.steam ? (
+                                <TabPane className="" tab="Steam" key="2">
+                                    <WidgetEntry
+                                        component={
+                                            <DemoChart
+                                                id="demo"
+                                                component={DemoChart}
+                                                onWidgetList
+                                                data={this.props.steam.library}
+                                            />
+                                        }
+                                        active={this.props.active.demo}
+                                    />
+                                </TabPane>
+                            ) : (
+                                <span />
+                            )}
                             <TabPane
                                 className="settings__tab--general"
                                 tab="Reddit"

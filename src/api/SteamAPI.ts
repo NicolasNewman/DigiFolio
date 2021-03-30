@@ -199,8 +199,9 @@ export default class SteamAPI extends IAPI<SteamDataModel> {
         `http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/`, {
             key: this.key,
             steamid: this.username,
+            include_appinfo: 1,
+            include_played_free_games: 1,
         });
-
         const library: SteamLibraryModelMerge = data.response as SteamLibraryModelMerge;
 
         // loop through each game
