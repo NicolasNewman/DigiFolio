@@ -91,7 +91,7 @@ export default class Settings extends Component<IProps> {
 
     steamAPIKey: React.RefObject<Input>;
 
-    steamAPIUser: React.RefObject<Input>;
+    steamID64: React.RefObject<Input>;
 
     constructor(props, history) {
         super(props);
@@ -99,7 +99,7 @@ export default class Settings extends Component<IProps> {
         this.catsAPIUser = React.createRef();
         this.githubAPIUser = React.createRef();
         this.steamAPIKey = React.createRef();
-        this.steamAPIUser = React.createRef();
+        this.steamID64 = React.createRef();
     }
 
     /**
@@ -210,18 +210,37 @@ export default class Settings extends Component<IProps> {
                             tab="Steam"
                             key="2"
                         >
-                            {/* <InputLabel
-                                label="API Key"
+                            <InputLabel
+                                label="Web API Key"
                                 inputRef={this.steamAPIKey}
+                                defaultVal={
+                                    dataStore.getAPIInfo(SchemaFields.steamAPI)
+                                        ?.key || ''
+                                }
                             />
                             <InputLabel
-                                label="SteamID"
-                                inputRef={this.steamAPIUser}
-                            /> */}
-                            {/* <div className="button-container">
-                                <Button onClick={this.saveKeys}>Save</Button>
+                                label="SteamID64"
+                                inputRef={this.steamID64}
+                                defaultVal={
+                                    dataStore.getAPIInfo(SchemaFields.steamAPI)
+                                        ?.username || ''
+                                }
+                            />
+                            <div className="button-container">
+                                <Button
+                                    onClick={() =>
+                                        this.saveKeys(SchemaFields.steamAPI, {
+                                            key: this.steamAPIKey.current?.state
+                                                .value,
+                                            username: this.steamID64.current
+                                                ?.state.value,
+                                        })
+                                    }
+                                >
+                                    Save
+                                </Button>
                                 <Button>Refresh Data</Button>
-                            </div> */}
+                            </div>
                         </TabPane>
                         <TabPane
                             className="settings__tab--api"

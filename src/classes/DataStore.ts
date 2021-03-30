@@ -12,6 +12,7 @@ export enum SchemaFields {
     // steamAPIUser = 'steamAPIUser',
     catsAPI = 'catsAPI',
     githubAPI = 'githubAPI',
+    steamAPI = 'steamAPI',
 }
 
 /**
@@ -55,6 +56,10 @@ export default class DataStore {
             githubAPI: {
                 type: 'object',
                 description: 'The object containing github key information',
+            },
+            steamAPI: {
+                type: 'object',
+                description: 'The object containing steam key information',
             },
             reduxSave: {
                 type: 'object',
