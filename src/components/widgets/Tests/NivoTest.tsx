@@ -18,7 +18,6 @@ type IProps = ExternalProps<SteamLibraryModelMerge>;
 const ProgressLabels = ({ bars, yScale }) => {
     // space between top of stacked bars and total label
     const labelMargin = 20;
-    console.log(bars);
 
     return bars.map(({ data: { data, indexValue }, x, width }, i) => {
         const earned = data.earned ? data.earned : 0;

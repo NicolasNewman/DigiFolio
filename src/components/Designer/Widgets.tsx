@@ -10,7 +10,10 @@ import Demo from '../widgets/TestWidget';
 import Demo2 from '../widgets/TestWidget2';
 import DemoChart from '../widgets/Tests/NivoTest';
 import GithubUserOverview from '../widgets/Github/GithubUserOverview';
+
 import SteamProfileInfo from '../widgets/Steam/W_SteamProfileInfo';
+import SteamTopGames from '../widgets/Steam/W_TopPlayedGames';
+
 import { GithubData } from '../../api/GithubAPI';
 import { SteamAPIData } from '../../api/SteamAPI';
 
@@ -114,6 +117,19 @@ export default class Widgets extends Component<IProps> {
                                         }
                                         active={
                                             this.props.active.steam_profile_info
+                                        }
+                                    />
+                                    <WidgetEntry
+                                        component={
+                                            <SteamTopGames
+                                                id="steam_top_games"
+                                                component={SteamTopGames}
+                                                onWidgetList
+                                                data={this.props.steam.library}
+                                            />
+                                        }
+                                        active={
+                                            this.props.active.steam_top_games
                                         }
                                     />
                                 </TabPane>
