@@ -10,6 +10,7 @@ import Demo from '../widgets/TestWidget';
 import Demo2 from '../widgets/TestWidget2';
 import DemoChart from '../widgets/Tests/NivoTest';
 import GithubUserOverview from '../widgets/Github/GithubUserOverview';
+import SteamProfileInfo from '../widgets/Steam/W_SteamProfileInfo';
 import { GithubData } from '../../api/GithubAPI';
 import { SteamAPIData } from '../../api/SteamAPI';
 
@@ -31,7 +32,7 @@ const WidgetEntry: React.FC<{
     active: boolean;
 }> = (props) => {
     if (!props.active) {
-        return <div>{props.component}</div>;
+        return <div style={{ marginBottom: '1rem' }}>{props.component}</div>;
     }
     return <span />;
 };
@@ -92,13 +93,28 @@ export default class Widgets extends Component<IProps> {
                                     <WidgetEntry
                                         component={
                                             <DemoChart
-                                                id="demo"
+                                                id="steam_achievements"
                                                 component={DemoChart}
                                                 onWidgetList
                                                 data={this.props.steam.library}
                                             />
                                         }
-                                        active={this.props.active.demo}
+                                        active={
+                                            this.props.active.steam_achievements
+                                        }
+                                    />
+                                    <WidgetEntry
+                                        component={
+                                            <SteamProfileInfo
+                                                id="steam_profile_info"
+                                                component={SteamProfileInfo}
+                                                onWidgetList
+                                                data={this.props.steam.user}
+                                            />
+                                        }
+                                        active={
+                                            this.props.active.steam_profile_info
+                                        }
                                     />
                                 </TabPane>
                             ) : (
