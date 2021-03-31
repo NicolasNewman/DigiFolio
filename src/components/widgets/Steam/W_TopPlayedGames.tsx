@@ -70,6 +70,7 @@ class GithubUserOverview extends PureComponent<IProps> {
                     leavesOnly
                     margin={{ top: 10, right: 10, bottom: 10, left: 10 }}
                     labelSkipSize={12}
+                    // this can be safely ignored. It's an issue with the definition files for Nivo
                     label={(e) => {
                         return `${e.id}`;
                     }}
