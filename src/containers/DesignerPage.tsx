@@ -9,6 +9,7 @@ function mapStateToProps(state, ownProps) {
     return {
         dataStore: ownProps.dataStore,
         github: state.githubapi,
+        steam: state.steamapi,
     };
 }
 

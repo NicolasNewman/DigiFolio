@@ -3,8 +3,10 @@ import { message } from 'antd';
 import DataStore, { APIInfo, SchemaFields } from '../classes/DataStore';
 import CatsAPI, { CatsAPIData } from './CatsAPI';
 import GithubAPI, { GithubData } from './GithubAPI';
+import SteamAPI, { SteamAPIData } from './SteamAPI';
 import { updateCatsAPI } from '../actions/catsapi';
 import { updateGithubAPI } from '../actions/githubapi';
+import { updateSteamAPI } from '../actions/steamapi';
 
 const validateAPIObject = (
     obj: APIInfo,
@@ -34,6 +36,10 @@ export interface APIMap {
         api: GithubAPI;
         dispatch: (data: GithubData) => void;
     } | null;
+    [SchemaFields.steamAPI]: {
+        api: SteamAPI;
+        dispatch: (data: SteamAPIData) => void;
+    } | null;
 }
 
 export default class APIManager {
@@ -50,6 +56,7 @@ export default class APIManager {
         this.apis = {
             [SchemaFields.catsAPI]: null,
             [SchemaFields.githubAPI]: null,
+            [SchemaFields.steamAPI]: null,
         };
 
         // ===== init catsAPI =====
@@ -72,10 +79,20 @@ export default class APIManager {
             };
         }
 
+        // ==== init SteamAPI ====
+        const steamAPIObjct = dataStore.getAPIInfo(SchemaFields.steamAPI);
+        if (validateAPIObject(steamAPIObjct, ['key', 'username'])) {
+            this.apis[SchemaFields.steamAPI] = {
+                api: new SteamAPI(steamAPIObjct.key, steamAPIObjct.username),
+                dispatch: (data: SteamAPIData) =>
+                    this.reduxStore.dispatch(updateSteamAPI(data)),
+            };
+        }
+
         console.log(this.apis);
     }
 
-    updateKey(api: SchemaFields, options: APIInfo) {
+    updateKey(api: SchemaFields, options: APIInfo, forced: boolean) {
         // if (values.key && !this.apis[api]?.api.match_key(values.key)) {
         //     message.error(
         //         `Error: the key does not follow the proper format for ${api}`
@@ -84,7 +101,7 @@ export default class APIManager {
         // }
 
         const apiInfo = this.dataStore.getAPIInfo(api);
-        let canCommit = false;
+        let canCommit = true;
 
         // console.log(`The currently saved key is: ${savedKey}`);
         if (
@@ -102,11 +119,12 @@ export default class APIManager {
         } else if (
             !apiInfo ||
             !validateAPIObject(apiInfo, ['key']) ||
-            apiInfo.key !== options.key
+            apiInfo.key !== options.key ||
+            forced === true
         ) {
             // There is no record of the api existing
             console.log(
-                `The passed key is different from the saved key, updating`
+                `The passed key is different from the saved key (or foced update), updating`
             );
             console.log('api ', api);
             switch (api) {
@@ -185,6 +203,44 @@ export default class APIManager {
                         }
                     } else {
                         message.error('A username must be specified!');
+                        canCommit = false;
+                    }
+                    break;
+                case SchemaFields.steamAPI:
+                    if (options.key && options.username) {
+                        if (!SteamAPI.verify_key(options.key)) {
+                            message.error('Invalid Web API Key');
+                            canCommit = false;
+                        }
+                        if (!SteamAPI.verify_username(options.username)) {
+                            message.error('Invalid SteamID64');
+                            canCommit = false;
+                        }
+
+                        if (canCommit) {
+                            this.apis[SchemaFields.steamAPI] = {
+                                api: new SteamAPI(
+                                    options.key,
+                                    options.username
+                                ),
+                                dispatch: (data: SteamAPIData) =>
+                                    this.reduxStore.dispatch(
+                                        updateSteamAPI(data)
+                                    ),
+                            };
+                            this.apis[SchemaFields.steamAPI]?.api
+                                .parse_api()
+                                .then((data) => {
+                                    this.apis[SchemaFields.steamAPI]?.dispatch(
+                                        data
+                                    );
+                                    this.printState('State after parsing');
+                                });
+                        }
+                    } else {
+                        message.error(
+                            'Both a key and username must be specified!'
+                        );
                         canCommit = false;
                     }
                     break;
