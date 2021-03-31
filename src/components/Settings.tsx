@@ -105,11 +105,15 @@ export default class Settings extends Component<IProps> {
     /**
      * Saves or updates the keys specified by the API tab to the Electron data store
      */
-    saveKeys = (api: SchemaFields, options: APIInfo) => {
+    saveKeys = (api: SchemaFields, options: APIInfo, forced: boolean) => {
         if (options.key === '') {
-            this.props.apiManager.updateKey(api, { key: '', username: '' });
+            this.props.apiManager.updateKey(
+                api,
+                { key: '', username: '' },
+                forced
+            );
         } else {
-            this.props.apiManager.updateKey(api, options);
+            this.props.apiManager.updateKey(api, options, forced);
         }
     };
 
@@ -164,13 +168,32 @@ export default class Settings extends Component<IProps> {
                                                                 .catsAPIUser
                                                                 .current?.state
                                                                 .value,
-                                                        }
+                                                        },
+                                                        false
                                                     )
                                                 }
                                             >
                                                 Save
                                             </Button>
-                                            <Button>Refresh Data</Button>
+                                            <Button
+                                                onClick={() =>
+                                                    this.saveKeys(
+                                                        SchemaFields.catsAPI,
+                                                        {
+                                                            key: this.catsAPIKey
+                                                                .current?.state
+                                                                .value,
+                                                            username: this
+                                                                .catsAPIUser
+                                                                .current?.state
+                                                                .value,
+                                                        },
+                                                        true
+                                                    )
+                                                }
+                                            >
+                                                Refresh Data
+                                            </Button>
                                         </div>
                                     </TabPane>
                                 );
@@ -193,16 +216,34 @@ export default class Settings extends Component<IProps> {
                             <div className="button-container">
                                 <Button
                                     onClick={() =>
-                                        this.saveKeys(SchemaFields.githubAPI, {
-                                            key: this.githubAPIUser.current
-                                                ?.state.value,
-                                            username: '',
-                                        })
+                                        this.saveKeys(
+                                            SchemaFields.githubAPI,
+                                            {
+                                                key: this.githubAPIUser.current
+                                                    ?.state.value,
+                                                username: '',
+                                            },
+                                            false
+                                        )
                                     }
                                 >
                                     Save
                                 </Button>
-                                <Button>Refresh Data</Button>
+                                <Button
+                                    onClick={() =>
+                                        this.saveKeys(
+                                            SchemaFields.githubAPI,
+                                            {
+                                                key: this.githubAPIUser.current
+                                                    ?.state.value,
+                                                username: '',
+                                            },
+                                            true
+                                        )
+                                    }
+                                >
+                                    Refresh Data
+                                </Button>
                             </div>
                         </TabPane>
                         <TabPane
@@ -229,17 +270,36 @@ export default class Settings extends Component<IProps> {
                             <div className="button-container">
                                 <Button
                                     onClick={() =>
-                                        this.saveKeys(SchemaFields.steamAPI, {
-                                            key: this.steamAPIKey.current?.state
-                                                .value,
-                                            username: this.steamID64.current
-                                                ?.state.value,
-                                        })
+                                        this.saveKeys(
+                                            SchemaFields.steamAPI,
+                                            {
+                                                key: this.steamAPIKey.current
+                                                    ?.state.value,
+                                                username: this.steamID64.current
+                                                    ?.state.value,
+                                            },
+                                            false
+                                        )
                                     }
                                 >
                                     Save
                                 </Button>
-                                <Button>Refresh Data</Button>
+                                <Button
+                                    onClick={() =>
+                                        this.saveKeys(
+                                            SchemaFields.steamAPI,
+                                            {
+                                                key: this.steamAPIKey.current
+                                                    ?.state.value,
+                                                username: this.steamID64.current
+                                                    ?.state.value,
+                                            },
+                                            true
+                                        )
+                                    }
+                                >
+                                    Refresh Data
+                                </Button>
                             </div>
                         </TabPane>
                         <TabPane
