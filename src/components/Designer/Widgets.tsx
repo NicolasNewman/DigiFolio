@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import * as React from 'react';
 import { Component, useRef } from 'react';
 import { RouteComponentProps } from 'react-router';
@@ -5,9 +6,12 @@ import { Disposable } from 'custom-electron-titlebar/lib/common/lifecycle';
 // import DataStore from '../classes/DataStore';
 import { Tabs, Button, Layout } from 'antd';
 import 'antd/dist/antd.css';
-import Widget from './Widget';
 import Demo from '../widgets/TestWidget';
 import Demo2 from '../widgets/TestWidget2';
+import DemoChart from '../widgets/Tests/NivoTest';
+import GithubUserOverview from '../widgets/Github/GithubUserOverview';
+import { GithubData } from '../../api/GithubAPI';
+import { SteamAPIData } from '../../api/SteamAPI';
 
 const { TabPane } = Tabs;
 const { Header, Content } = Layout;
@@ -16,7 +20,21 @@ function callback(key) {
     console.log(key);
 }
 
-interface IProps {}
+interface IProps {
+    github: GithubData;
+    steam: SteamAPIData;
+    active: { [key: string]: boolean };
+}
+
+const WidgetEntry: React.FC<{
+    component: React.ReactNode;
+    active: boolean;
+}> = (props) => {
+    if (!props.active) {
+        return <div>{props.component}</div>;
+    }
+    return <span />;
+};
 
 export default class Widgets extends Component<IProps> {
     props!: IProps;
@@ -31,36 +49,61 @@ export default class Widgets extends Component<IProps> {
             //     <span>Widget 1</span>
             // </div>
             <div className="widgetPanel">
-                <Header>
+                {/* <Header>
                     <p>Add New Widget!</p>
-                </Header>
+                </Header> */}
                 <Content>
                     <div className="widgetTabs">
                         <Tabs defaultActiveKey="1" onChange={callback}>
-                            <TabPane
-                                className="settings__tab--api"
-                                tab="Github"
-                                key="1"
-                            >
-                                {/* <Widget />
+                            {this.props.github ? (
+                                <TabPane className="" tab="Github" key="1">
+                                    {/* <Widget />
                                 <Widget />
                                 <Widget /> */}
-                                <Demo id="bob" component={Demo} onWidgetList />
-                                <Demo2
-                                    id="bob2"
-                                    component={Demo2}
-                                    onWidgetList
-                                />
-                            </TabPane>
-                            <TabPane
-                                className="settings__tab--general"
-                                tab="Stream"
-                                key="2"
-                            >
-                                {/* <Widget />
-                                <Widget />
-                                <Widget /> */}
-                            </TabPane>
+                                    <Demo
+                                        id="bob"
+                                        component={Demo}
+                                        onWidgetList
+                                        data={[]}
+                                    />
+                                    <Demo2
+                                        id="bob2"
+                                        component={Demo2}
+                                        onWidgetList
+                                        data={[]}
+                                    />
+                                    <WidgetEntry
+                                        component={
+                                            <GithubUserOverview
+                                                id="UserOverview"
+                                                component={GithubUserOverview}
+                                                onWidgetList
+                                                data={this.props.github.info}
+                                            />
+                                        }
+                                        active={this.props.active.UserOverview}
+                                    />
+                                </TabPane>
+                            ) : (
+                                <span />
+                            )}
+                            {this.props.steam ? (
+                                <TabPane className="" tab="Steam" key="2">
+                                    <WidgetEntry
+                                        component={
+                                            <DemoChart
+                                                id="demo"
+                                                component={DemoChart}
+                                                onWidgetList
+                                                data={this.props.steam.library}
+                                            />
+                                        }
+                                        active={this.props.active.demo}
+                                    />
+                                </TabPane>
+                            ) : (
+                                <span />
+                            )}
                             <TabPane
                                 className="settings__tab--general"
                                 tab="Reddit"

@@ -5,8 +5,11 @@ import Designer from '../components/Designer';
 import CounterActions from '../actions/counter';
 
 function mapStateToProps(state, ownProps) {
+    console.log(state);
     return {
         dataStore: ownProps.dataStore,
+        github: state.githubapi,
+        steam: state.steamapi,
     };
 }
 
