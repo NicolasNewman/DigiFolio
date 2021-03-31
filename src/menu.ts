@@ -234,33 +234,34 @@ export default class MenuBuilder {
 
     buildDefaultTemplate() {
         const saveClickHandler = () => {
-            dialog
-                .showSaveDialog({
-                    title: 'Select the File Path to save',
-                    defaultPath: join(__dirname, '../assets/sample.txt'),
-                    // defaultPath: path.join(__dirname, '../assets/'),
-                    buttonLabel: 'Save',
-                    // Restricting the user to only Text Files.
-                    filters: [
-                        {
-                            name: '.difo Files',
-                            extensions: ['txt', 'docx'],
-                        },
-                    ],
-                    properties: [],
-                })
-                .then((file) => {
-                    if (!file.canceled && file.filePath) {
-                        this.mainWindow.webContents.send(
-                            'save-as',
-                            file.filePath,
-                            basename(file.filePath)
-                        );
-                    }
-                })
-                .catch((err) => {
-                    ipcRenderer.send('error', err);
-                });
+            // dialog
+            //     .showSaveDialog({
+            //         title: 'Select the File Path to save',
+            //         defaultPath: join(__dirname, '../assets/sample.txt'),
+            //         // defaultPath: path.join(__dirname, '../assets/'),
+            //         buttonLabel: 'Save',
+            //         // Restricting the user to only Text Files.
+            //         filters: [
+            //             {
+            //                 name: '.difo Files',
+            //                 extensions: ['txt', 'docx'],
+            //             },
+            //         ],
+            //         properties: [],
+            //     })
+            //     .then((file) => {
+            //         if (!file.canceled && file.filePath) {
+            //             this.mainWindow.webContents.send(
+            //                 'save-as',
+            //                 file.filePath,
+            //                 basename(file.filePath)
+            //             );
+            //         }
+            //     })
+            //     .catch((err) => {
+            //         ipcRenderer.send('error', err);
+            //     });
+            this.mainWindow.webContents.send('save-as', 'temp', 'temp');
         };
 
         const createNewPortfolio = () => {
@@ -272,33 +273,38 @@ export default class MenuBuilder {
         };
 
         const exportClickHandler = () => {
-            dialog
-                .showSaveDialog({
-                    title: 'Select the File Path to export',
-                    defaultPath: join(__dirname, '../assets/sample.txt'),
-                    // defaultPath: path.join(__dirname, '../assets/'),
-                    buttonLabel: 'Export',
-                    // Restricting the user to only Text Files.
-                    filters: [
-                        {
-                            name: '.pdf Files',
-                            extensions: ['pdf'],
-                        },
-                    ],
-                    properties: [],
-                })
-                .then((file) => {
-                    if (!file.canceled && file.filePath) {
-                        this.mainWindow.webContents.send(
-                            'save-as',
-                            file.filePath,
-                            basename(file.filePath)
-                        );
-                    }
-                })
-                .catch((err) => {
-                    ipcRenderer.send('error', err);
-                });
+            // dialog
+            //     .showSaveDialog({
+            //         title: 'Select the File Path to export',
+            //         defaultPath: join(__dirname, '../assets/sample.txt'),
+            //         // defaultPath: path.join(__dirname, '../assets/'),
+            //         buttonLabel: 'Export',
+            //         // Restricting the user to only Text Files.
+            //         filters: [
+            //             {
+            //                 name: '.pdf Files',
+            //                 extensions: ['pdf'],
+            //             },
+            //         ],
+            //         properties: [],
+            //     })
+            //     .then((file) => {
+            //         if (!file.canceled && file.filePath) {
+            //             this.mainWindow.webContents.send(
+            //                 'save-as',
+            //                 file.filePath,
+            //                 basename(file.filePath)
+            //             );
+            //         }
+            //     })
+            //     .catch((err) => {
+            //         ipcRenderer.send('error', err);
+            //     });
+            this.mainWindow.webContents.send(
+                'save-as',
+                'blah',
+                basename('blah')
+            );
         };
 
         const templateDefault = [
