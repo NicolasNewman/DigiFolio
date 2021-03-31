@@ -149,19 +149,18 @@ export default class APIManager {
                     break;
                 case SchemaFields.githubAPI:
                     if (options.key) {
-                        try {
-                            if (GithubAPI.verify_username(options.key)) {
-                                canCommit = true;
-                            } else {
-                                message.error('The username is not valid');
-                                canCommit = false;
-                            }
-                        } catch (err) {
-                            message.error('Username does not exist');
+                        const usernameVerified = GithubAPI.verify_username(
+                            options.key
+                        );
+
+                        console.log('username_verified is ', usernameVerified);
+
+                        if (usernameVerified) {
+                            canCommit = true;
+                        } else {
+                            message.error('The username is not valid');
                             canCommit = false;
                         }
-
-                        console.log('canCommit is ', canCommit);
 
                         if (canCommit) {
                             this.apis[SchemaFields.githubAPI] = {
@@ -178,6 +177,10 @@ export default class APIManager {
                                         data
                                     );
                                     this.printState('State after parsing...');
+                                })
+                                .catch((err) => {
+                                    console.log(err);
+                                    canCommit = false;
                                 });
                         }
                     } else {
