@@ -1,3 +1,4 @@
+import { message } from 'antd';
 import IAPI from './IAPI';
 
 export interface GithubInfoModel {
@@ -10,7 +11,15 @@ export interface GithubInfoModel {
     public_repos: number;
 }
 
-interface GithubCommits {}
+interface GithubCommits {
+    commit: {
+        author: {
+            name: string;
+            date: string;
+        };
+        message: string;
+    };
+}
 
 export type GithubCommitsModel = GithubCommits[];
 
@@ -55,12 +64,15 @@ export type GithubData = GithubDataModel | null;
 export default class GithubAPI extends IAPI<GithubDataModel> {
     private username: string;
 
+    private map: Map<string, number>;
+
     constructor(username: string) {
         super({
             'Content-Type': 'application/json',
             Accept: 'application/vnd.github.v3+json',
         });
         this.username = username;
+        this.map = new Map<string, number>();
     }
 
     private filter_url(url: string): string {
@@ -76,14 +88,15 @@ export default class GithubAPI extends IAPI<GithubDataModel> {
         return temp;
     }
 
-    static async verify_username(name: string) {
+    static verify_username(name: string) {
         if (name.length === 0 || name.length > 39) return false;
-        if (/^(?:(?![-]{2})[\w\d-])+$/g.test(name) === false) return false;
-        const url = `https://api.github.com/users/${name}`;
-        console.log('response being fetched');
-        const res = await fetch(url);
-        console.log('returning ', res.status === 404);
-        return !(res.status === 404);
+        const re = /^[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}$/i;
+        console.log('checking regex');
+        const found = name.match(re);
+        console.log('found ', found);
+        if (found === null || found === undefined) return false;
+        console.log('returning true');
+        return true;
     }
 
     async fetch_user_info() {
@@ -97,82 +110,18 @@ export default class GithubAPI extends IAPI<GithubDataModel> {
         const repos = await this.fetch<GithubRepoModel>(
             `https://api.github.com/users/${this.username}/repos`
         );
-        const branches = await this.fetch(
-            this.filter_url(repos[0].branches_url)
-        );
-        console.log(branches);
-        const commits = await this.fetch<GithubCommitsModel>(
-            this.filter_url(repos[0].commits_url)
-        );
-        repos[0].data_commits = commits;
+
+        try {
+            repos.forEach(async (repo) => {
+                const commits = await this.fetch<GithubCommitsModel>(
+                    this.filter_url(repo.commits_url)
+                );
+                repo.data_commits = commits;
+            });
+        } catch {
+            message.error('Username does not exist');
+            throw new Error('Username does not Exist');
+        }
         return repos;
     }
-
-    // async fetch_user_info() {
-    //     const info = await this.fetch<GithubDataModel>(
-    //         `https://api.github.com/users/${this.username}`
-    //     );
-    //     return info;
-    // }
-
-    // async fetch_user_name() {
-    //     const res = await fetch(
-    //         `https://api.github.com/users/${this.username}`
-    //     );
-    //     const response = await res.json();
-    //     return response.name;
-    // }
-
-    // async fetch_avatar_url() {
-    //     const res = await fetch(
-    //         `https://api.github.com/users/${this.username}`
-    //     );
-    //     const response = await res.json();
-    //     return response.avatar_url;
-    // }
-
-    // async fetch_user_bio() {
-    //     const res = await fetch(
-    //         `https://api.github.com/users/${this.username}`
-    //     );
-    //     const response = await res.json();
-    //     return response.bio;
-    // }
-
-    // async fetch_user_company() {
-    //     const res = await fetch(
-    //         `https://api.github.com/users/${this.username}`
-    //     );
-    //     const response = await res.json();
-    //     return response.company;
-    // }
-
-    // async fetch_created_at() {
-    //     const res = await fetch(
-    //         `https://api.github.com/users/${this.username}`
-    //     );
-    //     const response = await res.json();
-    //     return response.created_at;
-    // }
-
-    // async fetch_user_repos() {
-    //     const repos = await this.fetch(
-    //         `https://api.github.com/users/${this.username}/repos`
-    //     );
-    //     return repos;
-    // }
-
-    // async fetch_user_followers() {
-    //     const followers = await this.fetch(
-    //         `https://api.github.com/users/${this.username}/followers`
-    //     );
-    //     return followers;
-    // }
-
-    // async fetch_repo_commits(repo_id) {
-    //     const commits = await this.fetch(
-    //         `https://api.github.com/users/${this.username}/${repo_id}/commits`
-    //     );
-    //     return commits;
-    // }
 }
