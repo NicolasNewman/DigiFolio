@@ -11,6 +11,7 @@ import Demo2 from '../widgets/TestWidget2';
 import DemoChart from '../widgets/Tests/NivoTest';
 import GithubUserOverview from '../widgets/Github/GithubUserOverview';
 import SteamProfileInfo from '../widgets/Steam/W_SteamProfileInfo';
+import SteamFriendsInfo from '../widgets/Steam/W_SteamFriendsInfo';
 import { GithubData } from '../../api/GithubAPI';
 import { SteamAPIData } from '../../api/SteamAPI';
 
@@ -114,6 +115,19 @@ export default class Widgets extends Component<IProps> {
                                         }
                                         active={
                                             this.props.active.steam_profile_info
+                                        }
+                                    />
+                                    <WidgetEntry
+                                        component={
+                                            <SteamFriendsInfo
+                                                id="steam_friends_info"
+                                                component={SteamFriendsInfo}
+                                                onWidgetList
+                                                data={this.props.steam.friends}
+                                            />
+                                        }
+                                        active={
+                                            this.props.active.steam_friends_info
                                         }
                                     />
                                 </TabPane>
