@@ -18,14 +18,13 @@ export default class IpcInterface {
         ipcRenderer.on('save-as', (e, path, filename) => {
             const portfolio = document.getElementById('portfolio');
             if (portfolio) {
-                html2canvas(portfolio)
+                html2canvas(portfolio, { useCORS: true })
                     .then((canvas) => {
                         const imgData = canvas.toDataURL('image/png');
                         // eslint-disable-next-line new-cap
                         const pdf = new jsPDF('p', 'in');
                         pdf.addImage(imgData, 'JPEG', 0, 0, 8.5, 11);
-                        console.log(path);
-                        pdf.save(path);
+                        pdf.save('Portfolio.pdf');
                     })
                     .catch((err) => {
                         //TODO handle error
