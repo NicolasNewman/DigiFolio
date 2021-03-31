@@ -64,12 +64,15 @@ export type GithubData = GithubDataModel | null;
 export default class GithubAPI extends IAPI<GithubDataModel> {
     private username: string;
 
+    private map: Map<string, number>;
+
     constructor(username: string) {
         super({
             'Content-Type': 'application/json',
             Accept: 'application/vnd.github.v3+json',
         });
         this.username = username;
+        this.map = new Map<string, number>();
     }
 
     private filter_url(url: string): string {
