@@ -92,7 +92,7 @@ export default class APIManager {
         console.log(this.apis);
     }
 
-    updateKey(api: SchemaFields, options: APIInfo) {
+    updateKey(api: SchemaFields, options: APIInfo, forced: boolean) {
         // if (values.key && !this.apis[api]?.api.match_key(values.key)) {
         //     message.error(
         //         `Error: the key does not follow the proper format for ${api}`
@@ -119,11 +119,12 @@ export default class APIManager {
         } else if (
             !apiInfo ||
             !validateAPIObject(apiInfo, ['key']) ||
-            apiInfo.key !== options.key
+            apiInfo.key !== options.key ||
+            forced === true
         ) {
             // There is no record of the api existing
             console.log(
-                `The passed key is different from the saved key, updating`
+                `The passed key is different from the saved key (or foced update), updating`
             );
             console.log('api ', api);
             switch (api) {
