@@ -12,7 +12,7 @@ const STEAM_ID64_SIZE = 17;
 
 export interface SteamDataModel {
     //info: SteamInfoModel;
-    user: PlayerSummaryModel;
+    user: PlayerSummaryModelMerge;
     friends: SteamFriendsModel;
     library: SteamLibraryModelMerge;
 }
@@ -44,6 +44,19 @@ export interface PlayerSummaryModel {
     loccountrycode?: string; //2 char country code
     locstatecode?: string; //2 char state code
     loccityid?: number;
+}
+
+export type PlayerSummaryModelMerge = PlayerSummaryModel &
+    SteamPlayerLevelModel;
+
+/**
+ * https://api.steampowered.com/IPlayerService/GetSteamLevel/v1/?key=XXX&steamid=XXX
+ *
+ * @returns \{ response: SteamPlayerLevelModel }
+ *
+ */
+export interface SteamPlayerLevelModel {
+    player_level: number;
 }
 
 /**
@@ -177,7 +190,13 @@ export default class SteamAPI extends IAPI<SteamDataModel> {
             key: this.key,
             steamids: this.username,
         });
-        return data.response.players[0];
+
+        const level = await this.fetch_user_level();
+
+        let user = data.response.players[0] as PlayerSummaryModelMerge;
+        user = { ...user, ...level };
+
+        return user;
     }
 
     async fetch_friends() {
@@ -285,5 +304,14 @@ export default class SteamAPI extends IAPI<SteamDataModel> {
         );
 
         return data.game;
+    }
+
+    async fetch_user_level() {
+        const data = await this.fetch<{ response: SteamPlayerLevelModel }>(
+            'https://api.steampowered.com/IPlayerService/GetSteamLevel/v1/',
+            { key: this.key, steamid: this.username }
+        );
+
+        return data.response;
     }
 }
