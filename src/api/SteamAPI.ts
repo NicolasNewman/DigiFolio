@@ -66,10 +66,13 @@ export interface SteamPlayerLevelModel {
  */
 export interface SteamFriendsModel {
     friends: {
+        //basic friends data
         steamid: number; //steamid64
         relationship: string;
         friend_since: number; //unix time stamp
-        avatar_url: string;
+        //friend profile info
+        personaname?: string;
+        avatar_url?: string;
     }[];
 }
 
@@ -219,6 +222,8 @@ export default class SteamAPI extends IAPI<SteamDataModel> {
                     steamids: data.friendslist.friends[i].steamid,
                 }
             );
+            data.friendslist.friends[i].personaname =
+                frienddata.response.players[0].personaname;
             data.friendslist.friends[i].avatar_url =
                 frienddata.response.players[0].avatarfull;
         }
