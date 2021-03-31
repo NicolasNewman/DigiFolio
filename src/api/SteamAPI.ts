@@ -69,6 +69,7 @@ export interface SteamFriendsModel {
         steamid: number; //steamid64
         relationship: string;
         friend_since: number; //unix time stamp
+        avatar_url: string;
     }[];
 }
 
@@ -208,6 +209,19 @@ export default class SteamAPI extends IAPI<SteamDataModel> {
             steamid: this.username,
             relationship: 'friend',
         });
+        for (let i = 0; i < data.friendslist.friends.length; i++) {
+            const frienddata = await this.fetch<{
+                response: { players: PlayerSummaryModel[] };
+            }>( //how does this.fetch work exactly?
+                `http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/`,
+                {
+                    key: this.key,
+                    steamids: data.friendslist.friends[i].steamid,
+                }
+            );
+            data.friendslist.friends[i].avatar_url =
+                frienddata.response.players[0].avatarfull;
+        }
         return data.friendslist;
     }
 
