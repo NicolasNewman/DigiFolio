@@ -235,6 +235,11 @@ export default class APIManager {
                                         data
                                     );
                                     this.printState('State after parsing');
+                                })
+                                .catch((err) => {
+                                    console.log(err);
+                                    canCommit = false;
+                                    message.error('Non-existent key');
                                 });
                         }
                     } else {

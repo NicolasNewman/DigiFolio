@@ -1,3 +1,5 @@
+import { message } from 'antd';
+
 /**
  * Abstract class for a services integration
  * @param DM - generic interface for the format of the processed data
@@ -36,7 +38,7 @@ export default abstract class IAPI<DM> {
      * @param url - the url of the route to request to
      * @param body - the data to be given through the request
      */
-    async fetch<T>(url, body?: { [key: string]: any }): Promise<T> {
+    async fetch<T>(url, body?: { [key: string]: any }): Promise<T | Error> {
         console.log(url, this.opt);
         let newURL = url;
         if (body) {
@@ -46,8 +48,13 @@ export default abstract class IAPI<DM> {
             });
             console.log(newURL);
         }
-        const res = await fetch(newURL, this.opt);
-        return res.json();
+        try {
+            const res = await fetch(newURL, this.opt);
+            return res.json();
+        } catch (e) {
+            message.error('Invalid Request');
+            return new Error();
+        }
     }
 
     abstract parse_api(): Promise<DM>;
