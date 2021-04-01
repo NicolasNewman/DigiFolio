@@ -17,6 +17,7 @@ import SteamTopGames from '../widgets/Steam/W_TopPlayedGames';
 
 import { GithubData } from '../../api/GithubAPI';
 import { SteamAPIData } from '../../api/SteamAPI';
+import ReposWidget from '../widgets/Github/ReposWidget';
 
 const { TabPane } = Tabs;
 const { Header, Content } = Layout;
@@ -87,6 +88,17 @@ export default class Widgets extends Component<IProps> {
                                             />
                                         }
                                         active={this.props.active.UserOverview}
+                                    />
+                                    <WidgetEntry
+                                        component={
+                                            <ReposWidget
+                                                id="ReposWidget"
+                                                component={ReposWidget}
+                                                onWidgetList
+                                                data={this.props.github.repos}
+                                            />
+                                        }
+                                        active={this.props.active.ReposWidget}
                                     />
                                 </TabPane>
                             ) : (
