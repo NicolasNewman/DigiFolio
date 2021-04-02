@@ -62,17 +62,14 @@ export default class Widgets extends Component<IProps> {
                 </Header> */}
                 <Content>
                     <div className="widgetTabs">
-                        <Tabs defaultActiveKey="1" onChange={callback}>
+                        <Tabs onChange={callback}>
                             {this.props.github ? (
                                 <TabPane
                                     className="widget-list__tab"
                                     tab="Github"
                                     key="1"
                                 >
-                                    {/* <Widget />
-                                <Widget />
-                                <Widget /> */}
-                                    <WidgetEntry
+                                    {/* <WidgetEntry
                                         component={
                                             <GithubUserOverview
                                                 id="UserOverview"
@@ -82,8 +79,8 @@ export default class Widgets extends Component<IProps> {
                                             />
                                         }
                                         active={this.props.active.UserOverview}
-                                    />
-                                    <WidgetEntry
+                                    /> */}
+                                    {/* <WidgetEntry
                                         component={
                                             <ReposWidget
                                                 id="ReposWidget"
@@ -115,11 +112,9 @@ export default class Widgets extends Component<IProps> {
                                             />
                                         }
                                         active={this.props.active.RepoGraph}
-                                    />
+                                    /> */}
                                 </TabPane>
-                            ) : (
-                                <span />
-                            )}
+                            ) : null}
                             {this.props.steam ? (
                                 <TabPane
                                     className="widget-list__tab"
@@ -179,9 +174,7 @@ export default class Widgets extends Component<IProps> {
                                         }
                                     />
                                 </TabPane>
-                            ) : (
-                                <span />
-                            )}
+                            ) : null}
                             {/* <TabPane
                                 className="widget-list__tab"
                                 tab="Reddit"

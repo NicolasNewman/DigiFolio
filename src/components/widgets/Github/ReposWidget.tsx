@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 import * as React from 'react';
 import { PureComponent } from 'react';
 import { YAxis } from 'recharts';
@@ -25,9 +26,9 @@ class ReposWidget extends PureComponent<IProps> {
                     }}
                 >
                     <h2>Repo Info</h2>
-                    {data.map((GithubRepo) => {
+                    {data.map((GithubRepo, i) => {
                         return (
-                            <div key="Repo">
+                            <div key={`${i}`}>
                                 <h4>{GithubRepo.name}</h4>
                                 {GithubRepo.description ? (
                                     <p>{GithubRepo.description}</p>
