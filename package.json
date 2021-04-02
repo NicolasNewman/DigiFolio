@@ -262,6 +262,9 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.1",
+    "@nivo/bar": "^0.67.0",
+    "@nivo/core": "^0.67.0",
+    "@nivo/treemap": "^0.67.0",
     "antd": "^4.9.4",
     "clone-deep": "^4.0.1",
     "connected-react-router": "^6.8.0",
@@ -272,6 +275,7 @@
     "electron-updater": "^4.3.4",
     "history": "^4.9.0",
     "html2canvas": "^1.0.0-rc.7",
+    "immutability-helper": "^3.1.1",
     "jspdf": "^2.3.1",
     "react": "^17.0.1",
     "react-custom-scrollbars": "^4.2.1",

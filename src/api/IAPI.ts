@@ -1,9 +1,4 @@
-export type Field = {
-    name: string;
-    value: string;
-    regex: RegExp;
-    errorMsg: string;
-};
+import { message } from 'antd';
 
 /**
  * Abstract class for a services integration
@@ -13,8 +8,6 @@ export default abstract class IAPI<DM> {
     /** the variable storing the processed data */
     private _data: DM | null = null;
 
-    private fields: Field[] = [];
-
     /** The options containing the header information for the request */
     private opt: RequestInit;
 
@@ -22,13 +15,12 @@ export default abstract class IAPI<DM> {
      * @param _name - the name of the integrated service
      * @param _key - the API key used to access the service
      */
-    constructor(private headers: HeadersInit, fields: Field[]) {
+    constructor(private headers: HeadersInit) {
         this.opt = {
             method: 'GET',
             mode: 'cors',
             headers,
         };
-        this.fields = fields;
     }
 
     set data(data: DM | null) {
@@ -46,28 +38,24 @@ export default abstract class IAPI<DM> {
      * @param url - the url of the route to request to
      * @param body - the data to be given through the request
      */
-    async fetch(url, body: { [key: string]: any }): Promise<any> {
-        let newURL = '';
-        Object.keys(body).forEach((key) => {
-            newURL = `${url}?${key}=${body[key]}`;
-        });
-        const res = await fetch(newURL, this.opt);
-        return res.json();
+    async fetch<T>(url, body?: { [key: string]: any }): Promise<T | Error> {
+        console.log(url, this.opt);
+        let newURL = url;
+        if (body) {
+            newURL += '?';
+            Object.keys(body).forEach((key) => {
+                newURL = `${newURL}${key}=${body[key]}&`;
+            });
+            console.log(newURL);
+        }
+        try {
+            const res = await fetch(newURL, this.opt);
+            return res.json();
+        } catch (e) {
+            message.error('Invalid Request');
+            return new Error();
+        }
     }
 
     abstract parse_api(): Promise<DM>;
-
-    abstract match_key(key: string): boolean;
-
-    match_fields(): string[] {
-        const errors: string[] = [];
-        this.fields.forEach((field: Field) => {
-            if (!field.regex.test(field.value)) {
-                errors.push(field.errorMsg);
-            }
-        });
-        return errors;
-    }
-
-    // abstract valid_key(): boolean;
 }

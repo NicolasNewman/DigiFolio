@@ -5,7 +5,7 @@ import { Tabs, Input, Menu, Dropdown, Button } from 'antd';
 import 'antd/dist/antd.css';
 
 import { DownOutlined, LeftCircleOutlined } from '@ant-design/icons';
-import DataStore, { SchemaFields } from '../classes/DataStore';
+import DataStore, { APIInfo, SchemaFields } from '../classes/DataStore';
 import routes from '../constants/routes';
 import APIManager from '../api/APIManager';
 
@@ -21,6 +21,21 @@ const menu = (
         <Menu.Item>Light Mode</Menu.Item>
         <Menu.Item>Dark Mode</Menu.Item>
     </Menu>
+);
+
+const InputLabel = (props: {
+    label: string;
+    defaultVal: string;
+    inputRef: React.RefObject<Input>;
+}) => (
+    <div>
+        <span className="settings-label">{props.label}: </span>
+        <Input
+            className="settings__input"
+            ref={props.inputRef}
+            defaultValue={props.defaultVal}
+        />
+    </div>
 );
 
 function callback(key) {
@@ -61,47 +76,45 @@ function callback(key) {
 export default class Settings extends Component<IProps> {
     props!: IProps;
 
+    // Cats API Input Refs
+
     /** React reference to the catsapi key input */
-    catsAPIInput: React.RefObject<Input>;
+    catsAPIKey: React.RefObject<Input>;
+
+    catsAPIUser: React.RefObject<Input>;
+
+    // Github API Input Refs
+    // githubAPIKey: React.RefObject<Input>;
+    githubAPIUser: React.RefObject<Input>;
+
+    // Steam API Input Refs
+
+    steamAPIKey: React.RefObject<Input>;
+
+    steamID64: React.RefObject<Input>;
 
     constructor(props, history) {
         super(props);
-        this.catsAPIInput = React.createRef();
+        this.catsAPIKey = React.createRef();
+        this.catsAPIUser = React.createRef();
+        this.githubAPIUser = React.createRef();
+        this.steamAPIKey = React.createRef();
+        this.steamID64 = React.createRef();
     }
 
     /**
      * Saves or updates the keys specified by the API tab to the Electron data store
      */
-    saveKeys = () => {
-        const { dataStore, apiManager } = this.props;
-        const saveKey = (name, value) => {
-            console.log(`Saving key: ${name}`);
-            // console.log(`Processing key for ${name}`);
-            // const savedKey = dataStore.get(name);
-            // console.log(`Stored value is: ${savedKey}`);
-            if (value === '') {
-                apiManager.updateKey(name);
-            } else {
-                apiManager.updateKey(name, value);
-            }
-            // if (!savedKey) {
-            //     console.log('Setting value...');
-            //     apiManager.updateKey(name, value);
-            //     // dataStore.set(name, value);
-            // } else if (savedKey !== value) {
-            //     console.log('Updating value...');
-            //     apiManager.updateKey(name, value);
-            //     // dataStore.set(name, value);
-            // } else {
-            //     console.log('No change');
-            //     return;
-            // }
-            // console.log(`New value is: ${dataStore.get(name)}`);
-        };
-        saveKey(
-            SchemaFields.catsAPIKey,
-            this.catsAPIInput.current?.state.value
-        );
+    saveKeys = (api: SchemaFields, options: APIInfo, forced: boolean) => {
+        if (options.key === '') {
+            this.props.apiManager.updateKey(
+                api,
+                { key: '', username: '' },
+                forced
+            );
+        } else {
+            this.props.apiManager.updateKey(api, options, forced);
+        }
     };
 
     toPage(route: string, e) {
@@ -116,38 +129,193 @@ export default class Settings extends Component<IProps> {
                 <h2>Settings</h2>
                 <div className="settings__tab-container">
                     <Tabs defaultActiveKey="1" onChange={callback}>
+                        {(() => {
+                            if (process.env.NODE_ENV === 'development') {
+                                return (
+                                    <TabPane
+                                        className="settings__tab--api"
+                                        tab="catsapi"
+                                        key="cats"
+                                    >
+                                        <InputLabel
+                                            label="API Key"
+                                            inputRef={this.catsAPIKey}
+                                            defaultVal={
+                                                dataStore.getAPIInfo(
+                                                    SchemaFields.catsAPI
+                                                )?.key || ''
+                                            }
+                                        />
+                                        <InputLabel
+                                            label="Username"
+                                            inputRef={this.catsAPIUser}
+                                            defaultVal={
+                                                dataStore.getAPIInfo(
+                                                    SchemaFields.catsAPI
+                                                )?.username || ''
+                                            }
+                                        />
+                                        <div className="button-container">
+                                            <Button
+                                                onClick={() =>
+                                                    this.saveKeys(
+                                                        SchemaFields.catsAPI,
+                                                        {
+                                                            key: this.catsAPIKey
+                                                                .current?.state
+                                                                .value,
+                                                            username: this
+                                                                .catsAPIUser
+                                                                .current?.state
+                                                                .value,
+                                                        },
+                                                        false
+                                                    )
+                                                }
+                                            >
+                                                Save
+                                            </Button>
+                                            <Button
+                                                onClick={() =>
+                                                    this.saveKeys(
+                                                        SchemaFields.catsAPI,
+                                                        {
+                                                            key: this.catsAPIKey
+                                                                .current?.state
+                                                                .value,
+                                                            username: this
+                                                                .catsAPIUser
+                                                                .current?.state
+                                                                .value,
+                                                        },
+                                                        true
+                                                    )
+                                                }
+                                            >
+                                                Refresh Data
+                                            </Button>
+                                        </div>
+                                    </TabPane>
+                                );
+                            }
+                            return <span />;
+                        })()}
                         <TabPane
                             className="settings__tab--api"
-                            tab="API Keys"
+                            tab="Github"
                             key="1"
                         >
-                            {(() => {
-                                if (process.env.NODE_ENV === 'development') {
-                                    return (
-                                        <div>
-                                            <span className="settings__label">
-                                                CatsAPI:{' '}
-                                            </span>
-                                            <Input
-                                                className="settings__input"
-                                                placeholder="catsapi key"
-                                                defaultValue={dataStore.get(
-                                                    SchemaFields.catsAPIKey
-                                                )}
-                                                ref={this.catsAPIInput}
-                                            />
-                                        </div>
-                                    );
+                            <InputLabel
+                                label="Username"
+                                inputRef={this.githubAPIUser}
+                                defaultVal={
+                                    dataStore.getAPIInfo(SchemaFields.githubAPI)
+                                        ?.key || ''
                                 }
-                                return <span />;
-                            })()}
-
-                            <Button onClick={this.saveKeys}>Save</Button>
+                            />
+                            <div className="button-container">
+                                <Button
+                                    onClick={() =>
+                                        this.saveKeys(
+                                            SchemaFields.githubAPI,
+                                            {
+                                                key: this.githubAPIUser.current
+                                                    ?.state.value,
+                                                username: '',
+                                            },
+                                            false
+                                        )
+                                    }
+                                >
+                                    Save
+                                </Button>
+                                <Button
+                                    onClick={() =>
+                                        this.saveKeys(
+                                            SchemaFields.githubAPI,
+                                            {
+                                                key: this.githubAPIUser.current
+                                                    ?.state.value,
+                                                username: '',
+                                            },
+                                            true
+                                        )
+                                    }
+                                >
+                                    Refresh Data
+                                </Button>
+                            </div>
+                        </TabPane>
+                        <TabPane
+                            className="settings__tab--api"
+                            tab="Steam"
+                            key="2"
+                        >
+                            <InputLabel
+                                label="Web API Key"
+                                inputRef={this.steamAPIKey}
+                                defaultVal={
+                                    dataStore.getAPIInfo(SchemaFields.steamAPI)
+                                        ?.key || ''
+                                }
+                            />
+                            <InputLabel
+                                label="SteamID64"
+                                inputRef={this.steamID64}
+                                defaultVal={
+                                    dataStore.getAPIInfo(SchemaFields.steamAPI)
+                                        ?.username || ''
+                                }
+                            />
+                            <div className="button-container">
+                                <Button
+                                    onClick={() =>
+                                        this.saveKeys(
+                                            SchemaFields.steamAPI,
+                                            {
+                                                key: this.steamAPIKey.current
+                                                    ?.state.value,
+                                                username: this.steamID64.current
+                                                    ?.state.value,
+                                            },
+                                            false
+                                        )
+                                    }
+                                >
+                                    Save
+                                </Button>
+                                <Button
+                                    onClick={() =>
+                                        this.saveKeys(
+                                            SchemaFields.steamAPI,
+                                            {
+                                                key: this.steamAPIKey.current
+                                                    ?.state.value,
+                                                username: this.steamID64.current
+                                                    ?.state.value,
+                                            },
+                                            true
+                                        )
+                                    }
+                                >
+                                    Refresh Data
+                                </Button>
+                            </div>
+                        </TabPane>
+                        <TabPane
+                            className="settings__tab--api"
+                            tab="Reddit"
+                            key="3"
+                        >
+                            {/* <div className="button-container">
+                                <Button onClick={this.saveKeys}>Save</Button>
+                                <Button>Refresh Data</Button>
+                            </div> */}
                         </TabPane>
                         <TabPane
                             className="settings__tab--general"
                             tab="General"
-                            key="2"
+                            key="4"
                         >
                             General Settings
                             <div className="tab-general__colorTheme">

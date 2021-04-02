@@ -1,4 +1,5 @@
-import IAPI, { Field } from './IAPI';
+import { APIInfo } from '../classes/DataStore';
+import IAPI from './IAPI';
 
 export interface CatsAPIDataModel {
     info: string;
@@ -12,29 +13,19 @@ export default class CatsAPI extends IAPI<CatsAPIDataModel> {
     private username: string;
 
     constructor(key: string, username: string) {
-        super(
-            {
-                'Content-Type': 'application/json',
-                'x-api-key': key,
-            },
-            [
-                {
-                    name: 'username',
-                    value: username,
-                    regex: /.*/g,
-                    errorMsg: 'Username must ...',
-                },
-            ]
-        );
+        super({
+            'Content-Type': 'application/json',
+            'x-api-key': key,
+        });
         this.username = username;
     }
 
-    match_key(key: string) {
-        // a29b31ec-be45-4bc7-87d4-b4221a80fae0
-        // const isValid = /[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}/g.test(
-        //     key
-        // );
-        return true;
+    static verify_key(key: string) {
+        return /.*/g.test(key);
+    }
+
+    static verify_username(key: string) {
+        return key.length > 0;
     }
 
     async parse_api(): Promise<CatsAPIDataModel> {
