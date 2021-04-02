@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { PureComponent } from 'react';
+import { YAxis } from 'recharts';
 import { GithubRepoModel } from '../../../api/GithubAPI';
 import { widgetFactory, ExternalProps } from '../IWidget';
 
@@ -14,28 +15,28 @@ class ReposWidget extends PureComponent<IProps> {
 
     render() {
         const { data } = this.props;
-        // const getRepos = () => {
-        //     const repos: JSX.Element[] = [];
-        //     const i = 0;
-        //     while (i < 10) {
-        //         repos.push(<p>{data[i].name}</p>);
-        //     }
-        // };
 
         if (data) {
             return (
-                <div>
+                <div
+                    style={{
+                        height: '200px',
+                        overflowY: 'scroll',
+                    }}
+                >
                     <h2>Repositories</h2>
-                    {data
-                        .map((GithubRepo) => {
-                            return (
-                                <div key="Repo">
-                                    <h4>{GithubRepo.name}</h4>
+                    {data.map((GithubRepo) => {
+                        return (
+                            <div key="Repo">
+                                <h4>{GithubRepo.name}</h4>
+                                {GithubRepo.description ? (
                                     <p>{GithubRepo.description}</p>
-                                </div>
-                            );
-                        })
-                        .slice(0, 5)}
+                                ) : (
+                                    <p>(No description)</p>
+                                )}
+                            </div>
+                        );
+                    })}
                 </div>
             );
         }

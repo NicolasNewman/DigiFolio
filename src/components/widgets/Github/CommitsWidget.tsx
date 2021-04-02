@@ -14,30 +14,21 @@ class CommitsWidget extends PureComponent<IProps> {
 
     render() {
         const { data } = this.props;
-        // const getRepos = () => {
-        //     const repos: JSX.Element[] = [];
-        //     const i = 0;
-        //     while (i < 10) {
-        //         repos.push(<p>{data[i].name}</p>);
-        //     }
-        // };
 
         if (data) {
             return (
                 <div>
-                    {data
-                        .map((GithubRepo) => {
-                            return (
-                                <div key="Repo">
-                                    <h4>{GithubRepo.name}</h4>
-                                    <p>
-                                        Commits:
-                                        {GithubRepo.data_commits.length}
-                                    </p>
-                                </div>
-                            );
-                        })
-                        .slice(0, 5)}
+                    {data.map((GithubRepo) => {
+                        return (
+                            <div key="Repo">
+                                <h4>{GithubRepo.name}</h4>
+                                <p>
+                                    Commits:
+                                    {GithubRepo.data_commits.length}
+                                </p>
+                            </div>
+                        );
+                    })}
                 </div>
             );
         }
