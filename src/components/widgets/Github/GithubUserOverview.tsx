@@ -14,7 +14,6 @@ class GithubUserOverview extends PureComponent<IProps> {
 
     render() {
         const { data } = this.props;
-        console.log(this.props);
         if (data) {
             return (
                 <div>
