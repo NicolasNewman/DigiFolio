@@ -1,12 +1,11 @@
 import * as React from 'react';
 import { PureComponent } from 'react';
-import { YAxis } from 'recharts';
 import { GithubRepoModel } from '../../../api/GithubAPI';
 import { widgetFactory, ExternalProps } from '../IWidget';
 
 type IProps = ExternalProps<GithubRepoModel>;
 
-class ReposWidget extends PureComponent<IProps> {
+class CommitsWidget extends PureComponent<IProps> {
     props!: IProps;
 
     constructor(props: IProps) {
@@ -24,16 +23,12 @@ class ReposWidget extends PureComponent<IProps> {
                         overflowY: 'scroll',
                     }}
                 >
-                    <h2>Repo Info</h2>
+                    <h2>Repo Commits</h2>
                     {data.map((GithubRepo) => {
                         return (
                             <div key="Repo">
                                 <h4>{GithubRepo.name}</h4>
-                                {GithubRepo.description ? (
-                                    <p>{GithubRepo.description}</p>
-                                ) : (
-                                    <p>(No description)</p>
-                                )}
+                                <p>Commits: {GithubRepo.data_commits.length}</p>
                             </div>
                         );
                     })}
@@ -44,4 +39,4 @@ class ReposWidget extends PureComponent<IProps> {
     }
 }
 
-export default widgetFactory()<GithubRepoModel, IProps>(ReposWidget);
+export default widgetFactory()<GithubRepoModel, IProps>(CommitsWidget);

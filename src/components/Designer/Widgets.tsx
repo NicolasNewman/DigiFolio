@@ -18,6 +18,8 @@ import SteamTopGames from '../widgets/Steam/W_TopPlayedGames';
 import { GithubData } from '../../api/GithubAPI';
 import { SteamAPIData } from '../../api/SteamAPI';
 import ReposWidget from '../widgets/Github/ReposWidget';
+import CommitsWidget from '../widgets/Github/CommitsWidget';
+import RepoGraph from '../widgets/Github/RepoGraph';
 
 const { TabPane } = Tabs;
 const { Header, Content } = Layout;
@@ -70,18 +72,6 @@ export default class Widgets extends Component<IProps> {
                                     {/* <Widget />
                                 <Widget />
                                 <Widget /> */}
-                                    <Demo
-                                        id="bob"
-                                        component={Demo}
-                                        onWidgetList
-                                        data={[]}
-                                    />
-                                    <Demo2
-                                        id="bob2"
-                                        component={Demo2}
-                                        onWidgetList
-                                        data={[]}
-                                    />
                                     <WidgetEntry
                                         component={
                                             <GithubUserOverview
@@ -103,6 +93,28 @@ export default class Widgets extends Component<IProps> {
                                             />
                                         }
                                         active={this.props.active.ReposWidget}
+                                    />
+                                    <WidgetEntry
+                                        component={
+                                            <CommitsWidget
+                                                id="CommitsWidget"
+                                                component={CommitsWidget}
+                                                onWidgetList
+                                                data={this.props.github.repos}
+                                            />
+                                        }
+                                        active={this.props.active.CommitsWidget}
+                                    />
+                                    <WidgetEntry
+                                        component={
+                                            <RepoGraph
+                                                id="RepoGraph"
+                                                component={RepoGraph}
+                                                onWidgetList
+                                                data={this.props.github.repos}
+                                            />
+                                        }
+                                        active={this.props.active.RepoGraph}
                                     />
                                 </TabPane>
                             ) : (
