@@ -75,6 +75,7 @@ class ChartWidget extends PureComponent<IProps> {
                         : { width: '500px', height: '300px' }
                 }
             >
+                <h2>Commits by Repo</h2>
                 <ResponsiveBar
                     data={this.data}
                     indexBy="repo"

@@ -23,6 +23,7 @@ class CommitsWidget extends PureComponent<IProps> {
                         overflowY: 'scroll',
                     }}
                 >
+                    <h2>Repo Commits</h2>
                     {data.map((GithubRepo) => {
                         return (
                             <div key="Repo">

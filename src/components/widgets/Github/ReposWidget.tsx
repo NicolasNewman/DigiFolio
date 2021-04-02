@@ -24,7 +24,7 @@ class ReposWidget extends PureComponent<IProps> {
                         overflowY: 'scroll',
                     }}
                 >
-                    <h2>Repositories</h2>
+                    <h2>Repo Info</h2>
                     {data.map((GithubRepo) => {
                         return (
                             <div key="Repo">
