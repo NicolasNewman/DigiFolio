@@ -52,7 +52,7 @@ export default class Home extends Component<IProps> {
                     type="primary"
                     onClick={(e) => this.toPage(routes.DEBUG, e)}
                 >
-                    Grafhs
+                    Graphs
                 </Button>
             </div>
         );

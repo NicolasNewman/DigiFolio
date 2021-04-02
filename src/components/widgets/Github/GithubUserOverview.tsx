@@ -14,7 +14,6 @@ class GithubUserOverview extends PureComponent<IProps> {
 
     render() {
         const { data } = this.props;
-        console.log(this.props);
         if (data) {
             return (
                 <div>
@@ -23,8 +22,10 @@ class GithubUserOverview extends PureComponent<IProps> {
                         src={data.avatar_url}
                         alt="pfp"
                     />
-                    <p>{data.name}</p>
-                    <p>{data.bio}</p>
+                    <p>Name: {data.name}</p>
+                    <p>Bio: {data.bio}</p>
+                    <p>Followers: {data.followers}</p>
+                    <p>Public Repos: {data.public_repos}</p>
                 </div>
             );
         }

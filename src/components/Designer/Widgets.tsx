@@ -12,10 +12,14 @@ import DemoChart from '../widgets/Tests/NivoTest';
 import GithubUserOverview from '../widgets/Github/GithubUserOverview';
 
 import SteamProfileInfo from '../widgets/Steam/W_SteamProfileInfo';
+import SteamFriendsInfo from '../widgets/Steam/W_SteamFriendsInfo';
 import SteamTopGames from '../widgets/Steam/W_TopPlayedGames';
 
 import { GithubData } from '../../api/GithubAPI';
 import { SteamAPIData } from '../../api/SteamAPI';
+import ReposWidget from '../widgets/Github/ReposWidget';
+import CommitsWidget from '../widgets/Github/CommitsWidget';
+import RepoGraph from '../widgets/Github/RepoGraph';
 
 const { TabPane } = Tabs;
 const { Header, Content } = Layout;
@@ -60,22 +64,14 @@ export default class Widgets extends Component<IProps> {
                     <div className="widgetTabs">
                         <Tabs defaultActiveKey="1" onChange={callback}>
                             {this.props.github ? (
-                                <TabPane className="" tab="Github" key="1">
+                                <TabPane
+                                    className="widget-list__tab"
+                                    tab="Github"
+                                    key="1"
+                                >
                                     {/* <Widget />
                                 <Widget />
                                 <Widget /> */}
-                                    <Demo
-                                        id="bob"
-                                        component={Demo}
-                                        onWidgetList
-                                        data={[]}
-                                    />
-                                    <Demo2
-                                        id="bob2"
-                                        component={Demo2}
-                                        onWidgetList
-                                        data={[]}
-                                    />
                                     <WidgetEntry
                                         component={
                                             <GithubUserOverview
@@ -87,12 +83,49 @@ export default class Widgets extends Component<IProps> {
                                         }
                                         active={this.props.active.UserOverview}
                                     />
+                                    <WidgetEntry
+                                        component={
+                                            <ReposWidget
+                                                id="ReposWidget"
+                                                component={ReposWidget}
+                                                onWidgetList
+                                                data={this.props.github.repos}
+                                            />
+                                        }
+                                        active={this.props.active.ReposWidget}
+                                    />
+                                    <WidgetEntry
+                                        component={
+                                            <CommitsWidget
+                                                id="CommitsWidget"
+                                                component={CommitsWidget}
+                                                onWidgetList
+                                                data={this.props.github.repos}
+                                            />
+                                        }
+                                        active={this.props.active.CommitsWidget}
+                                    />
+                                    <WidgetEntry
+                                        component={
+                                            <RepoGraph
+                                                id="RepoGraph"
+                                                component={RepoGraph}
+                                                onWidgetList
+                                                data={this.props.github.repos}
+                                            />
+                                        }
+                                        active={this.props.active.RepoGraph}
+                                    />
                                 </TabPane>
                             ) : (
                                 <span />
                             )}
                             {this.props.steam ? (
-                                <TabPane className="" tab="Steam" key="2">
+                                <TabPane
+                                    className="widget-list__tab"
+                                    tab="Steam"
+                                    key="2"
+                                >
                                     <WidgetEntry
                                         component={
                                             <DemoChart
@@ -121,6 +154,19 @@ export default class Widgets extends Component<IProps> {
                                     />
                                     <WidgetEntry
                                         component={
+                                            <SteamFriendsInfo
+                                                id="steam_friends_info"
+                                                component={SteamFriendsInfo}
+                                                onWidgetList
+                                                data={this.props.steam.friends}
+                                            />
+                                        }
+                                        active={
+                                            this.props.active.steam_friends_info
+                                        }
+                                    />
+                                    <WidgetEntry
+                                        component={
                                             <SteamTopGames
                                                 id="steam_top_games"
                                                 component={SteamTopGames}
@@ -136,15 +182,12 @@ export default class Widgets extends Component<IProps> {
                             ) : (
                                 <span />
                             )}
-                            <TabPane
-                                className="settings__tab--general"
+                            {/* <TabPane
+                                className="widget-list__tab"
                                 tab="Reddit"
                                 key="3"
                             >
-                                {/* <Widget />
-                                <Widget />
-                                <Widget /> */}
-                            </TabPane>
+                            </TabPane> */}
                         </Tabs>
                     </div>
                 </Content>
