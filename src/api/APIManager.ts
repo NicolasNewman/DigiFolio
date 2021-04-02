@@ -120,6 +120,7 @@ export default class APIManager {
             !apiInfo ||
             !validateAPIObject(apiInfo, ['key']) ||
             apiInfo.key !== options.key ||
+            apiInfo.username !== options.username ||
             forced === true
         ) {
             // There is no record of the api existing
@@ -255,7 +256,7 @@ export default class APIManager {
 
             if (canCommit) {
                 this.dataStore.setAPIInfo(api, options);
-                message.success('Successfully updated API information');
+                message.success('Updated API information');
             }
         } else {
             console.log('The saved and new key are the same. Doing nothing');
