@@ -62,7 +62,11 @@ export default class Widgets extends Component<IProps> {
                     <div className="widgetTabs">
                         <Tabs defaultActiveKey="1" onChange={callback}>
                             {this.props.github ? (
-                                <TabPane className="" tab="Github" key="1">
+                                <TabPane
+                                    className="widget-list__tab"
+                                    tab="Github"
+                                    key="1"
+                                >
                                     {/* <Widget />
                                 <Widget />
                                 <Widget /> */}
@@ -105,7 +109,11 @@ export default class Widgets extends Component<IProps> {
                                 <span />
                             )}
                             {this.props.steam ? (
-                                <TabPane className="" tab="Steam" key="2">
+                                <TabPane
+                                    className="widget-list__tab"
+                                    tab="Steam"
+                                    key="2"
+                                >
                                     <WidgetEntry
                                         component={
                                             <DemoChart
@@ -162,15 +170,12 @@ export default class Widgets extends Component<IProps> {
                             ) : (
                                 <span />
                             )}
-                            <TabPane
-                                className="settings__tab--general"
+                            {/* <TabPane
+                                className="widget-list__tab"
                                 tab="Reddit"
                                 key="3"
                             >
-                                {/* <Widget />
-                                <Widget />
-                                <Widget /> */}
-                            </TabPane>
+                            </TabPane> */}
                         </Tabs>
                     </div>
                 </Content>
