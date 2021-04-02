@@ -17,15 +17,17 @@ class CommitsWidget extends PureComponent<IProps> {
 
         if (data) {
             return (
-                <div>
+                <div
+                    style={{
+                        height: '200px',
+                        overflowY: 'scroll',
+                    }}
+                >
                     {data.map((GithubRepo) => {
                         return (
                             <div key="Repo">
                                 <h4>{GithubRepo.name}</h4>
-                                <p>
-                                    Commits:
-                                    {GithubRepo.data_commits.length}
-                                </p>
+                                <p>Commits: {GithubRepo.data_commits.length}</p>
                             </div>
                         );
                     })}
