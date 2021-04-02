@@ -104,6 +104,7 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
                         color: 'black',
                         ...widgetStyle,
                     }}
+                    className="widget__container"
                     onMouseEnter={() => this.setState({ hover: true })}
                     onMouseLeave={() => this.setState({ hover: false })}
                 >

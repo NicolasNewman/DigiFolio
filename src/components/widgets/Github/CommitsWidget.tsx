@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 import * as React from 'react';
 import { PureComponent } from 'react';
 import { GithubRepoModel } from '../../../api/GithubAPI';
@@ -24,9 +25,9 @@ class CommitsWidget extends PureComponent<IProps> {
                     }}
                 >
                     <h2>Repo Commits</h2>
-                    {data.map((GithubRepo) => {
+                    {data.map((GithubRepo, i) => {
                         return (
-                            <div key="Repo">
+                            <div key={`repo-${i}`}>
                                 <h4>{GithubRepo.name}</h4>
                                 <p>Commits: {GithubRepo.data_commits.length}</p>
                             </div>

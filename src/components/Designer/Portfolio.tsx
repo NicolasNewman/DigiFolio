@@ -116,7 +116,7 @@ class Portfolio extends Component<IProps, IState> {
                         position: 'relative',
                     }}
                 >
-                    <p style={{ color: '#000000' }}>This is my page</p>
+                    {/* <p style={{ color: '#000000' }}>This is my page</p> */}
                     {Object.keys(boxes).map((key) => {
                         const { left, top, title, component, data } = boxes[
                             key

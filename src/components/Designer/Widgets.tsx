@@ -69,7 +69,7 @@ export default class Widgets extends Component<IProps> {
                                     tab="Github"
                                     key="1"
                                 >
-                                    {/* <WidgetEntry
+                                    <WidgetEntry
                                         component={
                                             <GithubUserOverview
                                                 id="UserOverview"
@@ -79,8 +79,8 @@ export default class Widgets extends Component<IProps> {
                                             />
                                         }
                                         active={this.props.active.UserOverview}
-                                    /> */}
-                                    {/* <WidgetEntry
+                                    />
+                                    <WidgetEntry
                                         component={
                                             <ReposWidget
                                                 id="ReposWidget"
@@ -112,7 +112,7 @@ export default class Widgets extends Component<IProps> {
                                             />
                                         }
                                         active={this.props.active.RepoGraph}
-                                    /> */}
+                                    />
                                 </TabPane>
                             ) : null}
                             {this.props.steam ? (
