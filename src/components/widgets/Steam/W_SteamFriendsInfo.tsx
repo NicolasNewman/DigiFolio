@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 /* eslint-disable consistent-return */
 /* eslint-disable array-callback-return */
 import { textAlign } from 'html2canvas/dist/types/css/property-descriptors/text-align';
@@ -28,10 +29,13 @@ class SteamFriendsInfo extends PureComponent<IProps> {
             return (
                 <div>
                     {data.friends
-                        .map((friend) => {
+                        .map((friend, i) => {
                             if (friend.avatar_url) {
                                 return (
-                                    <div style={{ display: 'flex' }}>
+                                    <div
+                                        key={`steam-friend-${i}`}
+                                        style={{ display: 'flex' }}
+                                    >
                                         <img
                                             style={{
                                                 width: '4rem',
