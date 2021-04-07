@@ -15,6 +15,7 @@ import Portfolio from './designer/Portfolio';
 import Widgets from './designer/Widgets';
 import { GithubData } from '../api/GithubAPI';
 import { SteamAPIData } from '../api/SteamAPI';
+import Theming from './Designer/Theming';
 
 interface IProps extends RouteComponentProps<any> {
     dataStore: DataStore;
@@ -57,6 +58,9 @@ export default class Designer extends Component<IProps, IState> {
         return (
             <div>
                 <div className="designer">
+                    <div className="designer__theming">
+                        <Theming />
+                    </div>
                     <DndProvider backend={HTML5Backend}>
                         <div className="designer__portfolio">
                             <Portfolio

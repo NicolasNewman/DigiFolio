@@ -154,7 +154,7 @@ export default DropTarget(
             const item = monitor.getItem<BoxDragItem>();
             if (!component.state.boxes[item.id]) {
                 const delta = monitor.getClientOffset() as XYCoord;
-                const left = Math.round(delta.x - 64); // TODO figure out where this value (64) comes from. It will cause issues if we change the styling
+                const left = Math.round(delta.x - 64 - 225); // TODO figure out where this value (64) comes from. It will cause issues if we change the styling
                 const top = Math.round(delta.y - 64);
                 component.addBox(item.id, left, top, item.component, item.data);
             } else {
