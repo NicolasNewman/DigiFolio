@@ -4,9 +4,13 @@ import DataStore, { APIInfo, SchemaFields } from '../classes/DataStore';
 import CatsAPI, { CatsAPIData } from './CatsAPI';
 import GithubAPI, { GithubData } from './GithubAPI';
 import SteamAPI, { SteamAPIData } from './SteamAPI';
+import RedditAPI, { RedditAPIData } from './RedditAPI';
 import { updateCatsAPI } from '../actions/catsapi';
 import { updateGithubAPI } from '../actions/githubapi';
 import { updateSteamAPI } from '../actions/steamapi';
+import { updateRedditAPI } from '../actions/redditapi';
+// eslint-disable-next-line import/order
+import { error } from 'electron-log';
 
 const validateAPIObject = (
     obj: APIInfo,
@@ -40,6 +44,10 @@ export interface APIMap {
         api: SteamAPI;
         dispatch: (data: SteamAPIData) => void;
     } | null;
+    [SchemaFields.redditAPI]: {
+        api: RedditAPI;
+        dispatch: (data: RedditAPIData) => void;
+    } | null;
 }
 
 export default class APIManager {
@@ -57,6 +65,7 @@ export default class APIManager {
             [SchemaFields.catsAPI]: null,
             [SchemaFields.githubAPI]: null,
             [SchemaFields.steamAPI]: null,
+            [SchemaFields.redditAPI]: null,
         };
 
         // ===== init catsAPI =====
@@ -86,6 +95,20 @@ export default class APIManager {
                 api: new SteamAPI(steamAPIObjct.key, steamAPIObjct.username),
                 dispatch: (data: SteamAPIData) =>
                     this.reduxStore.dispatch(updateSteamAPI(data)),
+            };
+        }
+
+        // ==== init RedditAPI ====
+        const redditAPIObjct = dataStore.getAPIInfo(SchemaFields.redditAPI);
+        if (validateAPIObject(redditAPIObjct, ['username', 'key', 'other'])) {
+            this.apis[SchemaFields.redditAPI] = {
+                api: new RedditAPI(
+                    redditAPIObjct.username,
+                    redditAPIObjct.key,
+                    redditAPIObjct.other
+                ),
+                dispatch: (data: RedditAPIData) =>
+                    this.reduxStore.dispatch(updateRedditAPI(data)),
             };
         }
 
@@ -250,7 +273,58 @@ export default class APIManager {
                         canCommit = false;
                     }
                     break;
+                case SchemaFields.redditAPI:
+                    if (options.key && options.username && options.other) {
+                        if (!RedditAPI.verify_client_id(options.username)) {
+                            message.error('Invalid Client ID');
+                            canCommit = false;
+                        }
+
+                        if (!RedditAPI.verify_client_secret(options.key)) {
+                            message.error('Invalid Client Secret');
+                            canCommit = false;
+                        }
+
+                        if (!RedditAPI.verify_token(options.other)) {
+                            message.error('Invalid Token');
+                            canCommit = false;
+                        }
+
+                        if (canCommit) {
+                            this.apis[SchemaFields.redditAPI] = {
+                                api: new RedditAPI(
+                                    'Digifolio',
+                                    options.username,
+                                    options.key
+                                ),
+                                dispatch: (data: RedditAPIData) =>
+                                    this.reduxStore.dispatch(
+                                        updateRedditAPI(data)
+                                    ),
+                            };
+                            this.apis[SchemaFields.redditAPI]?.api
+                                .parse_api()
+                                .then((data) => {
+                                    this.apis[SchemaFields.redditAPI]?.dispatch(
+                                        data
+                                    );
+                                    this.printState('State after parsing');
+                                })
+                                .catch((err) => {
+                                    console.log(err);
+                                    canCommit = false;
+                                    message.error('Non-existent key');
+                                });
+                        }
+                    } else {
+                        message.error(
+                            'All of the ID, secret, and token must be specified!'
+                        );
+                        canCommit = false;
+                    }
+                    break;
                 default:
+                    console.log('updateKey() defaulted on switch');
                     return;
             }
 

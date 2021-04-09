@@ -4,6 +4,7 @@ import { History } from 'history';
 import catsapi from './catsapi';
 import githubapi from './githubapi';
 import steamapi from './steamapi';
+import redditapi from './redditapi';
 
 export default function createRootReducer(history: History) {
     return combineReducers({
@@ -11,5 +12,6 @@ export default function createRootReducer(history: History) {
         catsapi,
         githubapi,
         steamapi,
+        redditapi,
     });
 }
