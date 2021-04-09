@@ -30,6 +30,7 @@ interface IProps {
     hideSourceOnDrag: boolean;
     connectDropTarget: ConnectDropTarget;
     updateActiveWidgets: (id: string, active: boolean) => void;
+    setThemePanel: (node: React.ReactNode) => void;
 }
 
 interface IState {
@@ -100,6 +101,10 @@ class Portfolio extends Component<IProps, IState> {
         this.props.updateActiveWidgets(id, true);
     }
 
+    temp(node: React.ReactNode) {
+        return node;
+    }
+
     render() {
         // eslint-disable-next-line prettier/prettier
         const { hideSourceOnDrag, connectDropTarget, hovered } = this.props;
@@ -128,6 +133,7 @@ class Portfolio extends Component<IProps, IState> {
                                 id={key}
                                 left={left}
                                 top={top}
+                                setThemePanel={this.props.setThemePanel}
                                 hideSourceOnDrag={hideSourceOnDrag}
                                 data={data}
                                 delete={this.deleteBox}

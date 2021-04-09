@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 import * as React from 'react';
 import { PureComponent } from 'react';
 import { ResponsiveTreeMap } from '@nivo/treemap';
@@ -23,6 +25,10 @@ class GithubUserOverview extends PureComponent<IProps> {
             game: 'Top 10',
             children: [],
         };
+    }
+
+    getThemePanel() {
+        return <div>TopPlayedGames</div>;
     }
 
     compileData() {
@@ -62,6 +68,12 @@ class GithubUserOverview extends PureComponent<IProps> {
                         ? { width: '100%', height: '225px' }
                         : { width: '500px', height: '300px' }
                 }
+                onClick={(e) => {
+                    e.stopPropagation();
+                    return this.props.setThemePanel
+                        ? this.props.setThemePanel(this.getThemePanel())
+                        : null;
+                }}
             >
                 <ResponsiveTreeMap
                     data={this.data}

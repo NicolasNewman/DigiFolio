@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable react/no-access-state-in-setstate */
 /* eslint-disable react/state-in-constructor */
 import * as React from 'react';
@@ -25,6 +27,7 @@ interface IProps extends RouteComponentProps<any> {
 
 interface IState {
     active: { [key: string]: boolean };
+    currentThemePanel: React.ReactNode;
 }
 
 export default class Designer extends Component<IProps, IState> {
@@ -34,9 +37,20 @@ export default class Designer extends Component<IProps, IState> {
 
     constructor(props, history) {
         super(props);
-        this.state = { active: {} };
+        this.state = {
+            active: {},
+            currentThemePanel: this.getGlobalThemePanel(),
+        };
         console.log(this.state);
     }
+
+    getGlobalThemePanel() {
+        return <div>Hello</div>;
+    }
+
+    setThemePanel = (panel: React.ReactNode) => {
+        this.setState({ currentThemePanel: panel });
+    };
 
     updateActiveWidgets = (id: string, active: boolean) => {
         console.log(this.state);
@@ -59,13 +73,19 @@ export default class Designer extends Component<IProps, IState> {
             <div>
                 <div className="designer">
                     <div className="designer__theming">
-                        <Theming />
+                        <Theming themePanel={this.state.currentThemePanel} />
                     </div>
                     <DndProvider backend={HTML5Backend}>
-                        <div className="designer__portfolio">
+                        <div
+                            className="designer__portfolio"
+                            onClick={() =>
+                                this.setThemePanel(this.getGlobalThemePanel())
+                            }
+                        >
                             <Portfolio
                                 hideSourceOnDrag
                                 updateActiveWidgets={this.updateActiveWidgets}
+                                setThemePanel={this.setThemePanel}
                             />
                         </div>
                         <div className="designer__widgets">
@@ -73,6 +93,7 @@ export default class Designer extends Component<IProps, IState> {
                                 active={this.state.active}
                                 github={this.props.github}
                                 steam={this.props.steam}
+                                setThemePanel={this.setThemePanel}
                             />
                         </div>
                     </DndProvider>

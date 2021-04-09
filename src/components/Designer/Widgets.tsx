@@ -32,6 +32,7 @@ interface IProps {
     github: GithubData;
     steam: SteamAPIData;
     active: { [key: string]: boolean };
+    setThemePanel: (panel: React.ReactNode) => void;
 }
 
 const WidgetEntry: React.FC<{
