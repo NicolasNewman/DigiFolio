@@ -37,6 +37,7 @@ export interface ExternalProps<T> {
     delete?: (id: string) => void;
     data: T;
     onWidgetList?: boolean;
+    setThemePanel?: (node: React.ReactNode) => void;
 
     connectDragSource: ConnectDragSource;
     isDragging?: boolean;
