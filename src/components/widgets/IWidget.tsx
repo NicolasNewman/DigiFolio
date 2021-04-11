@@ -5,14 +5,17 @@
 /* eslint-disable react/require-default-props */
 /* eslint-disable react/no-unused-prop-types */
 import * as React from 'react';
-import { PureComponent } from 'react';
+import { PureComponent, useRef } from 'react';
 import {
     ConnectDragSource,
     DragSource,
     DragSourceConnector,
     DragSourceMonitor,
 } from 'react-dnd';
+import { Rnd } from 'react-rnd';
 import { CloseCircleOutlined } from '@ant-design/icons';
+import Resizer from './Resizer/resizer';
+import { Direction } from './Resizer/Direction';
 //import Portfolio from '../Designer/Portfolio';
 // import { deleteBox } from '../Designer/Portfolio';
 
@@ -62,6 +65,19 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
     type ResultProps = TOriginalProps & ExternalProps<T>;
 
     class Widget extends React.Component<ResultProps, IState> {
+        static style: any;
+
+        static getBoundingClientRect(): {
+            width: any;
+            height: any;
+            x: any;
+            y: any;
+        } {
+            throw new Error('Method not implemented.');
+        }
+
+        //widgetRef = useRef(null);
+
         props!: ResultProps;
 
         state: IState;
@@ -76,6 +92,72 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
                 hover: false,
             };
         }
+
+        handleResize = (direction, movementX, movementY) => {
+            //const widget = this.widgetRef.current;
+            //if (!widget) return;
+
+            const { width, height, x, y } = Widget.getBoundingClientRect();
+
+            const resizeTop = () => {
+                Widget.style.height = `${height - movementY}px`;
+                Widget.style.top = `${y + movementY}px`;
+            };
+
+            const resizeRight = () => {
+                Widget.style.width = `${width + movementX}px`;
+            };
+
+            const resizeBottom = () => {
+                Widget.style.height = `${height + movementY}px`;
+            };
+
+            const resizeLeft = () => {
+                Widget.style.width = `${width - movementX}px`;
+                Widget.style.left = `${x + movementX}px`;
+            };
+
+            switch (direction) {
+                case Direction.TopLeft:
+                    resizeTop();
+                    resizeLeft();
+                    break;
+
+                case Direction.Top:
+                    resizeTop();
+                    break;
+
+                case Direction.TopRight:
+                    resizeTop();
+                    resizeRight();
+                    break;
+
+                case Direction.Right:
+                    resizeRight();
+                    break;
+
+                case Direction.BottomRight:
+                    resizeBottom();
+                    resizeRight();
+                    break;
+
+                case Direction.Bottom:
+                    resizeBottom();
+                    break;
+
+                case Direction.BottomLeft:
+                    resizeBottom();
+                    resizeLeft();
+                    break;
+
+                case Direction.Left:
+                    resizeLeft();
+                    break;
+
+                default:
+                    break;
+            }
+        };
 
         render(): React.ReactElement<
             any,
@@ -109,6 +191,7 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
                     onMouseEnter={() => this.setState({ hover: true })}
                     onMouseLeave={() => this.setState({ hover: false })}
                 >
+                    <Resizer onResize={this.handleResize} />
                     <div style={{ position: 'relative' }}>
                         <Component {...this.props} />
                         {!this.props.onWidgetList && this.state.hover ? (
