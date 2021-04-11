@@ -1,4 +1,5 @@
 import IAPI from './IAPI';
+//import snoowrap from 'snoowrap';
 
 export interface RedditDataModel {
     something: any;
@@ -14,6 +15,8 @@ export default class RedditAPI extends IAPI<RedditDataModel> {
     private clientSecret: string;
 
     private token: string;
+
+    //private r:
 
     constructor(clientId: string, clientSecret: string, token: string) {
         super({ 'x-webapi-key': clientId });
@@ -31,7 +34,7 @@ export default class RedditAPI extends IAPI<RedditDataModel> {
     }
 
     static verify_client_id(clientId: string): boolean {
-        return true;
+        return /[A-z0-9]/g.test(clientId);
     }
 
     static verify_client_secret(clientSecret: string): boolean {
@@ -39,6 +42,7 @@ export default class RedditAPI extends IAPI<RedditDataModel> {
     }
 
     static verify_token(token: string): boolean {
+        //not really sure the format just yet
         return true;
     }
 }
