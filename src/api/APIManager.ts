@@ -293,9 +293,9 @@ export default class APIManager {
                         if (canCommit) {
                             this.apis[SchemaFields.redditAPI] = {
                                 api: new RedditAPI(
-                                    'Digifolio',
                                     options.username,
-                                    options.key
+                                    options.key,
+                                    options.other
                                 ),
                                 dispatch: (data: RedditAPIData) =>
                                     this.reduxStore.dispatch(
