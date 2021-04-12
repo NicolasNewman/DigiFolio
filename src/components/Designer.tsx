@@ -1,3 +1,4 @@
+/* eslint-disable react/button-has-type */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable react/no-access-state-in-setstate */
@@ -28,6 +29,7 @@ interface IProps extends RouteComponentProps<any> {
 interface IState {
     active: { [key: string]: boolean };
     currentThemePanel: React.ReactNode;
+    theme: string | null;
 }
 
 export default class Designer extends Component<IProps, IState> {
@@ -40,12 +42,36 @@ export default class Designer extends Component<IProps, IState> {
         this.state = {
             active: {},
             currentThemePanel: this.getGlobalThemePanel(),
+            theme: null,
         };
         console.log(this.state);
     }
 
     getGlobalThemePanel() {
-        return <div>Hello</div>;
+        return (
+            <div>
+                <ul>
+                    <li>
+                        <button
+                            onClick={() => {
+                                this.setState({ theme: 'dark' });
+                            }}
+                        >
+                            Dark
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            onClick={() => {
+                                this.setState({ theme: '' });
+                            }}
+                        >
+                            Light
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        );
     }
 
     setThemePanel = (panel: React.ReactNode) => {
