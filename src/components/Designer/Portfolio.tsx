@@ -43,6 +43,7 @@ interface IState {
             data: any;
         };
     };
+    theme: string | null;
 }
 
 // export function deleteBox(this: any, id) {
@@ -67,6 +68,7 @@ class Portfolio extends Component<IProps, IState> {
         super(props);
         this.state = {
             boxes: {},
+            theme: null,
         };
     }
 
@@ -110,9 +112,9 @@ class Portfolio extends Component<IProps, IState> {
         const { hideSourceOnDrag, connectDropTarget, hovered } = this.props;
         //const backgroundColor = hovered ? '#F0F02D' : 'white';
         const backgroundColor = hovered ? '0px 0px 40px black' : '';
-        const { boxes } = this.state;
+        const { boxes, theme } = this.state;
         return connectDropTarget(
-            <div className={hovered ? 'portfolio' : 'portfolio-black'}>
+            <div className={theme ? `portfolio-${theme}` : 'portfolio'}>
                 <div
                     className="portfolio__page"
                     id="portfolio"
