@@ -64,7 +64,7 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
 ) => {
     type ResultProps = TOriginalProps & ExternalProps<T>;
 
-    const widgetRef = useRef(null);
+    // const widgetRef = createRef();
 
     class Widget extends React.Component<ResultProps, IState> {
         // static style: any;
@@ -82,6 +82,8 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
 
         state: IState;
 
+        widgetRef: React.RefObject<any> = React.createRef();
+
         static displayName = `Widget(${
             Component.displayName || Component.name
         })`;
@@ -94,7 +96,7 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
         }
 
         handleResize = (direction, movementX, movementY) => {
-            const widget = widgetRef.current;
+            const widget = this.widgetRef.current;
             if (!widget) return;
 
             const { width, height, x, y } = widget.getBoundingClientRect();
@@ -190,6 +192,7 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
                     className="widget__container"
                     onMouseEnter={() => this.setState({ hover: true })}
                     onMouseLeave={() => this.setState({ hover: false })}
+                    ref={this.widgetRef}
                 >
                     <Resizer onResize={this.handleResize} />
                     <div style={{ position: 'relative' }}>
