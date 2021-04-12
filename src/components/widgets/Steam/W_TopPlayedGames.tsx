@@ -48,13 +48,16 @@ class GithubUserOverview extends PureComponent<IProps, IState> {
                 >
                     Orient Labels
                 </Checkbox>
-                <Slider
-                    min={0}
-                    max={1}
-                    step={0.01}
-                    onChange={(val) => this.setState({ opacity: val })}
-                    defaultValue={this.state.opacity}
-                />
+                <div>
+                    <span>Opacity: </span>
+                    <Slider
+                        min={0}
+                        max={1}
+                        step={0.01}
+                        onChange={(val) => this.setState({ opacity: val })}
+                        defaultValue={this.state.opacity}
+                    />
+                </div>
             </div>
         );
     }
