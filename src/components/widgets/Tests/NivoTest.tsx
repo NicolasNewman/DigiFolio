@@ -1,15 +1,24 @@
+/* eslint-disable no-continue */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable no-plusplus */
 /* eslint-disable react/self-closing-comp */
 import * as React from 'react';
 import { PureComponent } from 'react';
 import { ResponsiveBar, Layer } from '@nivo/bar';
+import { Select } from 'antd';
 import { widgetFactory, ExternalProps } from '../IWidget';
-import { SteamLibraryModelMerge } from '../../../api/SteamAPI';
+import { SteamLibraryModel } from '../../../api/SteamAPI';
+
+const { Option } = Select;
 
 // The props should always extend ExternalProps which takes a generic of the type of the data model being given to this widget
-type IProps = ExternalProps<SteamLibraryModelMerge>;
+type IProps = ExternalProps<SteamLibraryModel>;
 
+interface IState {
+    games: string[];
+}
 /**
  * Custom layers in Nivo allow you to add your own information anywhere on the chart
  * There is unfortunetly no documentation, so they can be difficult to make
@@ -53,7 +62,7 @@ const ProgressLabels = ({ bars, yScale }) => {
     });
 };
 
-class ChartWidget extends PureComponent<IProps> {
+class ChartWidget extends PureComponent<IProps, IState> {
     props!: IProps;
 
     // each widget should have a data field, which is what is passed into the Nivo chart
@@ -64,9 +73,38 @@ class ChartWidget extends PureComponent<IProps> {
         earned: number;
     }[];
 
+    games: string[] = [];
+
     constructor(props: IProps) {
         super(props);
         this.data = [];
+        props.data.games.forEach((game) => {
+            this.games.push(game.name);
+        });
+        this.state = { games: [] };
+    }
+
+    getThemePanel() {
+        return (
+            <div>
+                <span>Games:</span>
+                <Select
+                    mode="multiple"
+                    onChange={(val) => {
+                        this.data = [];
+                        this.setState({ games: val.toString().split(',') });
+                    }}
+                    style={{ width: '100%' }}
+                    defaultValue={this.state.games}
+                >
+                    {this.games.map((game) => (
+                        <Option value={game} key={game}>
+                            {game}
+                        </Option>
+                    ))}
+                </Select>
+            </div>
+        );
     }
 
     /**
@@ -82,9 +120,14 @@ class ChartWidget extends PureComponent<IProps> {
         if (dataSource) {
             for (let i = 0; i < dataSource.game_count; i += 1) {
                 const game = dataSource.games[i];
-
-                // if the game has achievements
+                if (
+                    this.state.games.length > 0 &&
+                    !this.state.games.includes(game.name)
+                ) {
+                    continue;
+                }
                 if (game.achievements.length > 0) {
+                    // if the game has achievements
                     let total = 0;
                     let earned = 0;
                     // loop through each achievement and increment total. Also increment earned if it has been earned
@@ -124,6 +167,12 @@ class ChartWidget extends PureComponent<IProps> {
                         ? { width: '100%', height: '225px' }
                         : { width: '500px', height: '300px' }
                 }
+                onClick={(e) => {
+                    e.stopPropagation();
+                    return this.props.setThemePanel
+                        ? this.props.setThemePanel(this.getThemePanel())
+                        : null;
+                }}
             >
                 <ResponsiveBar
                     data={this.data}
@@ -165,4 +214,4 @@ class ChartWidget extends PureComponent<IProps> {
     }
 }
 
-export default widgetFactory()<SteamLibraryModelMerge, IProps>(ChartWidget);
+export default widgetFactory()<SteamLibraryModel, IProps>(ChartWidget);
