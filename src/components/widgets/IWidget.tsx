@@ -236,6 +236,9 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
                 console.log(monitor);
                 console.log(component);
             },
+            canDrag: (props: ResultProps, monitor: DragSourceMonitor) => {
+                return true;
+            },
         },
         (connect: DragSourceConnector, monitor: DragSourceMonitor) => ({
             connectDragSource: connect.dragSource(),
