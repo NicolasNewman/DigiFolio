@@ -144,11 +144,12 @@ export default class APIManager {
             !validateAPIObject(apiInfo, ['key']) ||
             apiInfo.key !== options.key ||
             apiInfo.username !== options.username ||
+            apiInfo.other !== options.other ||
             forced === true
         ) {
             // There is no record of the api existing
             console.log(
-                `The passed key is different from the saved key (or foced update), updating`
+                `The passed keys are different from the saved keys (or foced update), updating`
             );
             console.log('api ', api);
             switch (api) {
