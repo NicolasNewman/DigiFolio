@@ -4,6 +4,7 @@ import IAPI from './IAPI';
 export interface RedditDataModel {
     something: any;
     profile: RedditUserInfo;
+    karma_distribution: RedditKarmaBySub[];
 }
 
 export interface RedditUserInfo {
@@ -12,6 +13,13 @@ export interface RedditUserInfo {
     total_karma: number;
     coins: number;
     num_friends: number;
+}
+
+export interface RedditKarmaBySub {
+    subreddit: string;
+    comment_karma: number;
+    link_karma: number;
+    total_sub_karma: number;
 }
 
 export type RedditAPIData = RedditDataModel | null;
@@ -43,18 +51,22 @@ export default class RedditAPI extends IAPI<RedditDataModel> {
             clientSecret: this.clientSecret,
             refreshToken: this.token,
         });
+        this.r.config({ proxies: false });
     }
 
     async parse_api(): Promise<RedditDataModel> {
         const temp: RedditDataModel = {
             something: 'smaple text',
             profile: await this.fetch_profile(),
+            karma_distribution: await this.fetch_karma_distribution(),
         };
+        // eslint-disable-next-line promise/catch-or-return
+        //this.r.getKarma().then(console.log);
         return temp;
     }
 
     async fetch_profile(): Promise<RedditUserInfo> {
-        const temp = await new Promise((resolve) =>
+        const temp: any = await new Promise((resolve) =>
             this.r.getMe().then(resolve)
         );
         const data: RedditUserInfo = {
@@ -64,6 +76,22 @@ export default class RedditAPI extends IAPI<RedditDataModel> {
             coins: temp.coins,
             num_friends: temp.num_friends,
         };
+        return data;
+    }
+
+    async fetch_karma_distribution(): Promise<RedditKarmaBySub[]> {
+        const temp = await this.r.getKarma().then((karma) => {
+            return karma;
+        });
+        const data: RedditKarmaBySub[] = [];
+        for (let i = 0; i < temp.length; i += 1) {
+            data.push({
+                subreddit: temp[i].sr.display_name,
+                comment_karma: temp[i].comment_karma,
+                link_karma: temp[i].link_karma,
+                total_sub_karma: temp[i].comment_karma + temp[i].link_karma,
+            });
+        }
         return data;
     }
 
