@@ -3,12 +3,18 @@
 import * as React from 'react';
 import { PureComponent } from 'react';
 import { ResponsiveTreeMap } from '@nivo/treemap';
+import { Checkbox, Slider } from 'antd';
 import { SteamLibraryModel } from '../../../api/SteamAPI';
 import { widgetFactory, ExternalProps } from '../IWidget';
 
 type IProps = ExternalProps<SteamLibraryModel>;
 
-class GithubUserOverview extends PureComponent<IProps> {
+interface IState {
+    orientLabels: boolean;
+    opacity: number;
+}
+
+class GithubUserOverview extends PureComponent<IProps, IState> {
     props!: IProps;
 
     data: {
@@ -25,10 +31,32 @@ class GithubUserOverview extends PureComponent<IProps> {
             game: 'Top 10',
             children: [],
         };
+        this.state = {
+            orientLabels: true,
+            opacity: 0.33,
+        };
     }
 
     getThemePanel() {
-        return <div>TopPlayedGames</div>;
+        return (
+            <div>
+                <Checkbox
+                    onChange={(e) =>
+                        this.setState({ orientLabels: e.target.checked })
+                    }
+                    defaultChecked={this.state.orientLabels}
+                >
+                    Orient Labels
+                </Checkbox>
+                <Slider
+                    min={0}
+                    max={1}
+                    step={0.01}
+                    onChange={(val) => this.setState({ opacity: val })}
+                    defaultValue={this.state.opacity}
+                />
+            </div>
+        );
     }
 
     compileData() {
@@ -86,6 +114,8 @@ class GithubUserOverview extends PureComponent<IProps> {
                     label={(e) => {
                         return `${e.id}`;
                     }}
+                    orientLabel={this.state.orientLabels}
+                    nodeOpacity={this.state.opacity}
                     labelTextColor={{
                         from: 'color',
                         modifiers: [['darker', 1.2]],
