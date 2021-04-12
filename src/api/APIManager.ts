@@ -1,5 +1,5 @@
 import { Store } from 'redux';
-import { message } from 'antd';
+import { Alert, message } from 'antd';
 import DataStore, { APIInfo, SchemaFields } from '../classes/DataStore';
 import CatsAPI, { CatsAPIData } from './CatsAPI';
 import GithubAPI, { GithubData } from './GithubAPI';
@@ -128,17 +128,27 @@ export default class APIManager {
 
         // console.log(`The currently saved key is: ${savedKey}`);
         if (
-            options.key === null ||
-            options.key === undefined ||
-            options.key === ''
+            // options.key === null ||
+            // options.key === undefined ||
+            // options.key === ''
+            (options.key === null ||
+                options.key === undefined ||
+                options.key === '') &&
+            (options.username === null ||
+                options.username === undefined ||
+                options.username === '') &&
+            (options.other === null ||
+                options.other === undefined ||
+                options.other === '')
         ) {
             // The user wants to delete an integration
             console.log(
-                `The new key is empty, removing the api and saved data`
+                `The new values empty, removing the api and saved data`
             );
             this.apis[api]?.dispatch(null);
             this.apis[api] = null;
             this.dataStore.set(api, {});
+            message.success('Removed stored API keys and saved data');
         } else if (
             !apiInfo ||
             !validateAPIObject(apiInfo, ['key']) ||
@@ -233,6 +243,8 @@ export default class APIManager {
                     break;
                 case SchemaFields.steamAPI:
                     if (options.key && options.username) {
+                        // console.log(`key: ${options.key}`);
+                        // console.log(`username: ${options.username}`);
                         if (!SteamAPI.verify_key(options.key)) {
                             message.error('Invalid Web API Key');
                             canCommit = false;

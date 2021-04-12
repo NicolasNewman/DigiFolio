@@ -117,15 +117,16 @@ export default class Settings extends Component<IProps> {
      * Saves or updates the keys specified by the API tab to the Electron data store
      */
     saveKeys = (api: SchemaFields, options: APIInfo, forced: boolean) => {
-        if (options.key === '') {
-            this.props.apiManager.updateKey(
-                api,
-                { key: '', username: '', other: '' },
-                forced
-            );
-        } else {
-            this.props.apiManager.updateKey(api, options, forced);
-        }
+        // if (options.key === '') {
+        //     this.props.apiManager.updateKey(
+        //         api,
+        //         { key: '', username: '', other: '' },
+        //         forced
+        //     );
+        // } else {
+        //     this.props.apiManager.updateKey(api, options, forced);
+        // }
+        this.props.apiManager.updateKey(api, options, forced);
     };
 
     toPage(route: string, e) {
