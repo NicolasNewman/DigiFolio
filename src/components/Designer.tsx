@@ -48,6 +48,7 @@ export default class Designer extends Component<IProps, IState> {
     }
 
     getGlobalThemePanel() {
+        console.log('state ', this.state);
         return (
             <div>
                 <ul>
@@ -55,6 +56,7 @@ export default class Designer extends Component<IProps, IState> {
                         <button
                             onClick={() => {
                                 this.setState({ theme: 'dark' });
+                                console.log(this.state);
                             }}
                         >
                             Dark
@@ -63,7 +65,8 @@ export default class Designer extends Component<IProps, IState> {
                     <li>
                         <button
                             onClick={() => {
-                                this.setState({ theme: '' });
+                                this.setState({ theme: null });
+                                console.log(this.state);
                             }}
                         >
                             Light

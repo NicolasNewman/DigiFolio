@@ -31,6 +31,7 @@ interface IProps {
     connectDropTarget: ConnectDropTarget;
     updateActiveWidgets: (id: string, active: boolean) => void;
     setThemePanel: (node: React.ReactNode) => void;
+    theme: string | null;
 }
 
 interface IState {
@@ -43,7 +44,6 @@ interface IState {
             data: any;
         };
     };
-    theme: string | null;
 }
 
 // export function deleteBox(this: any, id) {
@@ -68,7 +68,6 @@ class Portfolio extends Component<IProps, IState> {
         super(props);
         this.state = {
             boxes: {},
-            theme: null,
         };
     }
 
@@ -112,7 +111,8 @@ class Portfolio extends Component<IProps, IState> {
         const { hideSourceOnDrag, connectDropTarget, hovered } = this.props;
         //const backgroundColor = hovered ? '#F0F02D' : 'white';
         const backgroundColor = hovered ? '0px 0px 40px black' : '';
-        const { boxes, theme } = this.state;
+        const { boxes } = this.state;
+        const { theme } = this.props;
         return connectDropTarget(
             <div className={theme ? `portfolio-${theme}` : 'portfolio'}>
                 <div
