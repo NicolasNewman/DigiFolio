@@ -64,19 +64,19 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
 ) => {
     type ResultProps = TOriginalProps & ExternalProps<T>;
 
+    const widgetRef = useRef(null);
+
     class Widget extends React.Component<ResultProps, IState> {
-        static style: any;
+        // static style: any;
 
-        static getBoundingClientRect(): {
-            width: any;
-            height: any;
-            x: any;
-            y: any;
-        } {
-            throw new Error('Method not implemented.');
-        }
-
-        //widgetRef = useRef(null);
+        // static getBoundingClientRect(): {
+        //     width: any;
+        //     height: any;
+        //     x: any;
+        //     y: any;
+        // } {
+        //     throw new Error('Method not implemented.');
+        // }
 
         props!: ResultProps;
 
@@ -94,27 +94,27 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
         }
 
         handleResize = (direction, movementX, movementY) => {
-            //const widget = this.widgetRef.current;
-            //if (!widget) return;
+            const widget = widgetRef.current;
+            if (!widget) return;
 
-            const { width, height, x, y } = Widget.getBoundingClientRect();
+            const { width, height, x, y } = widget.getBoundingClientRect();
 
             const resizeTop = () => {
-                Widget.style.height = `${height - movementY}px`;
-                Widget.style.top = `${y + movementY}px`;
+                widget.style.height = `${height - movementY}px`;
+                widget.style.top = `${y + movementY}px`;
             };
 
             const resizeRight = () => {
-                Widget.style.width = `${width + movementX}px`;
+                widget.style.width = `${width + movementX}px`;
             };
 
             const resizeBottom = () => {
-                Widget.style.height = `${height + movementY}px`;
+                widget.style.height = `${height + movementY}px`;
             };
 
             const resizeLeft = () => {
-                Widget.style.width = `${width - movementX}px`;
-                Widget.style.left = `${x + movementX}px`;
+                widget.style.width = `${width - movementX}px`;
+                widget.style.left = `${x + movementX}px`;
             };
 
             switch (direction) {
