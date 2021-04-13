@@ -66,6 +66,10 @@ export default class GithubAPI extends IAPI<GithubDataModel> {
 
     private map: Map<string, number>;
 
+    private GITHUB_CLIENT_ID = '906c9a0acdc7858a7123';
+
+    private GITHUB_CLIENT_SECRET = 'db15ee958316d61fea5cb26ea343670e5f9a5045';
+
     constructor(username: string) {
         super({
             'Content-Type': 'application/json',
@@ -91,30 +95,30 @@ export default class GithubAPI extends IAPI<GithubDataModel> {
     static verify_username(name: string) {
         if (name.length === 0 || name.length > 39) return false;
         const re = /^[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}$/i;
-        console.log('checking regex');
         const found = name.match(re);
-        console.log('found ', found);
         if (found === null || found === undefined) return false;
-        console.log('returning true');
         return true;
     }
 
     async fetch_user_info() {
+        console.log('client id ', this.GITHUB_CLIENT_ID);
         const info = await this.fetch<GithubInfoModel>(
-            `https://api.github.com/users/${this.username}`
+            `https://api.github.com/users/${this.username}?client_id=${this.GITHUB_CLIENT_ID}&client_secret=${this.GITHUB_CLIENT_SECRET}`
         );
         return info;
     }
 
     async fetch_user_repos() {
         const repos = await this.fetch<GithubRepoModel>(
-            `https://api.github.com/users/${this.username}/repos`
+            `https://api.github.com/users/${this.username}/repos?client_id=${this.GITHUB_CLIENT_ID}&client_secret=${this.GITHUB_CLIENT_SECRET}`
         );
 
         try {
             repos.forEach(async (repo) => {
                 const commits = await this.fetch<GithubCommitsModel>(
-                    this.filter_url(repo.commits_url)
+                    `${this.filter_url(repo.commits_url)}?client_id=${
+                        this.GITHUB_CLIENT_ID
+                    }&client_secret=${this.GITHUB_CLIENT_SECRET}`
                 );
                 repo.data_commits = commits;
             });
