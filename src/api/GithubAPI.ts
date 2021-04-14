@@ -68,10 +68,6 @@ export default class GithubAPI extends IAPI<GithubDataModel> {
 
     private map: Map<string, number>;
 
-    private GITHUB_CLIENT_ID = '906c9a0acdc7858a7123';
-
-    private GITHUB_CLIENT_SECRET = 'db15ee958316d61fea5cb26ea343670e5f9a5045';
-
     constructor(username: string) {
         super({
             'Content-Type': 'application/json',
@@ -103,24 +99,23 @@ export default class GithubAPI extends IAPI<GithubDataModel> {
     }
 
     async fetch_user_info() {
-        console.log('client id ', process.env.GITHUB_CLIENT_ID);
         const info = await this.fetch<GithubInfoModel>(
-            `https://api.github.com/users/${this.username}?client_id=${this.GITHUB_CLIENT_ID}&client_secret=${this.GITHUB_CLIENT_SECRET}`
+            `https://api.github.com/users/${this.username}?client_id=${process.env.GITHUB_CLIENT_ID}&client_secret=${process.env.GITHUB_CLIENT_SECRET}`
         );
         return info;
     }
 
     async fetch_user_repos() {
         const repos = await this.fetch<GithubRepoModel>(
-            `https://api.github.com/users/${this.username}/repos?client_id=${this.GITHUB_CLIENT_ID}&client_secret=${this.GITHUB_CLIENT_SECRET}`
+            `https://api.github.com/users/${this.username}/repos?client_id=${process.env.GITHUB_CLIENT_ID}&client_secret=${process.env.GITHUB_CLIENT_SECRET}`
         );
 
         try {
             repos.forEach(async (repo) => {
                 const commits = await this.fetch<GithubCommitsModel>(
                     `${this.filter_url(repo.commits_url)}?client_id=${
-                        this.GITHUB_CLIENT_ID
-                    }&client_secret=${this.GITHUB_CLIENT_SECRET}`
+                        process.env.GITHUB_CLIENT_ID
+                    }&client_secret=${process.env.GITHUB_CLIENT_SECRET}`
                 );
                 repo.data_commits = commits;
             });
