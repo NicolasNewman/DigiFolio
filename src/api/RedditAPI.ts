@@ -1,10 +1,11 @@
-import Snoowrap, { RedditUser } from 'snoowrap';
+import Snoowrap, { RedditUser, Submission } from 'snoowrap';
 import IAPI from './IAPI';
 
 export interface RedditDataModel {
     something: any;
     profile: RedditUserInfo;
     karma_distribution: RedditKarmaBySub[];
+    submissions: RedditSubmission[]; //recent posts
 }
 
 export interface RedditUserInfo {
@@ -20,6 +21,17 @@ export interface RedditKarmaBySub {
     comment_karma: number;
     link_karma: number;
     total_sub_karma: number;
+}
+
+export interface RedditSubmission {
+    subreddit: string;
+    title: string;
+    is_self: boolean; //true if text post, false if else
+    text: string;
+    media: string; //url to self if text post, url to media if else
+    updoots: number;
+    downdoots: number;
+    //comments:
 }
 
 export type RedditAPIData = RedditDataModel | null;
@@ -59,9 +71,10 @@ export default class RedditAPI extends IAPI<RedditDataModel> {
             something: 'smaple text',
             profile: await this.fetch_profile(),
             karma_distribution: await this.fetch_karma_distribution(),
+            submissions: await this.fetch_submissions(),
         };
         // eslint-disable-next-line promise/catch-or-return
-        //this.r.getKarma().then(console.log);
+        //this.r.getSubmission('2np694').title.then(console.log);
         return temp;
     }
 
@@ -90,6 +103,30 @@ export default class RedditAPI extends IAPI<RedditDataModel> {
                 comment_karma: temp[i].comment_karma,
                 link_karma: temp[i].link_karma,
                 total_sub_karma: temp[i].comment_karma + temp[i].link_karma,
+            });
+        }
+        return data;
+    }
+
+    async fetch_submissions(): Promise<RedditSubmission[]> {
+        const me: RedditUser = await new Promise((resolve) =>
+            this.r.getMe().then(resolve)
+        ); //need to fix this later on
+        const temp = await (await me.getSubmissions())
+            .fetchAll()
+            .then((submissions) => {
+                return submissions;
+            });
+        const data: RedditSubmission[] = [];
+        for (let i = 0; i < temp.length; i += 1) {
+            data.push({
+                subreddit: temp[i].subreddit.display_name,
+                title: temp[i].title,
+                is_self: temp[i].is_self,
+                text: temp[i].selftext,
+                media: temp[i].url,
+                updoots: temp[i].ups,
+                downdoots: temp[i].downs,
             });
         }
         return data;
