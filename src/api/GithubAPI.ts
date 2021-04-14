@@ -1,6 +1,8 @@
 import { message } from 'antd';
 import IAPI from './IAPI';
 
+require('dotenv').config();
+
 export interface GithubInfoModel {
     avatar_url: string;
     bio: string;
@@ -101,7 +103,7 @@ export default class GithubAPI extends IAPI<GithubDataModel> {
     }
 
     async fetch_user_info() {
-        console.log('client id ', this.GITHUB_CLIENT_ID);
+        console.log('client id ', process.env.GITHUB_CLIENT_ID);
         const info = await this.fetch<GithubInfoModel>(
             `https://api.github.com/users/${this.username}?client_id=${this.GITHUB_CLIENT_ID}&client_secret=${this.GITHUB_CLIENT_SECRET}`
         );
