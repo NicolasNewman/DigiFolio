@@ -42,21 +42,19 @@ export default class Designer extends Component<IProps, IState> {
         this.state = {
             active: {},
             currentThemePanel: this.getGlobalThemePanel(),
-            theme: null,
+            theme: 'dark',
         };
-        console.log(this.state);
+        console.log('state', this.state);
     }
 
     getGlobalThemePanel() {
-        console.log('state ', this.state);
         return (
             <div>
                 <ul>
                     <li>
                         <button
                             onClick={() => {
-                                this.setState({ theme: 'dark' });
-                                console.log(this.state);
+                                this.setGlobalTheme('dark');
                             }}
                         >
                             Dark
@@ -65,8 +63,7 @@ export default class Designer extends Component<IProps, IState> {
                     <li>
                         <button
                             onClick={() => {
-                                this.setState({ theme: null });
-                                console.log(this.state);
+                                this.setGlobalTheme(null);
                             }}
                         >
                             Light
@@ -76,6 +73,11 @@ export default class Designer extends Component<IProps, IState> {
             </div>
         );
     }
+
+    setGlobalTheme = (thm: string | null) => {
+        console.log('changing theme');
+        this.setState({ theme: thm });
+    };
 
     setThemePanel = (panel: React.ReactNode) => {
         this.setState({ currentThemePanel: panel });
@@ -115,6 +117,7 @@ export default class Designer extends Component<IProps, IState> {
                                 hideSourceOnDrag
                                 updateActiveWidgets={this.updateActiveWidgets}
                                 setThemePanel={this.setThemePanel}
+                                theme={this.state.theme}
                             />
                         </div>
                         <div className="designer__widgets">
