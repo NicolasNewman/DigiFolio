@@ -64,20 +64,7 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
 ) => {
     type ResultProps = TOriginalProps & ExternalProps<T>;
 
-    // const widgetRef = createRef();
-
     class Widget extends React.Component<ResultProps, IState> {
-        // static style: any;
-
-        // static getBoundingClientRect(): {
-        //     width: any;
-        //     height: any;
-        //     x: any;
-        //     y: any;
-        // } {
-        //     throw new Error('Method not implemented.');
-        // }
-
         props!: ResultProps;
 
         state: IState;
@@ -99,12 +86,7 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
             const widget = this.widgetRef.current;
             if (!widget) return;
 
-            const { width, height, x, y } = widget.getBoundingClientRect();
-
-            const resizeTop = () => {
-                widget.style.height = `${height - movementY}px`;
-                widget.style.top = `${y + movementY}px`;
-            };
+            const { width, height } = widget.getBoundingClientRect();
 
             const resizeRight = () => {
                 widget.style.width = `${width + movementX}px`;
@@ -114,48 +96,11 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
                 widget.style.height = `${height + movementY}px`;
             };
 
-            const resizeLeft = () => {
-                widget.style.width = `${width - movementX}px`;
-                widget.style.left = `${x + movementX}px`;
-            };
-
             switch (direction) {
-                case Direction.TopLeft:
-                    resizeTop();
-                    resizeLeft();
-                    break;
-
-                case Direction.Top:
-                    resizeTop();
-                    break;
-
-                case Direction.TopRight:
-                    resizeTop();
-                    resizeRight();
-                    break;
-
-                case Direction.Right:
-                    resizeRight();
-                    break;
-
                 case Direction.BottomRight:
                     resizeBottom();
                     resizeRight();
                     break;
-
-                case Direction.Bottom:
-                    resizeBottom();
-                    break;
-
-                case Direction.BottomLeft:
-                    resizeBottom();
-                    resizeLeft();
-                    break;
-
-                case Direction.Left:
-                    resizeLeft();
-                    break;
-
                 default:
                     break;
             }
@@ -194,7 +139,11 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
                     onMouseLeave={() => this.setState({ hover: false })}
                     ref={this.widgetRef}
                 >
-                    <Resizer onResize={this.handleResize} />
+                    {!this.props.onWidgetList && this.state.hover ? (
+                        <Resizer onResize={this.handleResize} />
+                    ) : (
+                        <span />
+                    )}
                     <div style={{ position: 'relative' }}>
                         <Component {...this.props} />
                         {!this.props.onWidgetList && this.state.hover ? (
@@ -235,9 +184,6 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
                 console.log(props);
                 console.log(monitor);
                 console.log(component);
-            },
-            canDrag: (props: ResultProps, monitor: DragSourceMonitor) => {
-                return true;
             },
         },
         (connect: DragSourceConnector, monitor: DragSourceMonitor) => ({

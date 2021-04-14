@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-shadow */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import React, { useState, useEffect } from 'react';
+import { CaretLeftOutlined } from '@ant-design/icons';
 import { Direction } from './Direction';
 
 const Resizer = ({ onResize }) => {
@@ -42,41 +43,11 @@ const Resizer = ({ onResize }) => {
     return (
         <>
             <div
-                className="top-left"
-                onMouseDown={handleMouseDown(Direction.TopLeft)}
-            />
-
-            <div className="top" onMouseDown={handleMouseDown(Direction.Top)} />
-
-            <div
-                className="top-right"
-                onMouseDown={handleMouseDown(Direction.TopRight)}
-            />
-
-            <div
-                className="right"
-                onMouseDown={handleMouseDown(Direction.Right)}
-            />
-
-            <div
                 className="right-bottom"
                 onMouseDown={handleMouseDown(Direction.BottomRight)}
-            />
-
-            <div
-                className="bottom"
-                onMouseDown={handleMouseDown(Direction.Bottom)}
-            />
-
-            <div
-                className="bottom-left"
-                onMouseDown={handleMouseDown(Direction.BottomLeft)}
-            />
-
-            <div
-                className="left"
-                onMouseDown={handleMouseDown(Direction.Left)}
-            />
+            >
+                <CaretLeftOutlined rotate={45} />
+            </div>
         </>
     );
 };
