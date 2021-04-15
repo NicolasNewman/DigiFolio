@@ -3,7 +3,6 @@
 /* eslint-disable react/no-unused-state */
 import * as React from 'react';
 import { Component } from 'react';
-
 import {
     DropTarget,
     ConnectDropTarget,
@@ -12,6 +11,7 @@ import {
     DropTargetConnector,
 } from 'react-dnd';
 import update from 'immutability-helper';
+import { Boxes } from '../../types/Portfolio';
 // eslint-disable-next-line import/no-cycle
 import { BoxDragItem } from '../../constants/types';
 // eslint-disable-next-line import/no-cycle
@@ -31,18 +31,11 @@ interface IProps {
     connectDropTarget: ConnectDropTarget;
     updateActiveWidgets: (id: string, active: boolean) => void;
     setThemePanel: (node: React.ReactNode) => void;
+    updatePortfolioBoxes: (boxes: Boxes) => void;
 }
 
 interface IState {
-    boxes: {
-        [key: string]: {
-            top: number;
-            left: number;
-            title: string;
-            component: WidgetComponentType;
-            data: any;
-        };
-    };
+    boxes: Boxes;
 }
 
 // export function deleteBox(this: any, id) {
@@ -68,6 +61,10 @@ class Portfolio extends Component<IProps, IState> {
         this.state = {
             boxes: {},
         };
+    }
+
+    componentDidUpdate(_, prevState) {
+        this.props.updatePortfolioBoxes(prevState.boxes);
     }
 
     deleteBox = (id: string) => {
