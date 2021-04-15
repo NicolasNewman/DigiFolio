@@ -13,8 +13,6 @@ import {
     DragSourceMonitor,
 } from 'react-dnd';
 import { CloseCircleOutlined } from '@ant-design/icons';
-//import Portfolio from '../Designer/Portfolio';
-// import { deleteBox } from '../Designer/Portfolio';
 
 const widgetStyle: React.CSSProperties = {
     background: '#ddd',
@@ -29,7 +27,6 @@ export type WidgetComponentType =
 
 export interface ExternalProps<T> {
     id: any;
-    // data: T;
     component: WidgetComponentType;
     left?: number;
     top?: number;
@@ -74,8 +71,6 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
 
         savedState: TOriginalState | null = null;
 
-        // InitComponent: React.ReactElement<TOriginalProps>;
-
         componentRef: React.RefObject<any>;
 
         static displayName = `Widget(${
@@ -84,7 +79,6 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
 
         constructor(props: ResultProps) {
             super(props);
-            // this.InitComponent = <Component ref={} {...props} />;
             this.componentRef = React.createRef();
             this.state = {
                 hover: false,
@@ -96,7 +90,6 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
             string | React.JSXElementConstructor<any>
         > | null {
             const { isDragging } = this.props;
-            // console.log(this.props.data);
             if (isDragging) {
                 return null;
             }
@@ -173,16 +166,7 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
                 console.log('========== END DRAG ==========');
                 console.log(props);
                 console.log(monitor);
-                // console.log(component);
-                // if (component) {
-                //     console.log(component);
-                //     console.log(component?.componentRef);
-                //     console.log(component.componentRef?.current);
-                //     // component.componentRef.current.replaceState(
-                //     //     component.savedState
-                //     // );
-                // }
-                // component.getState();
+                console.log(component);
             },
         },
         (connect: DragSourceConnector, monitor: DragSourceMonitor) => ({
