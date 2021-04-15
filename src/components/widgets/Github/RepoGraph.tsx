@@ -1,17 +1,28 @@
+/* eslint-disable no-continue */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable no-plusplus */
 /* eslint-disable react/self-closing-comp */
 import * as React from 'react';
 import { PureComponent } from 'react';
 import { ResponsiveBar, Layer } from '@nivo/bar';
+import { Select } from 'antd';
 import { widgetFactory, ExternalProps } from '../IWidget';
-import { SteamLibraryModelMerge } from '../../../api/SteamAPI';
 import { GithubRepoModel } from '../../../api/GithubAPI';
 
-// The props should always extend ExternalProps which takes a generic of the type of the data model being given to this widget
-type IProps = ExternalProps<GithubRepoModel>;
+const { Option } = Select;
 
-class ChartWidget extends PureComponent<IProps> {
+// The props should always extend ExternalProps which takes a generic of the type of the data model being given to this widget
+type IProps = ExternalProps<GithubRepoModel> & {
+    saveState: (state: IState) => void;
+    restoreState: () => IState;
+};
+
+interface IState {
+    repos: string[];
+}
+
+class ChartWidget extends React.Component<IProps, IState> {
     props!: IProps;
 
     // each widget should have a data field, which is what is passed into the Nivo chart
@@ -21,9 +32,45 @@ class ChartWidget extends PureComponent<IProps> {
         commits: number;
     }[];
 
+    repos: string[] = [];
+
     constructor(props: IProps) {
         super(props);
         this.data = [];
+        props.data.forEach((repo) => {
+            this.repos.push(repo.name);
+        });
+        const restoredState = props.restoreState();
+        this.state = restoredState || {
+            repos: [],
+        };
+    }
+
+    componentWillUnmount() {
+        this.props.saveState(this.state);
+    }
+
+    getThemePanel() {
+        return (
+            <div>
+                <span>Games:</span>
+                <Select
+                    mode="multiple"
+                    onChange={(val) => {
+                        this.data = [];
+                        this.setState({ repos: val.toString().split(',') });
+                    }}
+                    style={{ width: '100%' }}
+                    defaultValue={this.state.repos}
+                >
+                    {this.repos.map((repo) => (
+                        <Option value={repo} key={repo}>
+                            {repo}
+                        </Option>
+                    ))}
+                </Select>
+            </div>
+        );
     }
 
     /**
@@ -40,6 +87,12 @@ class ChartWidget extends PureComponent<IProps> {
             for (let i = 0; i < repoList.length; i += 1) {
                 const repo = repoList[i];
 
+                if (
+                    this.state.repos.length > 0 &&
+                    !this.state.repos.includes(repo.name)
+                ) {
+                    continue;
+                }
                 // if the game has achievements
                 if (repo.data_commits.length > 0) {
                     const total = repo.data_commits.length;
@@ -66,6 +119,7 @@ class ChartWidget extends PureComponent<IProps> {
         }
 
         return (
+            // eslint-disable-next-line jsx-a11y/click-events-have-key-events
             <div
                 // set the width and height based on if the widget is on the list or the portfolio
                 // if it is on the list, width should be 100% and the height should be determined by testing various values in the debugger
@@ -74,6 +128,12 @@ class ChartWidget extends PureComponent<IProps> {
                         ? { width: '100%', height: '225px' }
                         : { width: '500px', height: '300px' }
                 }
+                onClick={(e) => {
+                    e.stopPropagation();
+                    return this.props.setThemePanel
+                        ? this.props.setThemePanel(this.getThemePanel())
+                        : null;
+                }}
             >
                 <h2>Commits by Repo</h2>
                 <ResponsiveBar
@@ -100,7 +160,7 @@ class ChartWidget extends PureComponent<IProps> {
                         legendPosition: 'middle',
                         legendOffset: 32,
                     }}
-                    margin={{ top: 20, right: 0, bottom: 40, left: 45 }}
+                    margin={{ top: 20, right: 0, bottom: 60, left: 45 }}
                     layers={['grid', 'axes', 'bars', 'markers', 'legends']}
                     labelSkipHeight={10}
                 />
@@ -109,4 +169,4 @@ class ChartWidget extends PureComponent<IProps> {
     }
 }
 
-export default widgetFactory()<GithubRepoModel, IProps>(ChartWidget);
+export default widgetFactory()<GithubRepoModel, IProps, IState>(ChartWidget);
