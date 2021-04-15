@@ -53,11 +53,17 @@ interface Options {
 
 export const widgetFactory = ({ test = '' }: Options = {}) => <
     T,
-    TOriginalProps extends {}
+    TOriginalProps extends {},
+    TOriginalState extends {} = {}
 >(
-    Component:
-        | React.ComponentClass<TOriginalProps>
-        | React.FunctionComponent<TOriginalProps>
+    Component: React.ComponentClass<
+        TOriginalProps & {
+            saveState: (state: TOriginalState) => void;
+            restoreState: () => TOriginalState;
+        },
+        TOriginalState
+    >
+    // | React.FunctionComponent<TOriginalProps>
 ) => {
     type ResultProps = TOriginalProps & ExternalProps<T>;
 
@@ -66,12 +72,20 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
 
         state: IState;
 
+        savedState: TOriginalState | null = null;
+
+        // InitComponent: React.ReactElement<TOriginalProps>;
+
+        componentRef: React.RefObject<any>;
+
         static displayName = `Widget(${
             Component.displayName || Component.name
         })`;
 
         constructor(props: ResultProps) {
             super(props);
+            // this.InitComponent = <Component ref={} {...props} />;
+            this.componentRef = React.createRef();
             this.state = {
                 hover: false,
             };
@@ -82,7 +96,6 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
             string | React.JSXElementConstructor<any>
         > | null {
             const { isDragging } = this.props;
-            console.log('HOC RENDER');
             // console.log(this.props.data);
             if (isDragging) {
                 return null;
@@ -110,7 +123,16 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
                     onMouseLeave={() => this.setState({ hover: false })}
                 >
                     <div style={{ position: 'relative' }}>
-                        <Component {...this.props} />
+                        <Component
+                            ref={this.componentRef}
+                            {...this.props}
+                            saveState={(state: TOriginalState) => {
+                                this.savedState = state;
+                            }}
+                            restoreState={() => {
+                                return this.savedState;
+                            }}
+                        />
                         {!this.props.onWidgetList && this.state.hover ? (
                             <CloseCircleOutlined
                                 onClick={() => {
@@ -132,23 +154,35 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
     const result = DragSource(
         'widget',
         {
-            beginDrag: (props: ResultProps) => {
+            beginDrag: (
+                props: ResultProps,
+                monitor: DragSourceMonitor,
+                funcComponent
+            ) => {
                 console.log('========== BEING DRAG ==========');
                 console.log(props);
+                console.log(funcComponent);
                 const { id, left, top, component, data } = props;
                 return { id, left, top, component, data };
             },
             endDrag: (
                 props: ResultProps,
                 monitor: DragSourceMonitor,
-                component:
-                    | React.ComponentClass<TOriginalProps>
-                    | React.FunctionComponent<TOriginalProps>
+                component
             ) => {
                 console.log('========== END DRAG ==========');
                 console.log(props);
                 console.log(monitor);
-                console.log(component);
+                // console.log(component);
+                // if (component) {
+                //     console.log(component);
+                //     console.log(component?.componentRef);
+                //     console.log(component.componentRef?.current);
+                //     // component.componentRef.current.replaceState(
+                //     //     component.savedState
+                //     // );
+                // }
+                // component.getState();
             },
         },
         (connect: DragSourceConnector, monitor: DragSourceMonitor) => ({
@@ -159,36 +193,3 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
 
     return result;
 };
-
-// export abstract class IWidget<P = {}> extends PureComponent<P & IWidgetProps> {
-//     props!: P & IWidgetProps;
-
-//     constructor(props) {
-//         super(props);
-//     }
-
-//     abstract mapData();
-
-//     render() {
-//         const { connectDragSource, left, top } = this.props;
-//         return connectDragSource(
-//             <div style={{ left, top, position: 'absolute', color: 'black' }}>
-//                 <p>Hello</p>
-//             </div>
-//         );
-//     }
-// }
-
-// export default DragSource(
-//     ItemTypes.WIDGET,
-//     {
-//         beginDrag: (props: IWidgetProps) => {
-//             const { id, left, top } = props;
-//             return { id, left, top };
-//         },
-//     },
-//     (connect: DragSourceConnector, monitor: DragSourceMonitor) => ({
-//         connectDragSource: connect.dragSource(),
-//         isDragging: monitor.isDragging(),
-//     })
-// )(IWidget);

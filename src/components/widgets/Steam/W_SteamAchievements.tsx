@@ -14,7 +14,10 @@ import { SteamLibraryModel } from '../../../api/SteamAPI';
 const { Option } = Select;
 
 // The props should always extend ExternalProps which takes a generic of the type of the data model being given to this widget
-type IProps = ExternalProps<SteamLibraryModel>;
+type IProps = ExternalProps<SteamLibraryModel> & {
+    saveState: (state: IState) => void;
+    restoreState: () => IState;
+};
 
 interface IState {
     games: string[];
@@ -62,7 +65,7 @@ const ProgressLabels = ({ bars, yScale }) => {
     });
 };
 
-class ChartWidget extends PureComponent<IProps, IState> {
+class ChartWidget extends React.Component<IProps, IState> {
     props!: IProps;
 
     // each widget should have a data field, which is what is passed into the Nivo chart
@@ -81,7 +84,14 @@ class ChartWidget extends PureComponent<IProps, IState> {
         props.data.games.forEach((game) => {
             this.games.push(game.name);
         });
-        this.state = { games: [] };
+        const restoredState = props.restoreState();
+        this.state = restoredState || {
+            games: [],
+        };
+    }
+
+    componentWillUnmount() {
+        this.props.saveState(this.state);
     }
 
     getThemePanel() {
@@ -214,4 +224,4 @@ class ChartWidget extends PureComponent<IProps, IState> {
     }
 }
 
-export default widgetFactory()<SteamLibraryModel, IProps>(ChartWidget);
+export default widgetFactory()<SteamLibraryModel, IProps, IState>(ChartWidget);

@@ -1,20 +1,23 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import * as React from 'react';
-import { PureComponent } from 'react';
+import { Component } from 'react';
 import { ResponsiveTreeMap } from '@nivo/treemap';
 import { Checkbox, Slider } from 'antd';
 import { SteamLibraryModel } from '../../../api/SteamAPI';
 import { widgetFactory, ExternalProps } from '../IWidget';
 
-type IProps = ExternalProps<SteamLibraryModel>;
+type IProps = ExternalProps<SteamLibraryModel> & {
+    saveState: (state: IState) => void;
+    restoreState: () => IState;
+};
 
 interface IState {
     orientLabels: boolean;
     opacity: number;
 }
 
-class GithubUserOverview extends PureComponent<IProps, IState> {
+class TopPlayedGames extends Component<IProps, IState> {
     props!: IProps;
 
     data: {
@@ -31,10 +34,15 @@ class GithubUserOverview extends PureComponent<IProps, IState> {
             game: 'Top 10',
             children: [],
         };
-        this.state = {
+        const restoredState = props.restoreState();
+        this.state = restoredState || {
             orientLabels: true,
             opacity: 0.33,
         };
+    }
+
+    componentWillUnmount() {
+        this.props.saveState(this.state);
     }
 
     getThemePanel() {
@@ -138,4 +146,6 @@ class GithubUserOverview extends PureComponent<IProps, IState> {
     }
 }
 
-export default widgetFactory()<SteamLibraryModel, IProps>(GithubUserOverview);
+export default widgetFactory()<SteamLibraryModel, IProps, IState>(
+    TopPlayedGames
+);
