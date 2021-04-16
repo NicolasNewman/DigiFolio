@@ -14,6 +14,7 @@ import { LeftCircleOutlined } from '@ant-design/icons';
 import update from 'immutability-helper';
 import DataStore from '../classes/DataStore';
 import routes from '../constants/routes';
+// eslint-disable-next-line import/no-named-as-default
 import Portfolio from './designer/Portfolio';
 import Widgets from './designer/Widgets';
 import { GithubData } from '../api/GithubAPI';
