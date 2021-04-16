@@ -8,6 +8,7 @@ import { Component } from 'react';
 import { RouteComponentProps } from 'react-router';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import { SketchPicker, SliderPicker } from 'react-color';
 // import { Redirect } from 'react-router';
 import { Button } from 'antd';
 import { LeftCircleOutlined } from '@ant-design/icons';
@@ -33,6 +34,7 @@ interface IState {
     active: { [key: string]: boolean };
     currentThemePanel: React.ReactNode;
     theme: string | null;
+    background: string;
 }
 
 export default class Designer extends Component<IProps, IState> {
@@ -46,9 +48,14 @@ export default class Designer extends Component<IProps, IState> {
             active: {},
             currentThemePanel: this.getGlobalThemePanel(),
             theme: 'dark',
+            background: '#fff',
         };
         console.log('state', this.state);
     }
+
+    handleChangeComplete = (color) => {
+        this.setState({ background: color.hex });
+    };
 
     getGlobalThemePanel() {
         return (
@@ -73,6 +80,7 @@ export default class Designer extends Component<IProps, IState> {
                         </button>
                     </li>
                 </ul>
+                <SketchPicker onChangeComplete={this.handleChangeComplete} />
             </div>
         );
     }
