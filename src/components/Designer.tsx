@@ -19,11 +19,13 @@ import Widgets from './designer/Widgets';
 import { GithubData } from '../api/GithubAPI';
 import { SteamAPIData } from '../api/SteamAPI';
 import Theming from './Designer/Theming';
+import { Boxes } from '../types/Portfolio';
 
 interface IProps extends RouteComponentProps<any> {
     dataStore: DataStore;
     github: GithubData;
     steam: SteamAPIData;
+    updatePortfolioBoxes: (boxes: Boxes) => void;
 }
 
 interface IState {
@@ -118,6 +120,9 @@ export default class Designer extends Component<IProps, IState> {
                                 updateActiveWidgets={this.updateActiveWidgets}
                                 setThemePanel={this.setThemePanel}
                                 theme={this.state.theme}
+                                updatePortfolioBoxes={
+                                    this.props.updatePortfolioBoxes
+                                }
                             />
                         </div>
                         <div className="designer__widgets">

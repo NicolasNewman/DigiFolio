@@ -11,6 +11,7 @@ export default class IpcInterface {
         ipcRenderer.on('closing', () => {
             const clone = cloneDeep(reduxStore.getState());
             delete clone.router;
+            delete clone.portfolio;
             electronStore.set('reduxSave', clone);
             this.readyToClose();
         });
@@ -32,6 +33,8 @@ export default class IpcInterface {
             }
             console.log(`Filename: ${filename}, File Path: ${path}`);
         });
+
+        ipcRenderer.on('save-ws-as', (e) => {});
     }
 
     private readyToClose() {

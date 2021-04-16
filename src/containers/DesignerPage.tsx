@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import Designer from '../components/Designer';
 import CounterActions from '../actions/counter';
+import PortfolioActions from '../actions/portfolio';
 
 function mapStateToProps(state, ownProps) {
     console.log(state);
@@ -14,7 +15,7 @@ function mapStateToProps(state, ownProps) {
 }
 
 function mapDispatchToProps(dispatch: Dispatch) {
-    return bindActionCreators(CounterActions, dispatch);
+    return bindActionCreators(PortfolioActions, dispatch);
 }
 
 export default withRouter(

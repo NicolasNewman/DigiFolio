@@ -8,7 +8,7 @@ import { Tabs, Button, Layout } from 'antd';
 import 'antd/dist/antd.css';
 import Demo from '../widgets/TestWidget';
 import Demo2 from '../widgets/TestWidget2';
-import DemoChart from '../widgets/Tests/NivoTest';
+import DemoChart from '../widgets/Steam/W_SteamAchievements';
 import GithubUserOverview from '../widgets/Github/GithubUserOverview';
 
 import SteamProfileInfo from '../widgets/Steam/W_SteamProfileInfo';

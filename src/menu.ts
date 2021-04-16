@@ -273,35 +273,8 @@ export default class MenuBuilder {
         };
 
         const exportClickHandler = () => {
-            // dialog
-            //     .showSaveDialog({
-            //         title: 'Select the File Path to export',
-            //         defaultPath: join(__dirname, '../assets/sample.txt'),
-            //         // defaultPath: path.join(__dirname, '../assets/'),
-            //         buttonLabel: 'Export',
-            //         // Restricting the user to only Text Files.
-            //         filters: [
-            //             {
-            //                 name: '.pdf Files',
-            //                 extensions: ['pdf'],
-            //             },
-            //         ],
-            //         properties: [],
-            //     })
-            //     .then((file) => {
-            //         if (!file.canceled && file.filePath) {
-            //             this.mainWindow.webContents.send(
-            //                 'save-as',
-            //                 file.filePath,
-            //                 basename(file.filePath)
-            //             );
-            //         }
-            //     })
-            //     .catch((err) => {
-            //         ipcRenderer.send('error', err);
-            //     });
             this.mainWindow.webContents.send(
-                'save-as',
+                'save-ws-as',
                 'blah',
                 basename('blah')
             );
@@ -317,7 +290,7 @@ export default class MenuBuilder {
                         click: createNewPortfolio,
                     },
                     {
-                        label: 'Open Portfolio',
+                        label: 'Open Workspace',
                         accelerator: 'Ctrl+O',
                     },
                     // {
@@ -336,9 +309,9 @@ export default class MenuBuilder {
                     //     click: exportClickHandler,
                     // },
                     {
-                        label: 'Export Portfolio As',
+                        label: 'Save Workspace As',
                         accelerator: 'Ctrl+Shift+E',
-                        click: exportClickHandler,
+                        click: saveWorkspaceClickHandler,
                     },
                     {
                         label: 'Print',
