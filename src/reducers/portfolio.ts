@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 import { PortfolioAPITypeKeys, PortfolioAPITypes } from '../actions/portfolio';
 import { Boxes } from '../types/Portfolio';
 
@@ -18,6 +19,8 @@ export default function portfolio(
             return {
                 boxes: action.boxes,
             };
+        case PortfolioAPITypeKeys.RESTORE:
+            return action.state;
         default:
             return state;
     }

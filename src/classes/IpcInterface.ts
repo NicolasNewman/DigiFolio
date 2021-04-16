@@ -1,6 +1,5 @@
-import { ipcRenderer, remote } from 'electron';
+import { ipcRenderer } from 'electron';
 import { Store } from 'redux';
-import { join } from 'path';
 import html2canvas from 'html2canvas';
 import cloneDeep from 'clone-deep';
 import jsPDF from 'jspdf';
@@ -34,7 +33,18 @@ export default class IpcInterface {
             console.log(`Filename: ${filename}, File Path: ${path}`);
         });
 
-        ipcRenderer.on('save-ws-as', (e) => {});
+        ipcRenderer.on('save-ws-as', (e) => {
+            const portfolioState = JSON.stringify(
+                reduxStore.getState().portfolio
+            );
+            const b64 = Buffer.from(portfolioState, 'utf-8').toString('base64');
+            console.log(b64);
+
+            ipcRenderer.send('save-file', b64);
+
+            // const str = Buffer.from(b64, 'base64').toString();
+            // console.log(str);
+        });
     }
 
     private readyToClose() {

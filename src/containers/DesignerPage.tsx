@@ -2,7 +2,6 @@ import { bindActionCreators, Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import Designer from '../components/Designer';
-import CounterActions from '../actions/counter';
 import PortfolioActions from '../actions/portfolio';
 
 function mapStateToProps(state, ownProps) {
@@ -11,6 +10,7 @@ function mapStateToProps(state, ownProps) {
         dataStore: ownProps.dataStore,
         github: state.githubapi,
         steam: state.steamapi,
+        portfolio: state.portfolio,
     };
 }
 

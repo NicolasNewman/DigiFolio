@@ -7,7 +7,7 @@ import { Component } from 'react';
 import { RouteComponentProps } from 'react-router';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-// import { Redirect } from 'react-router';
+import { ipcRenderer } from 'electron';
 import { Button } from 'antd';
 import { LeftCircleOutlined } from '@ant-design/icons';
 import update from 'immutability-helper';
@@ -19,12 +19,15 @@ import { GithubData } from '../api/GithubAPI';
 import { SteamAPIData } from '../api/SteamAPI';
 import Theming from './Designer/Theming';
 import { Boxes } from '../types/Portfolio';
+import { IInitialState } from '../reducers/portfolio';
 
 interface IProps extends RouteComponentProps<any> {
     dataStore: DataStore;
     github: GithubData;
     steam: SteamAPIData;
+    portfolio: IInitialState;
     updatePortfolioBoxes: (boxes: Boxes) => void;
+    restorePortfolio: (state: IInitialState) => void;
 }
 
 interface IState {
@@ -43,6 +46,9 @@ export default class Designer extends Component<IProps, IState> {
             active: {},
             currentThemePanel: this.getGlobalThemePanel(),
         };
+        ipcRenderer.on('open-workspace', (e, content) => {
+            console.log(content);
+        });
         console.log(this.state);
     }
 
@@ -91,6 +97,7 @@ export default class Designer extends Component<IProps, IState> {
                                 updatePortfolioBoxes={
                                     this.props.updatePortfolioBoxes
                                 }
+                                portfolio={this.props.portfolio}
                             />
                         </div>
                         <div className="designer__widgets">

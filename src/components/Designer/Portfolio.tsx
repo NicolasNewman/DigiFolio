@@ -11,11 +11,13 @@ import {
     DropTargetConnector,
 } from 'react-dnd';
 import update from 'immutability-helper';
+import equals from 'fast-deep-equal';
 import { Boxes } from '../../types/Portfolio';
 // eslint-disable-next-line import/no-cycle
 import { BoxDragItem } from '../../constants/types';
 // eslint-disable-next-line import/no-cycle
 import { WidgetComponentType } from '../widgets/IWidget';
+import { IInitialState } from '../../reducers/portfolio';
 
 function collect(connect: DropTargetConnector, monitor: DropTargetMonitor) {
     return {
@@ -32,6 +34,7 @@ interface IProps {
     updateActiveWidgets: (id: string, active: boolean) => void;
     setThemePanel: (node: React.ReactNode) => void;
     updatePortfolioBoxes: (boxes: Boxes) => void;
+    portfolio: IInitialState;
 }
 
 interface IState {
@@ -58,13 +61,21 @@ class Portfolio extends Component<IProps, IState> {
 
     constructor(props) {
         super(props);
-        this.state = {
-            boxes: {},
-        };
+        if (Object.keys(props.portfolio.boxes).length > 0) {
+            this.state = {
+                boxes: props.portfolio.boxes,
+            };
+        } else {
+            this.state = {
+                boxes: {},
+            };
+        }
     }
 
     componentDidUpdate(_, prevState) {
-        this.props.updatePortfolioBoxes(prevState.boxes);
+        if (!equals(this.state, prevState)) {
+            this.props.updatePortfolioBoxes(prevState.boxes);
+        }
     }
 
     deleteBox = (id: string) => {
