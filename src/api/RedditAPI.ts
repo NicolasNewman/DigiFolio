@@ -6,6 +6,7 @@ export interface RedditDataModel {
     profile: RedditUserInfo;
     karma_distribution: RedditKarmaBySub[];
     submissions: RedditSubmission[]; //recent posts
+    comments: RedditComment[];
 }
 
 export interface RedditUserInfo {
@@ -25,6 +26,7 @@ export interface RedditKarmaBySub {
 
 export interface RedditSubmission {
     subreddit: string;
+    submission_id: string; //id
     title: string;
     is_self: boolean; //true if text post, false if else
     text: string;
@@ -32,6 +34,17 @@ export interface RedditSubmission {
     updoots: number;
     downdoots: number;
     //comments:
+}
+
+export interface RedditComment {
+    comment_id: string; //link_id, hopefully
+    subreddit: string; //subreddit_name_prefixed
+    parent_post_title: string; //link_title
+    comment: string; //body
+    updoots: number;
+    downdoots: number;
+    //award_count: number;
+    //awards: []
 }
 
 export type RedditAPIData = RedditDataModel | null;
@@ -67,21 +80,44 @@ export default class RedditAPI extends IAPI<RedditDataModel> {
     }
 
     async parse_api(): Promise<RedditDataModel> {
+        const me = await this.fetch_me();
         const temp: RedditDataModel = {
             something: 'smaple text',
-            profile: await this.fetch_profile(),
+            profile: await this.parse_profile(me),
             karma_distribution: await this.fetch_karma_distribution(),
-            submissions: await this.fetch_submissions(),
+            submissions: await this.fetch_submissions(me),
+            comments: await this.fetch_comments(me),
         };
         // eslint-disable-next-line promise/catch-or-return
         //this.r.getSubmission('2np694').title.then(console.log);
         return temp;
     }
 
-    async fetch_profile(): Promise<RedditUserInfo> {
-        const temp: any = await new Promise((resolve) =>
+    // async fetch_profile(): Promise<RedditUserInfo> {
+    //     const temp: any = await new Promise((resolve) =>
+    //         this.r.getMe().then(resolve)
+    //     );
+    //     const data: RedditUserInfo = {
+    //         username: temp.subreddit.display_name.display_name_prefixed,
+    //         avatar: temp.icon_img,
+    //         total_karma: temp.total_karma,
+    //         coins: temp.coins,
+    //         num_friends: temp.num_friends,
+    //     };
+    //     return data;
+    // }
+
+    async fetch_me(): Promise<any> {
+        const me: any = await new Promise((resolve) =>
             this.r.getMe().then(resolve)
         );
+        return me;
+    }
+
+    async parse_profile(temp: any): Promise<RedditUserInfo> {
+        // const temp: any = await new Promise((resolve) =>
+        //     this.r.getMe().then(resolve)
+        // );
         const data: RedditUserInfo = {
             username: temp.subreddit.display_name.display_name_prefixed,
             avatar: temp.icon_img,
@@ -108,10 +144,10 @@ export default class RedditAPI extends IAPI<RedditDataModel> {
         return data;
     }
 
-    async fetch_submissions(): Promise<RedditSubmission[]> {
-        const me: RedditUser = await new Promise((resolve) =>
-            this.r.getMe().then(resolve)
-        ); //need to fix this later on
+    async fetch_submissions(me: RedditUser): Promise<RedditSubmission[]> {
+        // const me: RedditUser = await new Promise((resolve) =>
+        //     this.r.getMe().then(resolve)
+        // ); //need to fix this later on
         const temp = await (await me.getSubmissions())
             .fetchAll()
             .then((submissions) => {
@@ -121,10 +157,31 @@ export default class RedditAPI extends IAPI<RedditDataModel> {
         for (let i = 0; i < temp.length; i += 1) {
             data.push({
                 subreddit: temp[i].subreddit.display_name,
+                submission_id: temp[i].id,
                 title: temp[i].title,
                 is_self: temp[i].is_self,
                 text: temp[i].selftext,
                 media: temp[i].url,
+                updoots: temp[i].ups,
+                downdoots: temp[i].downs,
+            });
+        }
+        return data;
+    }
+
+    async fetch_comments(me: RedditUser): Promise<RedditComment[]> {
+        const temp = await (await me.getComments())
+            .fetchAll()
+            .then((comments) => {
+                return comments;
+            });
+        const data: RedditComment[] = [];
+        for (let i = 0; i < temp.length; i += 1) {
+            data.push({
+                comment_id: temp[i].link_id,
+                subreddit: temp[i].subreddit_name_prefixed,
+                parent_post_title: temp[i].link_title,
+                comment: temp[i].body,
                 updoots: temp[i].ups,
                 downdoots: temp[i].downs,
             });
