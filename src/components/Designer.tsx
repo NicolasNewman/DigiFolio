@@ -57,10 +57,18 @@ export default class Designer extends Component<IProps, IState> {
         this.setState({ background: color.hex });
     };
 
+    getBackground = () => {
+        return this.state.background;
+    };
+
     getGlobalThemePanel() {
         return (
             <div>
-                <ul>
+                <SketchPicker
+                    color={this.getBackground}
+                    onChangeComplete={this.handleChangeComplete}
+                />
+                {/* <ul>
                     <li>
                         <button
                             onClick={() => {
@@ -79,8 +87,7 @@ export default class Designer extends Component<IProps, IState> {
                             Light
                         </button>
                     </li>
-                </ul>
-                <SketchPicker onChangeComplete={this.handleChangeComplete} />
+                </ul> */}
             </div>
         );
     }
@@ -129,6 +136,7 @@ export default class Designer extends Component<IProps, IState> {
                                 updateActiveWidgets={this.updateActiveWidgets}
                                 setThemePanel={this.setThemePanel}
                                 theme={this.state.theme}
+                                background={this.state.background}
                                 updatePortfolioBoxes={
                                     this.props.updatePortfolioBoxes
                                 }
