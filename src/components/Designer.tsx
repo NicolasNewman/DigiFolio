@@ -67,27 +67,10 @@ export default class Designer extends Component<IProps, IState> {
                 <SketchPicker
                     color={this.getBackground}
                     onChangeComplete={this.handleChangeComplete}
+                    style={{
+                        textColor: 'black',
+                    }}
                 />
-                {/* <ul>
-                    <li>
-                        <button
-                            onClick={() => {
-                                this.setGlobalTheme('dark');
-                            }}
-                        >
-                            Dark
-                        </button>
-                    </li>
-                    <li>
-                        <button
-                            onClick={() => {
-                                this.setGlobalTheme(null);
-                            }}
-                        >
-                            Light
-                        </button>
-                    </li>
-                </ul> */}
             </div>
         );
     }
@@ -135,7 +118,6 @@ export default class Designer extends Component<IProps, IState> {
                                 hideSourceOnDrag
                                 updateActiveWidgets={this.updateActiveWidgets}
                                 setThemePanel={this.setThemePanel}
-                                theme={this.state.theme}
                                 background={this.state.background}
                                 updatePortfolioBoxes={
                                     this.props.updatePortfolioBoxes

@@ -31,7 +31,7 @@ interface IProps {
     connectDropTarget: ConnectDropTarget;
     updateActiveWidgets: (id: string, active: boolean) => void;
     setThemePanel: (node: React.ReactNode) => void;
-    theme: string | null;
+    background: string;
     updatePortfolioBoxes: (boxes: Boxes) => void;
 }
 
@@ -109,19 +109,17 @@ class Portfolio extends Component<IProps, IState> {
         //const backgroundColor = hovered ? '#F0F02D' : 'white';
         const backgroundColor = hovered ? '0px 0px 40px black' : '';
         const { boxes } = this.state;
-        const { theme } = this.props;
+        const { background } = this.props;
         console.log('props', this.props);
-        console.log('theme', theme);
         return connectDropTarget(
-            <div className={theme ? `portfolio-${theme}` : 'portfolio'}>
+            <div className="portfolio">
                 <div
-                    className={
-                        theme ? `portfolio-${theme}__page` : 'portfolio__page'
-                    }
+                    className="portfolio__page"
                     id="portfolio"
                     style={{
                         boxShadow: backgroundColor,
                         position: 'relative',
+                        backgroundColor: background,
                     }}
                 >
                     {/* <p style={{ color: '#000000' }}>This is my page</p> */}
