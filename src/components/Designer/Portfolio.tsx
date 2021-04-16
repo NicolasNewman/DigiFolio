@@ -118,7 +118,9 @@ class Portfolio extends Component<IProps, IState> {
         return connectDropTarget(
             <div className={theme ? `portfolio-${theme}` : 'portfolio'}>
                 <div
-                    className="portfolio__page"
+                    className={
+                        theme ? `portfolio-${theme}__page` : 'portfolio__page'
+                    }
                     id="portfolio"
                     style={{
                         boxShadow: backgroundColor,
