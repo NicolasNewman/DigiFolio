@@ -63,16 +63,7 @@ export default class Designer extends Component<IProps, IState> {
         return this.state.background;
     };
 
-    getVisible = () => {
-        return this.state.visible;
-    };
-
-    handleVisibleChange = (visible) => {
-        this.setState({ visible });
-    };
-
     getGlobalThemePanel = () => {
-        const visibleState = this.state.visible;
         return (
             <div>
                 <Popover
@@ -87,8 +78,6 @@ export default class Designer extends Component<IProps, IState> {
                     }
                     title="Background"
                     trigger="click"
-                    visible={visibleState}
-                    onVisibleChange={this.handleVisibleChange}
                 >
                     <Button>Change Theme</Button>
                 </Popover>
