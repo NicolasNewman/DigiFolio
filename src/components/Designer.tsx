@@ -8,8 +8,7 @@ import { Component } from 'react';
 import { RouteComponentProps } from 'react-router';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { SketchPicker, SliderPicker, Color, ColorResult } from 'react-color';
-// import { Redirect } from 'react-router';
+import { SketchPicker, ColorResult } from 'react-color';
 import { Button, Popover } from 'antd';
 import { LeftCircleOutlined } from '@ant-design/icons';
 import update from 'immutability-helper';
@@ -33,7 +32,6 @@ interface IProps extends RouteComponentProps<any> {
 interface IState {
     active: { [key: string]: boolean };
     currentThemePanel: React.ReactNode;
-    theme: string | null;
     background: string;
     visible: boolean;
 }
@@ -43,16 +41,16 @@ export default class Designer extends Component<IProps, IState> {
 
     state: IState;
 
-    constructor(props, history) {
+    constructor(props) {
         super(props);
         this.state = {
             active: {},
             currentThemePanel: <span />,
-            theme: 'dark',
             background: '#fff',
             visible: false,
         };
-        console.log('state', this.state);
+        this.state.currentThemePanel = this.getGlobalThemePanel();
+        // console.log('state', this.state);
     }
 
     handleChangeComplete = (color: ColorResult) => {
@@ -84,17 +82,11 @@ export default class Designer extends Component<IProps, IState> {
         );
     };
 
-    setGlobalTheme = (thm: string | null) => {
-        console.log('changing theme');
-        this.setState({ theme: thm });
-    };
-
     setThemePanel = (panel: React.ReactNode) => {
         this.setState({ currentThemePanel: panel });
     };
 
     updateActiveWidgets = (id: string, active: boolean) => {
-        console.log(this.state);
         this.setState(
             update(this.state, {
                 active: {
@@ -128,7 +120,6 @@ export default class Designer extends Component<IProps, IState> {
                                 updateActiveWidgets={this.updateActiveWidgets}
                                 setThemePanel={this.setThemePanel}
                                 background={this.state.background || '#fff'}
-                                // background={(this.state.background as RGBColor)}
                                 updatePortfolioBoxes={
                                     this.props.updatePortfolioBoxes
                                 }
