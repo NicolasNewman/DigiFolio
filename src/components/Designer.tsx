@@ -67,12 +67,12 @@ export default class Designer extends Component<IProps, IState> {
         return this.state.visible;
     };
 
-    handleVisibleChange = () => {
-        this.setState({ visible: !this.state.visible });
+    handleVisibleChange = (visible) => {
+        this.setState({ visible });
     };
 
-    getGlobalThemePanel() {
-        const visibleState = this.getVisible();
+    getGlobalThemePanel = () => {
+        const visibleState = this.state.visible;
         return (
             <div>
                 <Popover
@@ -94,7 +94,7 @@ export default class Designer extends Component<IProps, IState> {
                 </Popover>
             </div>
         );
-    }
+    };
 
     setGlobalTheme = (thm: string | null) => {
         console.log('changing theme');
