@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable consistent-return */
 /* eslint-disable array-callback-return */
@@ -9,7 +10,7 @@ import { widgetFactory, ExternalProps } from '../IWidget';
 
 type IProps = ExternalProps<SteamFriendsModel>;
 
-class SteamFriendsInfo extends PureComponent<IProps> {
+class W_SteamFriendsInfo extends PureComponent<IProps> {
     props!: IProps;
 
     constructor(props: IProps) {
@@ -73,4 +74,4 @@ class SteamFriendsInfo extends PureComponent<IProps> {
     }
 }
 
-export default widgetFactory()<SteamFriendsModel, IProps>(SteamFriendsInfo);
+export default widgetFactory()<SteamFriendsModel, IProps>(W_SteamFriendsInfo);

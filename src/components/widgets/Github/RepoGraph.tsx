@@ -18,11 +18,11 @@ type IProps = ExternalProps<GithubRepoModel> & {
     restoreState: () => IState;
 };
 
-interface IState {
+export interface IState {
     repos: string[];
 }
 
-class ChartWidget extends React.Component<IProps, IState> {
+class RepoGraph extends React.Component<IProps, IState> {
     props!: IProps;
 
     // each widget should have a data field, which is what is passed into the Nivo chart
@@ -169,4 +169,4 @@ class ChartWidget extends React.Component<IProps, IState> {
     }
 }
 
-export default widgetFactory()<GithubRepoModel, IProps, IState>(ChartWidget);
+export default widgetFactory()<GithubRepoModel, IProps, IState>(RepoGraph);

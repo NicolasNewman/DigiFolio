@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-pascal-case */
 /* eslint-disable react/prop-types */
 import * as React from 'react';
 import { Component, useRef } from 'react';
@@ -12,8 +13,8 @@ import DemoChart from '../widgets/Steam/W_SteamAchievements';
 import GithubUserOverview from '../widgets/Github/GithubUserOverview';
 
 import SteamProfileInfo from '../widgets/Steam/W_SteamProfileInfo';
-import SteamFriendsInfo from '../widgets/Steam/W_SteamFriendsInfo';
-import SteamTopGames from '../widgets/Steam/W_TopPlayedGames';
+import W_SteamFriendsInfo from '../widgets/Steam/W_SteamFriendsInfo';
+import W_SteamTopPlayedGames from '../widgets/Steam/W_SteamTopPlayedGames';
 
 import { GithubData } from '../../api/GithubAPI';
 import { SteamAPIData } from '../../api/SteamAPI';
@@ -150,9 +151,9 @@ export default class Widgets extends Component<IProps> {
                                     />
                                     <WidgetEntry
                                         component={
-                                            <SteamFriendsInfo
+                                            <W_SteamFriendsInfo
                                                 id="steam_friends_info"
-                                                component={SteamFriendsInfo}
+                                                component={W_SteamFriendsInfo}
                                                 onWidgetList
                                                 data={this.props.steam.friends}
                                             />
@@ -163,9 +164,11 @@ export default class Widgets extends Component<IProps> {
                                     />
                                     <WidgetEntry
                                         component={
-                                            <SteamTopGames
+                                            <W_SteamTopPlayedGames
                                                 id="steam_top_games"
-                                                component={SteamTopGames}
+                                                component={
+                                                    W_SteamTopPlayedGames
+                                                }
                                                 onWidgetList
                                                 data={this.props.steam.library}
                                             />

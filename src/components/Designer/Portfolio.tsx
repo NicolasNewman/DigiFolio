@@ -61,6 +61,7 @@ class Portfolio extends Component<IProps, IState> {
 
     constructor(props) {
         super(props);
+        console.log(props);
         if (Object.keys(props.portfolio.boxes).length > 0) {
             this.state = {
                 boxes: props.portfolio.boxes,
@@ -74,7 +75,7 @@ class Portfolio extends Component<IProps, IState> {
 
     componentDidUpdate(_, prevState) {
         if (!equals(this.state, prevState)) {
-            this.props.updatePortfolioBoxes(prevState.boxes);
+            this.props.updatePortfolioBoxes(this.state.boxes);
         }
     }
 
@@ -134,6 +135,7 @@ class Portfolio extends Component<IProps, IState> {
                         const { left, top, title, component, data } = boxes[
                             key
                         ];
+                        console.log(component);
                         const WidgetComponent = component;
                         return (
                             <WidgetComponent

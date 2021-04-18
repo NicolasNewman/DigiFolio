@@ -4,6 +4,9 @@ import html2canvas from 'html2canvas';
 import cloneDeep from 'clone-deep';
 import jsPDF from 'jspdf';
 import DataStore from './DataStore';
+import { IInitialState } from '../reducers/portfolio';
+import { WidgetComponentType } from '../components/widgets/IWidget';
+import { RestoreBoxes } from '../types/Portfolio';
 
 export default class IpcInterface {
     constructor(electronStore: DataStore, reduxStore: Store<any>) {
@@ -34,9 +37,20 @@ export default class IpcInterface {
         });
 
         ipcRenderer.on('save-ws-as', (e) => {
-            const portfolioState = JSON.stringify(
-                reduxStore.getState().portfolio
-            );
+            const portfolio = reduxStore.getState().portfolio as IInitialState;
+            const newPortfolio: { boxes: RestoreBoxes } = { boxes: {} };
+            Object.keys(portfolio.boxes).forEach((key) => {
+                const temp = portfolio.boxes[key];
+                newPortfolio.boxes[key] = {
+                    data: temp.data,
+                    top: temp.top,
+                    left: temp.left,
+                    title: temp.title,
+                    component: temp.component.displayName || 'unknown',
+                };
+            });
+            const portfolioState = JSON.stringify(newPortfolio);
+            console.log(newPortfolio);
             const b64 = Buffer.from(portfolioState, 'utf-8').toString('base64');
             console.log(b64);
 

@@ -18,8 +18,10 @@ import Widgets from './designer/Widgets';
 import { GithubData } from '../api/GithubAPI';
 import { SteamAPIData } from '../api/SteamAPI';
 import Theming from './Designer/Theming';
-import { Boxes } from '../types/Portfolio';
+import { Boxes, RestoreBoxes } from '../types/Portfolio';
 import { IInitialState } from '../reducers/portfolio';
+import resolveWidget from './widgets/WidgetResolver';
+import { WidgetComponentType } from './widgets/IWidget';
 
 interface IProps extends RouteComponentProps<any> {
     dataStore: DataStore;
@@ -33,6 +35,7 @@ interface IProps extends RouteComponentProps<any> {
 interface IState {
     active: { [key: string]: boolean };
     currentThemePanel: React.ReactNode;
+    portfolioKey: number;
 }
 
 export default class Designer extends Component<IProps, IState> {
@@ -45,9 +48,32 @@ export default class Designer extends Component<IProps, IState> {
         this.state = {
             active: {},
             currentThemePanel: this.getGlobalThemePanel(),
+            portfolioKey: 1,
         };
         ipcRenderer.on('open-workspace', (e, content) => {
             console.log(content);
+            const restoredState = JSON.parse(content) as {
+                boxes: RestoreBoxes;
+            };
+            const state: IInitialState = { boxes: {} };
+            Object.keys(restoredState.boxes).forEach((key) => {
+                const temp = restoredState.boxes[key];
+                state.boxes[key] = {
+                    data: temp.data,
+                    top: temp.top,
+                    left: temp.left,
+                    title: temp.title,
+                    component: (resolveWidget(
+                        temp.component,
+                        temp.data
+                    ) as unknown) as WidgetComponentType,
+                };
+            });
+            console.log(restoredState);
+            Object.keys(state);
+            this.props.restorePortfolio(state);
+            this.setState({ portfolioKey: this.state.portfolioKey + 1 });
+            // this.state.active = JSON.parse(content);
         });
         console.log(this.state);
     }
@@ -91,6 +117,7 @@ export default class Designer extends Component<IProps, IState> {
                             }
                         >
                             <Portfolio
+                                key={this.state.portfolioKey}
                                 hideSourceOnDrag
                                 updateActiveWidgets={this.updateActiveWidgets}
                                 setThemePanel={this.setThemePanel}
