@@ -10,7 +10,7 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { SketchPicker, SliderPicker } from 'react-color';
 // import { Redirect } from 'react-router';
-import { Button } from 'antd';
+import { Button, Popover } from 'antd';
 import { LeftCircleOutlined } from '@ant-design/icons';
 import update from 'immutability-helper';
 import DataStore from '../classes/DataStore';
@@ -35,6 +35,7 @@ interface IState {
     currentThemePanel: React.ReactNode;
     theme: string | null;
     background: string;
+    visible: boolean;
 }
 
 export default class Designer extends Component<IProps, IState> {
@@ -49,6 +50,7 @@ export default class Designer extends Component<IProps, IState> {
             currentThemePanel: this.getGlobalThemePanel(),
             theme: 'dark',
             background: '#fff',
+            visible: false,
         };
         console.log('state', this.state);
     }
@@ -61,16 +63,34 @@ export default class Designer extends Component<IProps, IState> {
         return this.state.background;
     };
 
+    getVisible = () => {
+        return this.state.visible;
+    };
+
+    handleVisibleChange = (visible) => {
+        this.setState({ visible });
+    };
+
     getGlobalThemePanel() {
         return (
             <div>
-                <SketchPicker
-                    color={this.getBackground}
-                    onChangeComplete={this.handleChangeComplete}
-                    style={{
-                        textColor: 'black',
-                    }}
-                />
+                <Popover
+                    content={
+                        <SketchPicker
+                            color={this.getBackground}
+                            onChangeComplete={this.handleChangeComplete}
+                            style={{
+                                textColor: 'black',
+                            }}
+                        />
+                    }
+                    title="Background"
+                    trigger="click"
+                    visible={!!this.getVisible}
+                    onVisibleChange={this.handleVisibleChange}
+                >
+                    <Button>Change Theme</Button>
+                </Popover>
             </div>
         );
     }
