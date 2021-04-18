@@ -110,7 +110,7 @@ class Portfolio extends Component<IProps, IState> {
         const backgroundColor = hovered ? '0px 0px 40px black' : '';
         const { boxes } = this.state;
         const { background } = this.props;
-
+        console.log('background', background);
         return connectDropTarget(
             <div className="portfolio">
                 <div

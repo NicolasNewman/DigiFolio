@@ -8,7 +8,7 @@ import { Component } from 'react';
 import { RouteComponentProps } from 'react-router';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { SketchPicker, SliderPicker } from 'react-color';
+import { SketchPicker, SliderPicker, Color, ColorResult } from 'react-color';
 // import { Redirect } from 'react-router';
 import { Button, Popover } from 'antd';
 import { LeftCircleOutlined } from '@ant-design/icons';
@@ -47,7 +47,7 @@ export default class Designer extends Component<IProps, IState> {
         super(props);
         this.state = {
             active: {},
-            currentThemePanel: this.getGlobalThemePanel(),
+            currentThemePanel: <span />,
             theme: 'dark',
             background: '#fff',
             visible: false,
@@ -55,7 +55,7 @@ export default class Designer extends Component<IProps, IState> {
         console.log('state', this.state);
     }
 
-    handleChangeComplete = (color) => {
+    handleChangeComplete = (color: ColorResult) => {
         this.setState({ background: color.hex });
     };
 
@@ -69,11 +69,10 @@ export default class Designer extends Component<IProps, IState> {
                 <Popover
                     content={
                         <SketchPicker
-                            color={this.getBackground}
+                            className="sketch-picker-override"
+                            color={this.state.background}
                             onChangeComplete={this.handleChangeComplete}
-                            style={{
-                                textColor: 'black',
-                            }}
+                            disableAlpha
                         />
                     }
                     title="Background"
@@ -128,7 +127,8 @@ export default class Designer extends Component<IProps, IState> {
                                 hideSourceOnDrag
                                 updateActiveWidgets={this.updateActiveWidgets}
                                 setThemePanel={this.setThemePanel}
-                                background={this.state.background}
+                                background={this.state.background || '#fff'}
+                                // background={(this.state.background as RGBColor)}
                                 updatePortfolioBoxes={
                                     this.props.updatePortfolioBoxes
                                 }
