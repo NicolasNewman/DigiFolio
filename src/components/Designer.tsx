@@ -9,7 +9,7 @@ import { RouteComponentProps } from 'react-router';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { SketchPicker, ColorResult } from 'react-color';
-import { Button, Popover, Slider, InputNumber, Row, Col } from 'antd';
+import { Button, Popover, Slider } from 'antd';
 import { LeftCircleOutlined } from '@ant-design/icons';
 import update from 'immutability-helper';
 import DataStore from '../classes/DataStore';
@@ -34,6 +34,7 @@ interface IState {
     currentThemePanel: React.ReactNode;
     background: string;
     gradient: string | undefined;
+    angleValue: number;
     visible: boolean;
 }
 
@@ -49,10 +50,10 @@ export default class Designer extends Component<IProps, IState> {
             currentThemePanel: <span />,
             background: '#fff',
             gradient: undefined,
+            angleValue: 0,
             visible: false,
         };
         this.state.currentThemePanel = this.getGlobalThemePanel();
-        // console.log('state', this.state);
     }
 
     handleBackgroundChange = (color: ColorResult) => {
@@ -63,8 +64,9 @@ export default class Designer extends Component<IProps, IState> {
         this.setState({ gradient: color.hex });
     };
 
-    getBackground = () => {
-        return this.state.background;
+    handleAngleChange = (value) => {
+        console.log('changing angle value to', value);
+        this.setState({ angleValue: value });
     };
 
     getGlobalThemePanel = () => {
@@ -99,12 +101,23 @@ export default class Designer extends Component<IProps, IState> {
                 >
                     <Button>Add Gradient</Button>
                 </Popover>
-                <hr />
                 {this.state.gradient ? (
                     <div>
-                        <Row>
-                            <Col />
-                        </Row>
+                        <hr />
+                        <Popover
+                            content={
+                                <Slider
+                                    min={0}
+                                    max={360}
+                                    onAfterChange={this.handleAngleChange}
+                                    value={this.state.angleValue}
+                                />
+                            }
+                            title="Angle"
+                            trigger="click"
+                        >
+                            <Button>Change Angle</Button>
+                        </Popover>
                     </div>
                 ) : null}
             </div>
