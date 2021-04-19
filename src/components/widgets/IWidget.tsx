@@ -5,14 +5,17 @@
 /* eslint-disable react/require-default-props */
 /* eslint-disable react/no-unused-prop-types */
 import * as React from 'react';
-import { PureComponent } from 'react';
+import { PureComponent, useRef } from 'react';
 import {
     ConnectDragSource,
     DragSource,
     DragSourceConnector,
     DragSourceMonitor,
 } from 'react-dnd';
+// import { Rnd } from 'react-rnd';
 import { CloseCircleOutlined } from '@ant-design/icons';
+import Resizer from './Resizer/resizer';
+import { Direction } from './Resizer/Direction';
 
 const widgetStyle: React.CSSProperties = {
     background: '#ddd',
@@ -73,6 +76,8 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
 
         componentRef: React.RefObject<any>;
 
+        widgetRef: React.RefObject<any>;
+
         static displayName = `Widget(${
             Component.displayName || Component.name
         })`;
@@ -80,10 +85,35 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
         constructor(props: ResultProps) {
             super(props);
             this.componentRef = React.createRef();
+            this.widgetRef = React.createRef();
             this.state = {
                 hover: false,
             };
         }
+
+        handleResize = (direction, movementX, movementY) => {
+            const widget = this.widgetRef.current;
+            if (!widget) return;
+
+            const { width, height } = widget.getBoundingClientRect();
+
+            const resizeRight = () => {
+                widget.style.width = `${width + movementX}px`;
+            };
+
+            const resizeBottom = () => {
+                widget.style.height = `${height + movementY}px`;
+            };
+
+            switch (direction) {
+                case Direction.BottomRight:
+                    resizeBottom();
+                    resizeRight();
+                    break;
+                default:
+                    break;
+            }
+        };
 
         render(): React.ReactElement<
             any,
@@ -114,7 +144,13 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
                     className="widget__container"
                     onMouseEnter={() => this.setState({ hover: true })}
                     onMouseLeave={() => this.setState({ hover: false })}
+                    ref={this.widgetRef}
                 >
+                    {!this.props.onWidgetList && this.state.hover ? (
+                        <Resizer onResize={this.handleResize} />
+                    ) : (
+                        <span />
+                    )}
                     <div style={{ position: 'relative' }}>
                         <Component
                             ref={this.componentRef}
