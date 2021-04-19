@@ -33,6 +33,7 @@ interface IState {
     active: { [key: string]: boolean };
     currentThemePanel: React.ReactNode;
     background: string;
+    gradient: string | undefined;
     visible: boolean;
 }
 
@@ -47,14 +48,19 @@ export default class Designer extends Component<IProps, IState> {
             active: {},
             currentThemePanel: <span />,
             background: '#fff',
+            gradient: undefined,
             visible: false,
         };
         this.state.currentThemePanel = this.getGlobalThemePanel();
         // console.log('state', this.state);
     }
 
-    handleChangeComplete = (color: ColorResult) => {
+    handleBackgroundChange = (color: ColorResult) => {
         this.setState({ background: color.hex });
+    };
+
+    handleGradientChange = (color: ColorResult) => {
+        this.setState({ gradient: color.hex });
     };
 
     getBackground = () => {
@@ -69,7 +75,7 @@ export default class Designer extends Component<IProps, IState> {
                         <SketchPicker
                             className="sketch-picker-override"
                             color={this.state.background}
-                            onChangeComplete={this.handleChangeComplete}
+                            onChangeComplete={this.handleBackgroundChange}
                             disableAlpha
                         />
                     }
@@ -77,6 +83,21 @@ export default class Designer extends Component<IProps, IState> {
                     trigger="click"
                 >
                     <Button>Change Theme</Button>
+                </Popover>
+                <hr />
+                <Popover
+                    content={
+                        <SketchPicker
+                            className="sketch-picker-override"
+                            color={this.state.gradient || '#fff'}
+                            onChangeComplete={this.handleGradientChange}
+                            disableAlpha
+                        />
+                    }
+                    title="Gradient"
+                    trigger="click"
+                >
+                    <Button>Add Gradient</Button>
                 </Popover>
             </div>
         );
@@ -119,7 +140,8 @@ export default class Designer extends Component<IProps, IState> {
                                 hideSourceOnDrag
                                 updateActiveWidgets={this.updateActiveWidgets}
                                 setThemePanel={this.setThemePanel}
-                                background={this.state.background || '#fff'}
+                                background={this.state.background}
+                                gradient={this.state.gradient}
                                 updatePortfolioBoxes={
                                     this.props.updatePortfolioBoxes
                                 }
