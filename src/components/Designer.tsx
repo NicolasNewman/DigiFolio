@@ -9,7 +9,7 @@ import { RouteComponentProps } from 'react-router';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { SketchPicker, ColorResult } from 'react-color';
-import { Button, Popover } from 'antd';
+import { Button, Popover, Slider, InputNumber, Row, Col } from 'antd';
 import { LeftCircleOutlined } from '@ant-design/icons';
 import update from 'immutability-helper';
 import DataStore from '../classes/DataStore';
@@ -99,6 +99,14 @@ export default class Designer extends Component<IProps, IState> {
                 >
                     <Button>Add Gradient</Button>
                 </Popover>
+                <hr />
+                {this.state.gradient ? (
+                    <div>
+                        <Row>
+                            <Col />
+                        </Row>
+                    </div>
+                ) : null}
             </div>
         );
     };

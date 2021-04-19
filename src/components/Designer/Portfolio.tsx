@@ -32,6 +32,7 @@ interface IProps {
     updateActiveWidgets: (id: string, active: boolean) => void;
     setThemePanel: (node: React.ReactNode) => void;
     background: string;
+    gradient: string | undefined;
     updatePortfolioBoxes: (boxes: Boxes) => void;
 }
 
@@ -109,8 +110,8 @@ class Portfolio extends Component<IProps, IState> {
         //const backgroundColor = hovered ? '#F0F02D' : 'white';
         const backgroundColor = hovered ? '0px 0px 40px black' : '';
         const { boxes } = this.state;
-        const { background } = this.props;
-        console.log('background', background);
+        const { background, gradient } = this.props;
+        const gradientColor = gradient || background;
         return connectDropTarget(
             <div className="portfolio">
                 <div
@@ -119,7 +120,7 @@ class Portfolio extends Component<IProps, IState> {
                     style={{
                         boxShadow: backgroundColor,
                         position: 'relative',
-                        backgroundColor: background,
+                        backgroundImage: `linear-gradient(to bottom right, ${background}, ${gradientColor})`,
                     }}
                 >
                     {/* <p style={{ color: '#000000' }}>This is my page</p> */}
