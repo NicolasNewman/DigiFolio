@@ -3,7 +3,7 @@ import { RedditAPIData } from '../api/RedditAPI';
 
 const initialState: RedditAPIData = null;
 
-export default function steamapi(
+export default function redditapi(
     state: RedditAPIData = initialState,
     action: RedditAPITypes
 ) {
