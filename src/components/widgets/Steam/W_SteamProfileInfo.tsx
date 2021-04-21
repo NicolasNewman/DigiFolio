@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import * as React from 'react';
 import { PureComponent } from 'react';
 import { PlayerSummaryModelMerge } from '../../../api/SteamAPI';
@@ -5,7 +6,7 @@ import { widgetFactory, ExternalProps } from '../IWidget';
 
 type IProps = ExternalProps<PlayerSummaryModelMerge>;
 
-class GithubUserOverview extends PureComponent<IProps> {
+class W_SteamProfileInfo extends PureComponent<IProps> {
     props!: IProps;
 
     constructor(props: IProps) {
@@ -59,5 +60,5 @@ class GithubUserOverview extends PureComponent<IProps> {
 }
 
 export default widgetFactory()<PlayerSummaryModelMerge, IProps>(
-    GithubUserOverview
+    W_SteamProfileInfo
 );

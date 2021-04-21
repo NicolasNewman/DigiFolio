@@ -9,3 +9,13 @@ export type Boxes = {
         data: any;
     };
 };
+
+export type RestoreBoxes = {
+    [key: string]: {
+        top: number;
+        left: number;
+        title: string;
+        component: string;
+        data: any;
+    };
+};

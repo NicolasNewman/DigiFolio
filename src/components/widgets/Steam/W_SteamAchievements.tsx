@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable no-continue */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
@@ -19,7 +20,7 @@ type IProps = ExternalProps<SteamLibraryModel> & {
     restoreState: () => IState;
 };
 
-interface IState {
+export interface IState {
     games: string[];
 }
 /**
@@ -65,7 +66,7 @@ const ProgressLabels = ({ bars, yScale }) => {
     });
 };
 
-class ChartWidget extends React.Component<IProps, IState> {
+class W_SteamAchievements extends React.Component<IProps, IState> {
     props!: IProps;
 
     // each widget should have a data field, which is what is passed into the Nivo chart
@@ -224,4 +225,6 @@ class ChartWidget extends React.Component<IProps, IState> {
     }
 }
 
-export default widgetFactory()<SteamLibraryModel, IProps, IState>(ChartWidget);
+export default widgetFactory()<SteamLibraryModel, IProps, IState>(
+    W_SteamAchievements
+);

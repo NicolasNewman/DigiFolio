@@ -5,11 +5,10 @@ import {
     shell,
     BrowserWindow,
     MenuItemConstructorOptions,
-    ipcMain,
-    ipcRenderer,
 } from 'electron';
-import { join, basename } from 'path';
+import { basename } from 'path';
 import { electron } from 'process';
+import { readFile } from 'fs';
 
 import routes from './Routes';
 
@@ -272,12 +271,34 @@ export default class MenuBuilder {
             */
         };
 
-        const exportClickHandler = () => {
+        const saveWorkspaceClickHandler = () => {
             this.mainWindow.webContents.send(
                 'save-ws-as',
                 'blah',
                 basename('blah')
             );
+        };
+
+        const openWorkspace = () => {
+            dialog
+                .showOpenDialog({
+                    title: 'Open Workspace',
+                    properties: ['openFile'],
+                })
+                .then((res) => {
+                    if (res.filePaths) {
+                        readFile(res.filePaths[0], (err, data) => {
+                            this.mainWindow.webContents.send(
+                                'open-workspace',
+                                Buffer.from(
+                                    data.toString(),
+                                    'base64'
+                                ).toString()
+                            );
+                        });
+                    }
+                })
+                .catch((err) => {});
         };
 
         const templateDefault = [
@@ -292,6 +313,7 @@ export default class MenuBuilder {
                     {
                         label: 'Open Workspace',
                         accelerator: 'Ctrl+O',
+                        click: openWorkspace,
                     },
                     // {
                     //     label: 'Save Portfolio',

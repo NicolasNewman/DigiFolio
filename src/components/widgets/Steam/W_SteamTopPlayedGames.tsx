@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import * as React from 'react';
@@ -12,12 +13,12 @@ type IProps = ExternalProps<SteamLibraryModel> & {
     restoreState: () => IState;
 };
 
-interface IState {
+export interface IState {
     orientLabels: boolean;
     opacity: number;
 }
 
-class TopPlayedGames extends Component<IProps, IState> {
+class W_SteamTopPlayedGames extends Component<IProps, IState> {
     props!: IProps;
 
     data: {
@@ -147,5 +148,5 @@ class TopPlayedGames extends Component<IProps, IState> {
 }
 
 export default widgetFactory()<SteamLibraryModel, IProps, IState>(
-    TopPlayedGames
+    W_SteamTopPlayedGames
 );

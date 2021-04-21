@@ -11,11 +11,13 @@ import {
     DropTargetConnector,
 } from 'react-dnd';
 import update from 'immutability-helper';
+import equals from 'fast-deep-equal';
 import { Boxes } from '../../types/Portfolio';
 // eslint-disable-next-line import/no-cycle
 import { BoxDragItem } from '../../constants/types';
 // eslint-disable-next-line import/no-cycle
 import { WidgetComponentType } from '../widgets/IWidget';
+import { IInitialState } from '../../reducers/portfolio';
 
 function collect(connect: DropTargetConnector, monitor: DropTargetMonitor) {
     return {
@@ -34,6 +36,7 @@ interface IProps {
     background: string;
     gradient: string | undefined;
     updatePortfolioBoxes: (boxes: Boxes) => void;
+    portfolio: IInitialState;
 }
 
 interface IState {
@@ -60,13 +63,22 @@ class Portfolio extends Component<IProps, IState> {
 
     constructor(props) {
         super(props);
-        this.state = {
-            boxes: {},
-        };
+        console.log(props);
+        if (Object.keys(props.portfolio.boxes).length > 0) {
+            this.state = {
+                boxes: props.portfolio.boxes,
+            };
+        } else {
+            this.state = {
+                boxes: {},
+            };
+        }
     }
 
     componentDidUpdate(_, prevState) {
-        this.props.updatePortfolioBoxes(prevState.boxes);
+        if (!equals(this.state, prevState)) {
+            this.props.updatePortfolioBoxes(this.state.boxes);
+        }
     }
 
     deleteBox = (id: string) => {
@@ -128,6 +140,7 @@ class Portfolio extends Component<IProps, IState> {
                         const { left, top, title, component, data } = boxes[
                             key
                         ];
+                        console.log(component);
                         const WidgetComponent = component;
                         return (
                             <WidgetComponent

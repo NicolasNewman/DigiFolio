@@ -10,6 +10,7 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { SketchPicker, ColorResult } from 'react-color';
 import { Button, Popover, Slider } from 'antd';
+import { ipcRenderer } from 'electron';
 import { LeftCircleOutlined } from '@ant-design/icons';
 import update from 'immutability-helper';
 import DataStore from '../classes/DataStore';
@@ -20,13 +21,18 @@ import Widgets from './designer/Widgets';
 import { GithubData } from '../api/GithubAPI';
 import { SteamAPIData } from '../api/SteamAPI';
 import Theming from './Designer/Theming';
-import { Boxes } from '../types/Portfolio';
+import { Boxes, RestoreBoxes } from '../types/Portfolio';
+import { IInitialState } from '../reducers/portfolio';
+import resolveWidget from './widgets/WidgetResolver';
+import { WidgetComponentType } from './widgets/IWidget';
 
 interface IProps extends RouteComponentProps<any> {
     dataStore: DataStore;
     github: GithubData;
     steam: SteamAPIData;
+    portfolio: IInitialState;
     updatePortfolioBoxes: (boxes: Boxes) => void;
+    restorePortfolio: (state: IInitialState) => void;
 }
 
 interface IState {
@@ -36,6 +42,7 @@ interface IState {
     gradient: string | undefined;
     angleValue: number;
     visible: boolean;
+    portfolioKey: number;
 }
 
 export default class Designer extends Component<IProps, IState> {
@@ -47,6 +54,7 @@ export default class Designer extends Component<IProps, IState> {
         super(props);
         this.state = {
             active: {},
+            portfolioKey: 1,
             currentThemePanel: <span />,
             background: '#fff',
             gradient: undefined,
@@ -54,6 +62,32 @@ export default class Designer extends Component<IProps, IState> {
             visible: false,
         };
         this.state.currentThemePanel = this.getGlobalThemePanel();
+        ipcRenderer.on('open-workspace', (e, content) => {
+            console.log(content);
+            const restoredState = JSON.parse(content) as {
+                boxes: RestoreBoxes;
+            };
+            const state: IInitialState = { boxes: {} };
+            Object.keys(restoredState.boxes).forEach((key) => {
+                const temp = restoredState.boxes[key];
+                state.boxes[key] = {
+                    data: temp.data,
+                    top: temp.top,
+                    left: temp.left,
+                    title: temp.title,
+                    component: (resolveWidget(
+                        temp.component,
+                        temp.data
+                    ) as unknown) as WidgetComponentType,
+                };
+            });
+            console.log(restoredState);
+            Object.keys(state);
+            this.props.restorePortfolio(state);
+            this.setState({ portfolioKey: this.state.portfolioKey + 1 });
+            // this.state.active = JSON.parse(content);
+        });
+        console.log(this.state);
     }
 
     handleBackgroundChange = (color: ColorResult) => {
@@ -62,6 +96,7 @@ export default class Designer extends Component<IProps, IState> {
 
     handleGradientChange = (color: ColorResult) => {
         this.setState({ gradient: color.hex });
+        this.setThemePanel(this.getGlobalThemePanel());
     };
 
     handleAngleChange = (value) => {
@@ -110,13 +145,28 @@ export default class Designer extends Component<IProps, IState> {
                                     min={0}
                                     max={360}
                                     onAfterChange={this.handleAngleChange}
-                                    value={this.state.angleValue}
+                                    defaultValue={this.state.angleValue}
                                 />
                             }
                             title="Angle"
                             trigger="click"
                         >
                             <Button>Change Angle</Button>
+                        </Popover>
+                        <hr />
+                        <Popover
+                            content={
+                                <Slider
+                                    min={0}
+                                    max={360}
+                                    onAfterChange={this.handleAngleChange}
+                                    defaultValue={this.state.angleValue}
+                                />
+                            }
+                            title="Angle"
+                            trigger="click"
+                        >
+                            <Button>Change Main Color Percentage</Button>
                         </Popover>
                     </div>
                 ) : null}
@@ -158,6 +208,7 @@ export default class Designer extends Component<IProps, IState> {
                             }
                         >
                             <Portfolio
+                                key={this.state.portfolioKey}
                                 hideSourceOnDrag
                                 updateActiveWidgets={this.updateActiveWidgets}
                                 setThemePanel={this.setThemePanel}
@@ -166,6 +217,7 @@ export default class Designer extends Component<IProps, IState> {
                                 updatePortfolioBoxes={
                                     this.props.updatePortfolioBoxes
                                 }
+                                portfolio={this.props.portfolio}
                             />
                         </div>
                         <div className="designer__widgets">
