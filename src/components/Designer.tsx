@@ -58,7 +58,7 @@ export default class Designer extends Component<IProps, IState> {
             currentThemePanel: <span />,
             background: '#fff',
             gradient: undefined,
-            angleValue: 0,
+            angleValue: 135,
             visible: false,
         };
         this.state.currentThemePanel = this.getGlobalThemePanel();
@@ -158,15 +158,15 @@ export default class Designer extends Component<IProps, IState> {
                             content={
                                 <Slider
                                     min={0}
-                                    max={360}
+                                    max={100}
                                     onAfterChange={this.handleAngleChange}
                                     defaultValue={this.state.angleValue}
                                 />
                             }
-                            title="Angle"
+                            title="Color %"
                             trigger="click"
                         >
-                            <Button>Change Main Color Percentage</Button>
+                            <Button>Change Color Percentage</Button>
                         </Popover>
                     </div>
                 ) : null}
@@ -214,6 +214,7 @@ export default class Designer extends Component<IProps, IState> {
                                 setThemePanel={this.setThemePanel}
                                 background={this.state.background}
                                 gradient={this.state.gradient}
+                                angleValue={this.state.angleValue}
                                 updatePortfolioBoxes={
                                     this.props.updatePortfolioBoxes
                                 }
