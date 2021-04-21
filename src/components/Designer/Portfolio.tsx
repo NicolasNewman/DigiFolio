@@ -36,6 +36,7 @@ interface IProps {
     background: string;
     gradient: string | undefined;
     angleValue: number;
+    colorPercent: number;
     updatePortfolioBoxes: (boxes: Boxes) => void;
     portfolio: IInitialState;
 }
@@ -123,7 +124,7 @@ class Portfolio extends Component<IProps, IState> {
         //const backgroundColor = hovered ? '#F0F02D' : 'white';
         const backgroundColor = hovered ? '0px 0px 40px black' : '';
         const { boxes } = this.state;
-        const { background, gradient, angleValue } = this.props;
+        const { background, gradient, angleValue, colorPercent } = this.props;
         const gradientColor = gradient || background;
         return connectDropTarget(
             <div className="portfolio">
@@ -133,7 +134,7 @@ class Portfolio extends Component<IProps, IState> {
                     style={{
                         boxShadow: backgroundColor,
                         position: 'relative',
-                        backgroundImage: `linear-gradient(${angleValue}deg, ${background}, ${gradientColor})`,
+                        backgroundImage: `linear-gradient(${angleValue}deg, ${background} ${colorPercent}%, ${gradientColor})`,
                     }}
                 >
                     {/* <p style={{ color: '#000000' }}>This is my page</p> */}

@@ -41,6 +41,7 @@ interface IState {
     background: string;
     gradient: string | undefined;
     angleValue: number;
+    colorPercentage: number;
     visible: boolean;
     portfolioKey: number;
 }
@@ -59,6 +60,7 @@ export default class Designer extends Component<IProps, IState> {
             background: '#fff',
             gradient: undefined,
             angleValue: 135,
+            colorPercentage: 0,
             visible: false,
         };
         this.state.currentThemePanel = this.getGlobalThemePanel();
@@ -100,8 +102,11 @@ export default class Designer extends Component<IProps, IState> {
     };
 
     handleAngleChange = (value) => {
-        console.log('changing angle value to', value);
         this.setState({ angleValue: value });
+    };
+
+    handlePercentageChange = (value) => {
+        this.setState({ colorPercentage: value });
     };
 
     getGlobalThemePanel = () => {
@@ -159,14 +164,14 @@ export default class Designer extends Component<IProps, IState> {
                                 <Slider
                                     min={0}
                                     max={100}
-                                    onAfterChange={this.handleAngleChange}
-                                    defaultValue={this.state.angleValue}
+                                    onAfterChange={this.handlePercentageChange}
+                                    defaultValue={this.state.colorPercentage}
                                 />
                             }
                             title="Color %"
                             trigger="click"
                         >
-                            <Button>Change Color Percentage</Button>
+                            <Button>Change Color %</Button>
                         </Popover>
                     </div>
                 ) : null}
@@ -215,6 +220,7 @@ export default class Designer extends Component<IProps, IState> {
                                 background={this.state.background}
                                 gradient={this.state.gradient}
                                 angleValue={this.state.angleValue}
+                                colorPercent={this.state.colorPercentage}
                                 updatePortfolioBoxes={
                                     this.props.updatePortfolioBoxes
                                 }
