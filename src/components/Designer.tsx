@@ -109,9 +109,26 @@ export default class Designer extends Component<IProps, IState> {
         this.setState({ colorPercentage: value });
     };
 
+    switchTheme = () => {
+        const curTheme = this.state.background;
+        if (curTheme === '#fff') {
+            this.setState({ background: '#333' });
+        } else {
+            this.setState({ background: '#fff' });
+        }
+        setInterval(() => {
+            this.setThemePanel(this.getGlobalThemePanel());
+        }, 20);
+    };
+
     getGlobalThemePanel = () => {
+        const theme = this.state.background === '#fff' ? 'Dark' : 'Light';
         return (
             <div>
+                <Button onClick={this.switchTheme}>
+                    Switch to {theme} Mode
+                </Button>
+                <hr />
                 <Popover
                     content={
                         <SketchPicker
