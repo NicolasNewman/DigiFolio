@@ -41,9 +41,14 @@ class RepoGraph extends React.Component<IProps, IState> {
             this.repos.push(repo.name);
         });
         const restoredState = props.restoreState();
-        this.state = restoredState || {
-            repos: [],
-        };
+        this.state = restoredState ||
+            props.state || {
+                repos: [],
+            };
+    }
+
+    componentDidUpdate(_, prevState) {
+        this.props.saveState(this.state);
     }
 
     componentWillUnmount() {

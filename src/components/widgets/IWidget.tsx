@@ -30,6 +30,7 @@ export interface ExternalProps<T> {
     component: WidgetComponentType;
     left?: number;
     top?: number;
+    state?: any;
     hideSourceOnDrag?: boolean;
     delete?: (id: string) => void;
     data: T;
@@ -150,13 +151,21 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
             beginDrag: (
                 props: ResultProps,
                 monitor: DragSourceMonitor,
-                funcComponent
+                widgetComponent: any
             ) => {
                 console.log('========== BEING DRAG ==========');
                 console.log(props);
-                console.log(funcComponent);
+                console.log(widgetComponent);
+                console.log(widgetComponent.savedState);
                 const { id, left, top, component, data } = props;
-                return { id, left, top, component, data };
+                return {
+                    id,
+                    left,
+                    top,
+                    component,
+                    data,
+                    state: widgetComponent.savedState,
+                };
             },
             endDrag: (
                 props: ResultProps,
