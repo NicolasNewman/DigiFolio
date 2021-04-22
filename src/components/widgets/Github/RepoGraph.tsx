@@ -7,16 +7,24 @@ import * as React from 'react';
 import { PureComponent } from 'react';
 import { ResponsiveBar, Layer } from '@nivo/bar';
 import { Select } from 'antd';
-import { widgetFactory, ExternalProps } from '../IWidget';
+import {
+    widgetFactory,
+    ExternalProps,
+    ComponentExtendedProps,
+} from '../IWidget';
 import { GithubRepoModel } from '../../../api/GithubAPI';
 
 const { Option } = Select;
 
 // The props should always extend ExternalProps which takes a generic of the type of the data model being given to this widget
-type IProps = ExternalProps<GithubRepoModel> & {
-    saveState: (state: IState) => void;
-    restoreState: () => IState;
-};
+// type IProps = ExternalProps<GithubRepoModel> & {
+//     saveState: (state: IState) => void;
+//     restoreState: () => IState;
+//     width: number;
+//     height: number;
+//     setHOCState: (state: any) => void;
+// };
+type IProps = ExternalProps<GithubRepoModel> & ComponentExtendedProps<IState>;
 
 export interface IState {
     repos: string[];
@@ -45,6 +53,8 @@ class RepoGraph extends React.Component<IProps, IState> {
             props.state || {
                 repos: [],
             };
+
+        props.setHOCState({ width: 500, height: 300, hover: false });
     }
 
     componentDidUpdate(_, prevState) {
@@ -131,7 +141,10 @@ class RepoGraph extends React.Component<IProps, IState> {
                 style={
                     this.props.onWidgetList
                         ? { width: '100%', height: '225px' }
-                        : { width: '500px', height: '300px' }
+                        : {
+                              width: `${this.props.width}px`,
+                              height: `${this.props.height}px`,
+                          }
                 }
                 onClick={(e) => {
                     e.stopPropagation();
@@ -165,7 +178,7 @@ class RepoGraph extends React.Component<IProps, IState> {
                         legendPosition: 'middle',
                         legendOffset: 32,
                     }}
-                    margin={{ top: 20, right: 0, bottom: 60, left: 45 }}
+                    margin={{ top: 20, right: 0, bottom: 100, left: 45 }}
                     layers={['grid', 'axes', 'bars', 'markers', 'legends']}
                     labelSkipHeight={10}
                 />

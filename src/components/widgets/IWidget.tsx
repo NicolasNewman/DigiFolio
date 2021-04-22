@@ -42,8 +42,18 @@ export interface ExternalProps<T> {
     isDragging?: boolean;
 }
 
+export interface ComponentExtendedProps<S> {
+    saveState: (state: S) => void;
+    restoreState: () => S;
+    width: number;
+    height: number;
+    setHOCState: (state: IState) => void;
+}
+
 interface IState {
     hover: boolean;
+    width: number;
+    height: number;
 }
 
 interface Options {
@@ -59,6 +69,9 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
         TOriginalProps & {
             saveState: (state: TOriginalState) => void;
             restoreState: () => TOriginalState;
+            setHOCState: (state: IState) => void;
+            width: number;
+            height: number;
         },
         TOriginalState
     >
@@ -86,6 +99,8 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
             this.componentRef = React.createRef();
             this.state = {
                 hover: false,
+                width: 250,
+                height: 250,
             };
         }
 
@@ -118,6 +133,9 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
                         restoreState={() => {
                             return this.savedState;
                         }}
+                        width={this.state.width}
+                        height={this.state.height}
+                        setHOCState={(state) => this.setState(state)}
                     />
                     {!this.props.onWidgetList && this.state.hover ? (
                         <CloseCircleOutlined
@@ -150,16 +168,24 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
                         html
                     ) : (
                         <ResizableBox
-                            width={250}
-                            height={250}
+                            width={this.state.width}
+                            height={this.state.height}
                             minConstraints={[25, 25]}
-                            maxConstraints={[500, 500]}
+                            maxConstraints={[600, 600]}
+                            onResizeStop={(e, data) => {
+                                this.setState({
+                                    width: data.size.width,
+                                    height: data.size.height,
+                                });
+                            }}
                             handle={
                                 <span
                                     onPointerEnter={(e) => {
+                                        console.log('Enter');
                                         draggable = false;
                                     }}
                                     onPointerLeave={(e) => {
+                                        console.log('Exit');
                                         draggable = true;
                                     }}
                                     className="react-resizable-handle react-resizable-handle-se"
@@ -207,8 +233,8 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
                 console.log(component);
             },
             canDrag: (props, monitor: DragSourceMonitor) => {
-                console.log(monitor);
-                console.log(monitor.getItem());
+                console.log('========== CAN DRAG ==========');
+                console.log(draggable);
                 return draggable;
             },
         },
