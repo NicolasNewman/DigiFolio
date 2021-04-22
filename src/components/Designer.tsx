@@ -116,7 +116,7 @@ export default class Designer extends Component<IProps, IState> {
         } else {
             this.setState({ background: '#fff' });
         }
-        setInterval(() => {
+        setTimeout(() => {
             this.setThemePanel(this.getGlobalThemePanel());
         }, 20);
     };
