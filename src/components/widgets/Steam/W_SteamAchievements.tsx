@@ -86,14 +86,23 @@ class W_SteamAchievements extends React.Component<IProps, IState> {
             this.games.push(game.name);
         });
         const restoredState = props.restoreState();
-        this.state = restoredState || {
-            games: [],
-        };
+        this.state = restoredState ||
+            props.state || {
+                games: [],
+            };
+    }
+
+    componentDidUpdate(_, prevState) {
+        this.props.saveState(this.state);
     }
 
     componentWillUnmount() {
         this.props.saveState(this.state);
     }
+
+    // componentDidUpdate(_, prevState) {
+    //     this.props.saveState(this.state);
+    // }
 
     getThemePanel() {
         return (

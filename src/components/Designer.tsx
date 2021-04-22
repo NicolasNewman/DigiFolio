@@ -77,14 +77,16 @@ export default class Designer extends Component<IProps, IState> {
                     top: temp.top,
                     left: temp.left,
                     title: temp.title,
+                    state: temp.state,
                     component: (resolveWidget(
                         temp.component,
                         temp.data
                     ) as unknown) as WidgetComponentType,
                 };
+                this.updateActiveWidgets(key, false);
             });
             console.log(restoredState);
-            Object.keys(state);
+            // Object.keys(state);
             this.props.restorePortfolio(state);
             this.setState({ portfolioKey: this.state.portfolioKey + 1 });
             // this.state.active = JSON.parse(content);
