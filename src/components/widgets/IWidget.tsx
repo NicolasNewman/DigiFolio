@@ -13,6 +13,7 @@ import {
     DragSourceMonitor,
 } from 'react-dnd';
 import { CloseCircleOutlined } from '@ant-design/icons';
+import { ResizableBox } from 'react-resizable';
 
 const widgetStyle: React.CSSProperties = {
     background: '#ddd',
@@ -64,7 +65,7 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
     // | React.FunctionComponent<TOriginalProps>
 ) => {
     type ResultProps = TOriginalProps & ExternalProps<T>;
-
+    let draggable = true;
     class Widget extends React.Component<ResultProps, IState> {
         props!: ResultProps;
 
@@ -73,6 +74,8 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
         savedState: TOriginalState | null = null;
 
         componentRef: React.RefObject<any>;
+
+        // draggable: boolean = true;
 
         static displayName = `Widget(${
             Component.displayName || Component.name
@@ -103,6 +106,33 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
                 id,
             } = this.props;
             const position = onWidgetList ? 'relative' : 'absolute';
+
+            const html = (
+                <div style={{ position: 'relative' }}>
+                    <Component
+                        ref={this.componentRef}
+                        {...this.props}
+                        saveState={(state: TOriginalState) => {
+                            this.savedState = state;
+                        }}
+                        restoreState={() => {
+                            return this.savedState;
+                        }}
+                    />
+                    {!this.props.onWidgetList && this.state.hover ? (
+                        <CloseCircleOutlined
+                            onClick={() => {
+                                if (this.props.delete) {
+                                    this.props.delete(this.props.id);
+                                }
+                            }}
+                            className="btn-close"
+                        />
+                    ) : (
+                        <span />
+                    )}
+                </div>
+            );
             return connectDragSource(
                 <div
                     style={{
@@ -116,30 +146,29 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
                     onMouseEnter={() => this.setState({ hover: true })}
                     onMouseLeave={() => this.setState({ hover: false })}
                 >
-                    <div style={{ position: 'relative' }}>
-                        <Component
-                            ref={this.componentRef}
-                            {...this.props}
-                            saveState={(state: TOriginalState) => {
-                                this.savedState = state;
-                            }}
-                            restoreState={() => {
-                                return this.savedState;
-                            }}
-                        />
-                        {!this.props.onWidgetList && this.state.hover ? (
-                            <CloseCircleOutlined
-                                onClick={() => {
-                                    if (this.props.delete) {
-                                        this.props.delete(this.props.id);
-                                    }
-                                }}
-                                className="btn-close"
-                            />
-                        ) : (
-                            <span />
-                        )}
-                    </div>
+                    {this.props.onWidgetList ? (
+                        html
+                    ) : (
+                        <ResizableBox
+                            width={250}
+                            height={250}
+                            minConstraints={[25, 25]}
+                            maxConstraints={[500, 500]}
+                            handle={
+                                <span
+                                    onPointerEnter={(e) => {
+                                        draggable = false;
+                                    }}
+                                    onPointerLeave={(e) => {
+                                        draggable = true;
+                                    }}
+                                    className="react-resizable-handle react-resizable-handle-se"
+                                />
+                            }
+                        >
+                            {html}
+                        </ResizableBox>
+                    )}
                 </div>
             );
         }
@@ -176,6 +205,11 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
                 console.log(props);
                 console.log(monitor);
                 console.log(component);
+            },
+            canDrag: (props, monitor: DragSourceMonitor) => {
+                console.log(monitor);
+                console.log(monitor.getItem());
+                return draggable;
             },
         },
         (connect: DragSourceConnector, monitor: DragSourceMonitor) => ({
