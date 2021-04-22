@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-key */
 /* eslint-disable react/no-access-state-in-setstate */
 /* eslint-disable react/state-in-constructor */
 /* eslint-disable react/no-unused-state */
@@ -44,19 +45,6 @@ interface IState {
         };
     };
 }
-
-// export function deleteBox(this: any, id) {
-//     // Handle removal of a widget from the page
-//     this.setState(
-//         update(this.state, {
-//             boxes: {
-//                 $merge: {
-//                     [id]: undefined,
-//                 },
-//             },
-//         })
-//     );
-// }
 
 class Portfolio extends Component<IProps, IState> {
     props!: IProps;
@@ -108,7 +96,6 @@ class Portfolio extends Component<IProps, IState> {
     render() {
         // eslint-disable-next-line prettier/prettier
         const { hideSourceOnDrag, connectDropTarget, hovered } = this.props;
-        //const backgroundColor = hovered ? '#F0F02D' : 'white';
         const backgroundColor = hovered ? '0px 0px 40px black' : '';
         const { boxes } = this.state;
         return connectDropTarget(

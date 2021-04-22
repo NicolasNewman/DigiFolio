@@ -13,6 +13,7 @@ import {
     DragSourceMonitor,
 } from 'react-dnd';
 import { Rnd } from 'react-rnd';
+import { Resizable, ResizableBox } from 'react-resizable';
 import { CloseCircleOutlined } from '@ant-design/icons';
 import Resizer from './Resizer/resizer';
 import { Direction } from './Resizer/Direction';
@@ -23,7 +24,6 @@ const widgetStyle: React.CSSProperties = {
     background: '#ddd',
     border: '1px solid black',
     borderRadius: '5px',
-    padding: '0.5rem',
 };
 
 export type WidgetComponentType =
@@ -48,11 +48,24 @@ export interface ExternalProps<T> {
 
 interface IState {
     hover: boolean;
+    width: string;
+    height: string;
+    x: number;
+    y: number;
 }
 
 interface Options {
     test?: string;
 }
+
+const style = {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    border: 'solid 1px #ddd',
+    background: '#f0f0f0',
+    position: 'relative',
+};
 
 export const widgetFactory = ({ test = '' }: Options = {}) => <
     T,
@@ -79,12 +92,17 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
             super(props);
             this.state = {
                 hover: false,
+                width: 'auto',
+                height: 'auto',
+                x: 0,
+                y: 0,
             };
         }
 
         handleResize = (direction, movementX, movementY) => {
             const widget = this.widgetRef.current;
             if (!widget) return;
+            //widget.isDragging = false;
 
             const { width, height } = widget.getBoundingClientRect();
 
@@ -125,6 +143,7 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
                 id,
             } = this.props;
             const position = onWidgetList ? 'relative' : 'absolute';
+
             return connectDragSource(
                 <div
                     style={{
@@ -139,7 +158,86 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
                     onMouseLeave={() => this.setState({ hover: false })}
                     ref={this.widgetRef}
                 >
-                    {!this.props.onWidgetList && this.state.hover ? (
+                    <div>
+                        {this.props.onWidgetList ? (
+                            <div
+                                style={{
+                                    position: 'relative',
+                                    margin: '0.5rem',
+                                }}
+                            >
+                                <Component {...this.props} />
+                                {!this.props.onWidgetList &&
+                                this.state.hover ? (
+                                    <CloseCircleOutlined
+                                        onClick={() => {
+                                            if (this.props.delete) {
+                                                this.props.delete(
+                                                    this.props.id
+                                                );
+                                            }
+                                        }}
+                                        className="btn-close"
+                                    />
+                                ) : (
+                                    <span />
+                                )}
+                            </div>
+                        ) : (
+                            <div
+                                style={{
+                                    position: 'relative',
+                                }}
+                            >
+                                <Rnd
+                                    style={style}
+                                    size={{
+                                        width: this.state.width,
+                                        height: this.state.height,
+                                    }}
+                                    position={{
+                                        x: this.state.x,
+                                        y: this.state.y,
+                                    }}
+                                    onDragStop={(e, d) => {
+                                        this.setState({ x: d.x, y: d.y });
+                                    }}
+                                    onResizeStop={(
+                                        e,
+                                        direction,
+                                        ref,
+                                        delta,
+                                        // eslint-disable-next-line @typescript-eslint/no-shadow
+                                        position
+                                    ) => {
+                                        this.setState({
+                                            width: ref.style.width,
+                                            height: ref.style.height,
+                                            ...position,
+                                        });
+                                    }}
+                                >
+                                    <Component {...this.props} />
+                                    {!this.props.onWidgetList &&
+                                    this.state.hover ? (
+                                        <CloseCircleOutlined
+                                            onClick={() => {
+                                                if (this.props.delete) {
+                                                    this.props.delete(
+                                                        this.props.id
+                                                    );
+                                                }
+                                            }}
+                                            className="btn-close"
+                                        />
+                                    ) : (
+                                        <span />
+                                    )}
+                                </Rnd>
+                            </div>
+                        )}
+                    </div>
+                    {/* {!this.props.onWidgetList ? (
                         <Resizer onResize={this.handleResize} />
                     ) : (
                         <span />
@@ -158,7 +256,7 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
                         ) : (
                             <span />
                         )}
-                    </div>
+                    </div> */}
                 </div>
             );
         }
@@ -185,6 +283,9 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
                 console.log(monitor);
                 console.log(component);
             },
+            // canDrag: (props: ResultProps, monitor: DragSourceMonitor) => {
+            //     return true;
+            // },
         },
         (connect: DragSourceConnector, monitor: DragSourceMonitor) => ({
             connectDragSource: connect.dragSource(),
