@@ -1,3 +1,4 @@
+/* eslint-disable react/button-has-type */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable react/no-access-state-in-setstate */
@@ -7,12 +8,14 @@ import { Component } from 'react';
 import { RouteComponentProps } from 'react-router';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import { SketchPicker, ColorResult } from 'react-color';
+import { Button, Popover, Slider } from 'antd';
 import { ipcRenderer } from 'electron';
-import { Button } from 'antd';
 import { LeftCircleOutlined } from '@ant-design/icons';
 import update from 'immutability-helper';
 import DataStore from '../classes/DataStore';
 import routes from '../constants/routes';
+// eslint-disable-next-line import/no-named-as-default
 import Portfolio from './designer/Portfolio';
 import Widgets from './designer/Widgets';
 import { GithubData } from '../api/GithubAPI';
@@ -35,6 +38,11 @@ interface IProps extends RouteComponentProps<any> {
 interface IState {
     active: { [key: string]: boolean };
     currentThemePanel: React.ReactNode;
+    background: string;
+    gradient: string | undefined;
+    angleValue: number;
+    colorPercentage: number;
+    visible: boolean;
     portfolioKey: number;
 }
 
@@ -43,13 +51,19 @@ export default class Designer extends Component<IProps, IState> {
 
     state: IState;
 
-    constructor(props, history) {
+    constructor(props) {
         super(props);
         this.state = {
             active: {},
-            currentThemePanel: this.getGlobalThemePanel(),
             portfolioKey: 1,
+            currentThemePanel: <span />,
+            background: '#fff',
+            gradient: undefined,
+            angleValue: 135,
+            colorPercentage: 0,
+            visible: false,
         };
+        this.state.currentThemePanel = this.getGlobalThemePanel();
         ipcRenderer.on('open-workspace', (e, content) => {
             console.log(content);
             const restoredState = JSON.parse(content) as {
@@ -80,16 +94,115 @@ export default class Designer extends Component<IProps, IState> {
         console.log(this.state);
     }
 
-    getGlobalThemePanel() {
-        return <div>Hello</div>;
-    }
+    handleBackgroundChange = (color: ColorResult) => {
+        this.setState({ background: color.hex });
+    };
+
+    handleGradientChange = (color: ColorResult) => {
+        this.setState({ gradient: color.hex });
+        this.setThemePanel(this.getGlobalThemePanel());
+    };
+
+    handleAngleChange = (value) => {
+        this.setState({ angleValue: value });
+    };
+
+    handlePercentageChange = (value) => {
+        this.setState({ colorPercentage: value });
+    };
+
+    switchTheme = () => {
+        const curTheme = this.state.background;
+        if (curTheme === '#fff') {
+            this.setState({ background: '#333' });
+        } else {
+            this.setState({ background: '#fff' });
+        }
+        setInterval(() => {
+            this.setThemePanel(this.getGlobalThemePanel());
+        }, 20);
+    };
+
+    getGlobalThemePanel = () => {
+        const theme = this.state.background === '#fff' ? 'Dark' : 'Light';
+        return (
+            <div>
+                <Button onClick={this.switchTheme}>
+                    Switch to {theme} Mode
+                </Button>
+                <hr />
+                <Popover
+                    content={
+                        <SketchPicker
+                            className="sketch-picker-override"
+                            color={this.state.background}
+                            onChangeComplete={this.handleBackgroundChange}
+                            disableAlpha
+                        />
+                    }
+                    title="Background"
+                    trigger="click"
+                >
+                    <Button>Change Theme</Button>
+                </Popover>
+                <hr />
+                <Popover
+                    content={
+                        <SketchPicker
+                            className="sketch-picker-override"
+                            color={this.state.gradient || '#fff'}
+                            onChangeComplete={this.handleGradientChange}
+                            disableAlpha
+                        />
+                    }
+                    title="Gradient"
+                    trigger="click"
+                >
+                    <Button>Add Gradient</Button>
+                </Popover>
+                {this.state.gradient ? (
+                    <div>
+                        <hr />
+                        <Popover
+                            content={
+                                <Slider
+                                    min={0}
+                                    max={360}
+                                    onAfterChange={this.handleAngleChange}
+                                    defaultValue={this.state.angleValue}
+                                />
+                            }
+                            title="Angle"
+                            trigger="click"
+                        >
+                            <Button>Change Angle</Button>
+                        </Popover>
+                        <hr />
+                        <Popover
+                            content={
+                                <Slider
+                                    min={0}
+                                    max={100}
+                                    onAfterChange={this.handlePercentageChange}
+                                    defaultValue={this.state.colorPercentage}
+                                />
+                            }
+                            title="Color %"
+                            trigger="click"
+                        >
+                            <Button>Change Color %</Button>
+                        </Popover>
+                    </div>
+                ) : null}
+            </div>
+        );
+    };
 
     setThemePanel = (panel: React.ReactNode) => {
         this.setState({ currentThemePanel: panel });
     };
 
     updateActiveWidgets = (id: string, active: boolean) => {
-        console.log(this.state);
         this.setState(
             update(this.state, {
                 active: {
@@ -123,6 +236,10 @@ export default class Designer extends Component<IProps, IState> {
                                 hideSourceOnDrag
                                 updateActiveWidgets={this.updateActiveWidgets}
                                 setThemePanel={this.setThemePanel}
+                                background={this.state.background}
+                                gradient={this.state.gradient}
+                                angleValue={this.state.angleValue}
+                                colorPercent={this.state.colorPercentage}
                                 updatePortfolioBoxes={
                                     this.props.updatePortfolioBoxes
                                 }
