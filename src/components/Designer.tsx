@@ -15,11 +15,13 @@ import Portfolio from './designer/Portfolio';
 import Widgets from './designer/Widgets';
 import { GithubData } from '../api/GithubAPI';
 import { SteamAPIData } from '../api/SteamAPI';
+import { RedditAPIData } from '../api/RedditAPI';
 
 interface IProps extends RouteComponentProps<any> {
     dataStore: DataStore;
     github: GithubData;
     steam: SteamAPIData;
+    reddit: RedditAPIData;
 }
 
 interface IState {
@@ -69,6 +71,7 @@ export default class Designer extends Component<IProps, IState> {
                                 active={this.state.active}
                                 github={this.props.github}
                                 steam={this.props.steam}
+                                reddit={this.props.reddit}
                             />
                         </div>
                     </DndProvider>

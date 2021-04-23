@@ -10,6 +10,7 @@ function mapStateToProps(state, ownProps) {
         dataStore: ownProps.dataStore,
         github: state.githubapi,
         steam: state.steamapi,
+        reddit: state.redditapi,
     };
 }
 

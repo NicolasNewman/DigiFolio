@@ -156,7 +156,7 @@ export default class RedditAPI extends IAPI<RedditDataModel> {
         const data: RedditSubmission[] = [];
         for (let i = 0; i < temp.length; i += 1) {
             data.push({
-                subreddit: temp[i].subreddit.display_name,
+                subreddit: temp[i].subreddit_name_prefixed,
                 submission_id: temp[i].id,
                 title: temp[i].title,
                 is_self: temp[i].is_self,
