@@ -7,6 +7,7 @@ export type Boxes = {
         title: string;
         component: WidgetComponentType;
         data: any;
+        state: any;
     };
 };
 
@@ -17,5 +18,6 @@ export type RestoreBoxes = {
         title: string;
         component: string;
         data: any;
+        state: any;
     };
 };

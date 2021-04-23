@@ -33,8 +33,13 @@ interface IProps {
     connectDropTarget: ConnectDropTarget;
     updateActiveWidgets: (id: string, active: boolean) => void;
     setThemePanel: (node: React.ReactNode) => void;
+    background: string;
+    gradient: string | undefined;
+    angleValue: number;
+    colorPercent: number;
     updatePortfolioBoxes: (boxes: Boxes) => void;
     portfolio: IInitialState;
+    widgetStyle: React.CSSProperties;
 }
 
 interface IState {
@@ -63,6 +68,7 @@ class Portfolio extends Component<IProps, IState> {
         super(props);
         console.log(props);
         if (Object.keys(props.portfolio.boxes).length > 0) {
+            console.log(props.portfolio.boxes);
             this.state = {
                 boxes: props.portfolio.boxes,
             };
@@ -91,18 +97,35 @@ class Portfolio extends Component<IProps, IState> {
         this.props.updateActiveWidgets(id, false);
     };
 
-    moveBox(id: string, left: number, top: number) {
+    moveBox(id: string, left: number, top: number, state: any) {
         this.setState(
-            update(this.state, { boxes: { [id]: { $merge: { left, top } } } })
+            update(this.state, {
+                boxes: { [id]: { $merge: { left, top, state } } },
+            })
         );
     }
 
-    addBox(id, left, top, component: WidgetComponentType, data: any) {
+    addBox(
+        id,
+        left,
+        top,
+        component: WidgetComponentType,
+        data: any,
+        state: any
+    ) {
+        console.log(state);
         this.setState(
             update(this.state, {
                 boxes: {
                     $merge: {
-                        [id]: { title: 'hi', left, top, component, data },
+                        [id]: {
+                            title: 'hi',
+                            left,
+                            top,
+                            component,
+                            data,
+                            state,
+                        },
                     },
                 },
             })
@@ -120,6 +143,8 @@ class Portfolio extends Component<IProps, IState> {
         //const backgroundColor = hovered ? '#F0F02D' : 'white';
         const backgroundColor = hovered ? '0px 0px 40px black' : '';
         const { boxes } = this.state;
+        const { background, gradient, angleValue, colorPercent } = this.props;
+        const gradientColor = gradient || background;
         return connectDropTarget(
             <div className="portfolio">
                 <div
@@ -128,13 +153,19 @@ class Portfolio extends Component<IProps, IState> {
                     style={{
                         boxShadow: backgroundColor,
                         position: 'relative',
+                        backgroundImage: `linear-gradient(${angleValue}deg, ${background} ${colorPercent}%, ${gradientColor})`,
                     }}
                 >
                     {/* <p style={{ color: '#000000' }}>This is my page</p> */}
                     {Object.keys(boxes).map((key) => {
-                        const { left, top, title, component, data } = boxes[
-                            key
-                        ];
+                        const {
+                            left,
+                            top,
+                            title,
+                            component,
+                            data,
+                            state,
+                        } = boxes[key];
                         console.log(component);
                         const WidgetComponent = component;
                         return (
@@ -143,10 +174,12 @@ class Portfolio extends Component<IProps, IState> {
                                 id={key}
                                 left={left}
                                 top={top}
+                                state={state}
                                 setThemePanel={this.props.setThemePanel}
                                 hideSourceOnDrag={hideSourceOnDrag}
                                 data={data}
                                 delete={this.deleteBox}
+                                widgetStyle={this.props.widgetStyle}
                             />
                         );
                     })}
@@ -168,16 +201,24 @@ export default DropTarget(
             }
 
             const item = monitor.getItem<BoxDragItem>();
+            console.log(item);
             if (!component.state.boxes[item.id]) {
                 const delta = monitor.getClientOffset() as XYCoord;
                 const left = Math.round(delta.x - 64 - 225); // TODO figure out where this value (64) comes from. It will cause issues if we change the styling
                 const top = Math.round(delta.y - 64);
-                component.addBox(item.id, left, top, item.component, item.data);
+                component.addBox(
+                    item.id,
+                    left,
+                    top,
+                    item.component,
+                    item.data,
+                    item.state
+                );
             } else {
                 const delta = monitor.getDifferenceFromInitialOffset() as XYCoord;
                 const left = Math.round(item.left + delta.x);
                 const top = Math.round(item.top + delta.y);
-                component.moveBox(item.id, left, top);
+                component.moveBox(item.id, left, top, item.state);
             }
         },
     },

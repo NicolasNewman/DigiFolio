@@ -14,8 +14,8 @@ export default class Theming extends PureComponent<IProps> {
 
     render() {
         return (
-            <div>
-                <p>Themes!</p>
+            <div style={{ textAlign: 'center' }}>
+                <h3>Themes!</h3>
                 {this.props.themePanel}
             </div>
         );

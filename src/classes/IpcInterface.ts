@@ -47,6 +47,7 @@ export default class IpcInterface {
                     left: temp.left,
                     title: temp.title,
                     component: temp.component.displayName || 'unknown',
+                    state: temp.state,
                 };
             });
             const portfolioState = JSON.stringify(newPortfolio);
