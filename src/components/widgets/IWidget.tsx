@@ -40,6 +40,7 @@ export interface ExternalProps<T> {
 
     connectDragSource: ConnectDragSource;
     isDragging?: boolean;
+    widgetStyle: React.CSSProperties;
 }
 
 export interface ComponentExtendedProps<S> {
@@ -159,6 +160,7 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
                         position,
                         color: 'black',
                         ...widgetStyle,
+                        ...this.props.widgetStyle,
                     }}
                     className="widget__container"
                     onMouseEnter={() => this.setState({ hover: true })}
