@@ -39,6 +39,7 @@ interface IProps {
     colorPercent: number;
     updatePortfolioBoxes: (boxes: Boxes) => void;
     portfolio: IInitialState;
+    widgetStyle: React.CSSProperties;
 }
 
 interface IState {
@@ -178,6 +179,7 @@ class Portfolio extends Component<IProps, IState> {
                                 hideSourceOnDrag={hideSourceOnDrag}
                                 data={data}
                                 delete={this.deleteBox}
+                                widgetStyle={this.props.widgetStyle}
                             />
                         );
                     })}

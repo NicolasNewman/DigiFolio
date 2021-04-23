@@ -9,10 +9,11 @@ import { RouteComponentProps } from 'react-router';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { SketchPicker, ColorResult } from 'react-color';
-import { Button, Popover, Slider } from 'antd';
+import { Button, Popover, Slider, InputNumber, Select } from 'antd';
 import { ipcRenderer } from 'electron';
 import { LeftCircleOutlined } from '@ant-design/icons';
 import update from 'immutability-helper';
+import copy from 'clone-deep';
 import DataStore from '../classes/DataStore';
 import routes from '../constants/routes';
 // eslint-disable-next-line import/no-named-as-default
@@ -44,7 +45,9 @@ interface IState {
     colorPercentage: number;
     visible: boolean;
     portfolioKey: number;
+    widgetStyle: React.CSSProperties;
 }
+const { Option } = Select;
 
 export default class Designer extends Component<IProps, IState> {
     props!: IProps;
@@ -62,9 +65,17 @@ export default class Designer extends Component<IProps, IState> {
             angleValue: 135,
             colorPercentage: 0,
             visible: false,
+            widgetStyle: {
+                background: '#fff' || undefined,
+                color: '#000' || undefined,
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                borderColor: '#000',
+                //border: '1px solid black',
+            },
         };
         this.state.currentThemePanel = this.getGlobalThemePanel();
-        ipcRenderer.on('open-workspace', (e, content) => {
+        ipcRenderer.on('open-workspace', (_e, content) => {
             console.log(content);
             const restoredState = JSON.parse(content) as {
                 boxes: RestoreBoxes;
@@ -109,6 +120,36 @@ export default class Designer extends Component<IProps, IState> {
 
     handlePercentageChange = (value) => {
         this.setState({ colorPercentage: value });
+    };
+
+    handleWidgetBackgroundChange = (color: ColorResult) => {
+        const cpy = copy(this.state.widgetStyle);
+        cpy.backgroundColor = color.hex;
+        this.setState({ widgetStyle: cpy });
+    };
+
+    handleWidgetTextChange = (color: ColorResult) => {
+        const cpy = copy(this.state.widgetStyle);
+        cpy.color = color.hex;
+        this.setState({ widgetStyle: cpy });
+    };
+
+    handleBorderSize = (val) => {
+        const cpy = copy(this.state.widgetStyle);
+        cpy.borderWidth = val;
+        this.setState({ widgetStyle: cpy });
+    };
+
+    handleBorderType = (val) => {
+        const cpy = copy(this.state.widgetStyle);
+        cpy.borderStyle = val;
+        this.setState({ widgetStyle: cpy });
+    };
+
+    handleBorderColor = (color: ColorResult) => {
+        const cpy = copy(this.state.widgetStyle);
+        cpy.borderColor = color.hex;
+        this.setState({ widgetStyle: cpy });
     };
 
     switchTheme = () => {
@@ -195,6 +236,70 @@ export default class Designer extends Component<IProps, IState> {
                         </Popover>
                     </div>
                 ) : null}
+                <hr />
+                <Popover
+                    content={
+                        <SketchPicker
+                            className="sketch-picker-override"
+                            color={this.state.widgetStyle.background || '#fff'}
+                            onChangeComplete={this.handleWidgetBackgroundChange}
+                            disableAlpha
+                        />
+                    }
+                    title="Widget Background"
+                    trigger="click"
+                >
+                    <Button>Change Widget Theme</Button>
+                </Popover>
+                <hr />
+                <Popover
+                    content={
+                        <SketchPicker
+                            className="sketch-picker-override"
+                            color={this.state.widgetStyle.color || '#000'}
+                            onChangeComplete={this.handleWidgetTextChange}
+                            disableAlpha
+                        />
+                    }
+                    title="Widget Background"
+                    trigger="click"
+                >
+                    <Button>Change Widget Text Color</Button>
+                </Popover>
+                <hr />
+                <div>Change Widget Border:</div>
+                <InputNumber
+                    min={0}
+                    max={36}
+                    defaultValue={1}
+                    onChange={this.handleBorderSize}
+                />
+                <Select
+                    showSearch
+                    style={{ width: 200 }}
+                    placeholder="Select a Type"
+                    optionFilterProp="children"
+                    onChange={this.handleBorderType}
+                >
+                    <Option value="solid">Solid</Option>
+                    <Option value="dotted">Dotted</Option>
+                    <Option value="dashed">Dashed</Option>
+                    <Option value="double">Double</Option>
+                </Select>
+                <Popover
+                    content={
+                        <SketchPicker
+                            className="sketch-picker-override"
+                            color={this.state.widgetStyle.borderColor}
+                            onChangeComplete={this.handleBorderColor}
+                            disableAlpha
+                        />
+                    }
+                    title="Widget Background"
+                    trigger="click"
+                >
+                    <Button>Change Border Color</Button>
+                </Popover>
             </div>
         );
     };
@@ -203,7 +308,7 @@ export default class Designer extends Component<IProps, IState> {
         this.setState({ currentThemePanel: panel });
     };
 
-    updateActiveWidgets = (id: string, active: boolean) => {
+    updateActiveWidgets = (id: string, _active: boolean) => {
         this.setState(
             update(this.state, {
                 active: {
@@ -213,7 +318,7 @@ export default class Designer extends Component<IProps, IState> {
         );
     };
 
-    toPage(route: string, e) {
+    toPage(route: string, _e) {
         const { history } = this.props;
         history.push(route);
     }
@@ -245,6 +350,7 @@ export default class Designer extends Component<IProps, IState> {
                                     this.props.updatePortfolioBoxes
                                 }
                                 portfolio={this.props.portfolio}
+                                widgetStyle={this.state.widgetStyle}
                             />
                         </div>
                         <div className="designer__widgets">
