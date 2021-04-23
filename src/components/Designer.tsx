@@ -178,7 +178,7 @@ export default class Designer extends Component<IProps, IState> {
                         type="primary"
                         style={{ margin: '0.3rem 0' }}
                     >
-                        Switch to {theme} Mode
+                        {theme} Mode
                     </Button>
                     <Popover
                         content={
@@ -190,10 +190,10 @@ export default class Designer extends Component<IProps, IState> {
                             />
                         }
                         title="Background"
-                        trigger="click"
+                        trigger="hover"
                     >
                         <Button type="primary" style={{ margin: '0.3rem 0' }}>
-                            Change Theme
+                            Portfolio Color
                         </Button>
                     </Popover>
                     <Popover
@@ -206,7 +206,7 @@ export default class Designer extends Component<IProps, IState> {
                             />
                         }
                         title="Gradient"
-                        trigger="click"
+                        trigger="hover"
                     >
                         <Button type="primary" style={{ margin: '0.3rem 0' }}>
                             Add Gradient
@@ -214,7 +214,21 @@ export default class Designer extends Component<IProps, IState> {
                     </Popover>
                     {this.state.gradient ? (
                         <div>
-                            <Popover
+                            <div>
+                                <span>Angle: </span>
+                                <Slider
+                                    min={0}
+                                    max={360}
+                                    onAfterChange={this.handleAngleChange}
+                                    defaultValue={this.state.angleValue}
+                                    style={{
+                                        width: '60%',
+                                        margin: '-3px 2px',
+                                        display: 'inline-block',
+                                    }}
+                                />
+                            </div>
+                            {/* <Popover
                                 content={
                                     <Slider
                                         min={0}
@@ -224,16 +238,35 @@ export default class Designer extends Component<IProps, IState> {
                                     />
                                 }
                                 title="Angle"
-                                trigger="click"
+                                trigger="hover"
                             >
                                 <Button
                                     type="primary"
                                     style={{ margin: '0.3rem 0' }}
                                 >
-                                    Change Angle
+                                    Gradient Angle
                                 </Button>
-                            </Popover>
-                            <Popover
+                            </Popover> */}
+                            <div>
+                                {/* <Slider
+                                    min={0}
+                                    max={100}
+                                    onAfterChange={this.handlePercentageChange}
+                                    defaultValue={this.state.colorPercentage}
+                                /> */}
+                                <span>Percentage: </span>
+                                <InputNumber
+                                    min={0}
+                                    max={100}
+                                    defaultValue={this.state.colorPercentage}
+                                    onChange={this.handlePercentageChange}
+                                    formatter={(value) => `${value}%`}
+                                    parser={(value) => value?.replace('%', '')}
+                                    style={{ margin: '0.3rem 0' }}
+                                />
+                            </div>
+
+                            {/* <Popover
                                 content={
                                     <Slider
                                         min={0}
@@ -247,15 +280,15 @@ export default class Designer extends Component<IProps, IState> {
                                     />
                                 }
                                 title="Color %"
-                                trigger="click"
+                                trigger="hover"
                             >
                                 <Button
                                     type="primary"
                                     style={{ margin: '0.3rem 0' }}
                                 >
-                                    Change Color %
+                                    Gradient %
                                 </Button>
-                            </Popover>
+                            </Popover> */}
                         </div>
                     ) : null}
                 </div>
@@ -276,10 +309,10 @@ export default class Designer extends Component<IProps, IState> {
                             />
                         }
                         title="Widget Background"
-                        trigger="click"
+                        trigger="hover"
                     >
                         <Button type="primary" style={{ margin: '0.3rem 0' }}>
-                            Change Widget Theme
+                            Widget Color
                         </Button>
                     </Popover>
                     <Popover
@@ -292,24 +325,26 @@ export default class Designer extends Component<IProps, IState> {
                             />
                         }
                         title="Widget Background"
-                        trigger="click"
+                        trigger="hover"
                     >
                         <Button type="primary" style={{ margin: '0.3rem 0' }}>
-                            Change Widget Text Color
+                            Widget Text Color
                         </Button>
                     </Popover>
-                    <div style={{ marginTop: '0.5rem' }}>
-                        Change Widget Border:
+                    <div>
+                        <span style={{ marginTop: '0.5rem' }}>
+                            Border size:
+                        </span>
+                        <InputNumber
+                            min={0}
+                            max={36}
+                            defaultValue={1}
+                            onChange={this.handleBorderSize}
+                            formatter={(value) => `${value}px`}
+                            parser={(value) => value?.replace('px', '')}
+                            style={{ margin: '0.3rem 0' }}
+                        />
                     </div>
-                    <InputNumber
-                        min={0}
-                        max={36}
-                        defaultValue={1}
-                        onChange={this.handleBorderSize}
-                        formatter={(value) => `${value}px`}
-                        parser={(value) => value?.replace('px', '')}
-                        style={{ margin: '0.3rem 0' }}
-                    />
                     <Select
                         showSearch
                         style={{ width: 200, margin: '0.3rem 0' }}
@@ -332,10 +367,10 @@ export default class Designer extends Component<IProps, IState> {
                             />
                         }
                         title="Widget Background"
-                        trigger="click"
+                        trigger="hover"
                     >
                         <Button type="primary" style={{ margin: '0.3rem 0' }}>
-                            Change Border Color
+                            Border Color
                         </Button>
                     </Popover>
                 </div>
