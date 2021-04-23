@@ -161,10 +161,9 @@ export default class Designer extends Component<IProps, IState> {
         } else {
             this.setState({ background: '#fff' });
         }
-        // setInterval(() => {
-        //     console.log('here');
-        //     this.setThemePanel(this.getGlobalThemePanel());
-        // }, 20);
+        setTimeout(() => {
+            this.setThemePanel(this.getGlobalThemePanel());
+        }, 20);
     };
 
     getGlobalThemePanel = () => {
@@ -217,6 +216,7 @@ export default class Designer extends Component<IProps, IState> {
                             <div>
                                 <span>Angle: </span>
                                 <Slider
+                                    className="slider-override"
                                     min={0}
                                     max={360}
                                     onAfterChange={this.handleAngleChange}
