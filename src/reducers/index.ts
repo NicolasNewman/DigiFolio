@@ -5,6 +5,7 @@ import catsapi from './catsapi';
 import githubapi from './githubapi';
 import steamapi from './steamapi';
 import portfolio from './portfolio';
+import redditapi from './redditapi';
 
 export default function createRootReducer(history: History) {
     return combineReducers({
@@ -13,5 +14,6 @@ export default function createRootReducer(history: History) {
         githubapi,
         steamapi,
         portfolio,
+        redditapi,
     });
 }

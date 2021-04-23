@@ -21,6 +21,7 @@ import Portfolio from './designer/Portfolio';
 import Widgets from './designer/Widgets';
 import { GithubData } from '../api/GithubAPI';
 import { SteamAPIData } from '../api/SteamAPI';
+import { RedditAPIData } from '../api/RedditAPI';
 import Theming from './Designer/Theming';
 import { Boxes, RestoreBoxes } from '../types/Portfolio';
 import { IInitialState } from '../reducers/portfolio';
@@ -34,6 +35,7 @@ interface IProps extends RouteComponentProps<any> {
     portfolio: IInitialState;
     updatePortfolioBoxes: (boxes: Boxes) => void;
     restorePortfolio: (state: IInitialState) => void;
+    reddit: RedditAPIData;
 }
 
 interface IState {
@@ -359,6 +361,7 @@ export default class Designer extends Component<IProps, IState> {
                                 github={this.props.github}
                                 steam={this.props.steam}
                                 setThemePanel={this.setThemePanel}
+                                reddit={this.props.reddit}
                             />
                         </div>
                     </DndProvider>

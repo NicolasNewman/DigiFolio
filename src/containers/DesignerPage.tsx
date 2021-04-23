@@ -11,6 +11,7 @@ function mapStateToProps(state, ownProps) {
         github: state.githubapi,
         steam: state.steamapi,
         portfolio: state.portfolio,
+        reddit: state.redditapi,
     };
 }
 
