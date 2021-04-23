@@ -14,7 +14,7 @@ export interface SteamDataModel {
     //info: SteamInfoModel;
     user: PlayerSummaryModelMerge;
     friends: SteamFriendsModel;
-    library: SteamLibraryModelMerge;
+    library: SteamLibraryModel;
 }
 
 export type SteamAPIData = SteamDataModel | null;
@@ -93,23 +93,20 @@ export interface SteamLibraryModel {
         playtime_windows_forever: number;
         playtime_mac_forever: number;
         playtime_linux_forever: number;
+        achievements: SteamAchievementModel[];
     }[];
 }
 
-export type SteamLibraryModelMerge = {
-    games: {
-        achievements: {
-            achievement_id: string;
-            achievement_name: string;
-            achievement_description: string;
-            achievement_icon: string;
-            achievement_icon_gray: string;
-            achievement_hidden: number;
-            achievement_achieved: boolean;
-            unlocktime: number;
-        }[];
-    }[];
-} & SteamLibraryModel;
+export type SteamAchievementModel = {
+    achievement_id: string;
+    achievement_name: string;
+    achievement_description: string;
+    achievement_icon: string;
+    achievement_icon_gray: string;
+    achievement_hidden: number;
+    achievement_achieved: boolean;
+    unlocktime: number;
+};
 
 /**
  * https://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v1/?key=XXX&steamid=XXX&appid=XXX
@@ -240,7 +237,7 @@ export default class SteamAPI extends IAPI<SteamDataModel> {
             include_appinfo: 1,
             include_played_free_games: 1,
         });
-        const library: SteamLibraryModelMerge = data.response as SteamLibraryModelMerge;
+        const library: SteamLibraryModel = data.response as SteamLibraryModel;
 
         // loop through each game
         for (let i = 0; i < library.games.length; i++) {

@@ -11,9 +11,10 @@
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import path from 'path';
-import { app, BrowserWindow, shell, ipcMain } from 'electron';
+import { app, BrowserWindow, shell, ipcMain, dialog } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
+import { writeFile } from 'fs';
 import MenuBuilder from './menu';
 import sizes from './constants/sizes';
 
@@ -154,6 +155,23 @@ ipcMain.on('ready-to-close', () => {
     mainWindow = null;
     if (process.platform !== 'darwin') {
         app.quit();
+    }
+});
+
+ipcMain.on('save-file', (e, content: string) => {
+    if (mainWindow) {
+        dialog
+            .showSaveDialog(mainWindow, {
+                title: 'Save Workspace',
+                defaultPath: 'Workspace.difo',
+            })
+            .then((res) => {
+                if (res.filePath) {
+                    console.log(res.filePath);
+                    writeFile(res.filePath, content, (err) => {});
+                }
+            })
+            .catch((err) => {});
     }
 });
 

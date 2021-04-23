@@ -22,6 +22,7 @@ class CommitsWidget extends PureComponent<IProps> {
                     style={{
                         height: '200px',
                         overflowY: 'scroll',
+                        border: '10px black',
                     }}
                 >
                     <h2>Repo Commits</h2>

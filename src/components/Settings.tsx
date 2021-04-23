@@ -93,6 +93,14 @@ export default class Settings extends Component<IProps> {
 
     steamID64: React.RefObject<Input>;
 
+    // Reddit API Input Refs
+
+    redditClientId: React.RefObject<Input>;
+
+    redditClientSecret: React.RefObject<Input>;
+
+    redditToken: React.RefObject<Input>;
+
     constructor(props, history) {
         super(props);
         this.catsAPIKey = React.createRef();
@@ -100,21 +108,25 @@ export default class Settings extends Component<IProps> {
         this.githubAPIUser = React.createRef();
         this.steamAPIKey = React.createRef();
         this.steamID64 = React.createRef();
+        this.redditClientId = React.createRef();
+        this.redditClientSecret = React.createRef();
+        this.redditToken = React.createRef();
     }
 
     /**
      * Saves or updates the keys specified by the API tab to the Electron data store
      */
     saveKeys = (api: SchemaFields, options: APIInfo, forced: boolean) => {
-        if (options.key === '') {
-            this.props.apiManager.updateKey(
-                api,
-                { key: '', username: '' },
-                forced
-            );
-        } else {
-            this.props.apiManager.updateKey(api, options, forced);
-        }
+        // if (options.key === '') {
+        //     this.props.apiManager.updateKey(
+        //         api,
+        //         { key: '', username: '', other: '' },
+        //         forced
+        //     );
+        // } else {
+        //     this.props.apiManager.updateKey(api, options, forced);
+        // }
+        this.props.apiManager.updateKey(api, options, forced);
     };
 
     toPage(route: string, e) {
@@ -168,6 +180,7 @@ export default class Settings extends Component<IProps> {
                                                                 .catsAPIUser
                                                                 .current?.state
                                                                 .value,
+                                                            other: '',
                                                         },
                                                         false
                                                     )
@@ -187,6 +200,7 @@ export default class Settings extends Component<IProps> {
                                                                 .catsAPIUser
                                                                 .current?.state
                                                                 .value,
+                                                            other: '',
                                                         },
                                                         true
                                                     )
@@ -222,6 +236,7 @@ export default class Settings extends Component<IProps> {
                                                 key: this.githubAPIUser.current
                                                     ?.state.value,
                                                 username: '',
+                                                other: '',
                                             },
                                             false
                                         )
@@ -237,6 +252,7 @@ export default class Settings extends Component<IProps> {
                                                 key: this.githubAPIUser.current
                                                     ?.state.value,
                                                 username: '',
+                                                other: '',
                                             },
                                             true
                                         )
@@ -277,6 +293,7 @@ export default class Settings extends Component<IProps> {
                                                     ?.state.value,
                                                 username: this.steamID64.current
                                                     ?.state.value,
+                                                other: '',
                                             },
                                             false
                                         )
@@ -293,6 +310,7 @@ export default class Settings extends Component<IProps> {
                                                     ?.state.value,
                                                 username: this.steamID64.current
                                                     ?.state.value,
+                                                other: '',
                                             },
                                             true
                                         )
@@ -307,10 +325,68 @@ export default class Settings extends Component<IProps> {
                             tab="Reddit"
                             key="3"
                         >
-                            {/* <div className="button-container">
-                                <Button onClick={this.saveKeys}>Save</Button>
-                                <Button>Refresh Data</Button>
-                            </div> */}
+                            <InputLabel
+                                label="Client ID"
+                                inputRef={this.redditClientId}
+                                defaultVal={
+                                    dataStore.getAPIInfo(SchemaFields.redditAPI)
+                                        ?.username || ''
+                                }
+                            />
+                            <InputLabel
+                                label="Client Secret"
+                                inputRef={this.redditClientSecret}
+                                defaultVal={
+                                    dataStore.getAPIInfo(SchemaFields.redditAPI)
+                                        ?.key || ''
+                                }
+                            />
+                            <InputLabel
+                                label="Token"
+                                inputRef={this.redditToken}
+                                defaultVal={
+                                    dataStore.getAPIInfo(SchemaFields.redditAPI)
+                                        ?.other || ''
+                                }
+                            />
+                            <div className="button-container">
+                                <Button
+                                    onClick={() =>
+                                        this.saveKeys(
+                                            SchemaFields.redditAPI,
+                                            {
+                                                username: this.redditClientId
+                                                    .current?.state.value,
+                                                key: this.redditClientSecret
+                                                    .current?.state.value,
+                                                other: this.redditToken.current
+                                                    ?.state.value,
+                                            },
+                                            false
+                                        )
+                                    }
+                                >
+                                    Save
+                                </Button>
+                                <Button
+                                    onClick={() =>
+                                        this.saveKeys(
+                                            SchemaFields.redditAPI,
+                                            {
+                                                username: this.redditClientId
+                                                    .current?.state.value,
+                                                key: this.redditClientSecret
+                                                    .current?.state.value,
+                                                other: this.redditToken.current
+                                                    ?.state.value,
+                                            },
+                                            true
+                                        )
+                                    }
+                                >
+                                    Refresh Data
+                                </Button>
+                            </div>
                         </TabPane>
                         <TabPane
                             className="settings__tab--general"

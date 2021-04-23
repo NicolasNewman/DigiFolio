@@ -3,7 +3,6 @@
 /* eslint-disable react/no-unused-state */
 import * as React from 'react';
 import { Component } from 'react';
-
 import {
     DropTarget,
     ConnectDropTarget,
@@ -12,10 +11,13 @@ import {
     DropTargetConnector,
 } from 'react-dnd';
 import update from 'immutability-helper';
+import equals from 'fast-deep-equal';
+import { Boxes } from '../../types/Portfolio';
 // eslint-disable-next-line import/no-cycle
 import { BoxDragItem } from '../../constants/types';
 // eslint-disable-next-line import/no-cycle
 import { WidgetComponentType } from '../widgets/IWidget';
+import { IInitialState } from '../../reducers/portfolio';
 
 function collect(connect: DropTargetConnector, monitor: DropTargetMonitor) {
     return {
@@ -30,18 +32,18 @@ interface IProps {
     hideSourceOnDrag: boolean;
     connectDropTarget: ConnectDropTarget;
     updateActiveWidgets: (id: string, active: boolean) => void;
+    setThemePanel: (node: React.ReactNode) => void;
+    background: string;
+    gradient: string | undefined;
+    angleValue: number;
+    colorPercent: number;
+    updatePortfolioBoxes: (boxes: Boxes) => void;
+    portfolio: IInitialState;
+    widgetStyle: React.CSSProperties;
 }
 
 interface IState {
-    boxes: {
-        [key: string]: {
-            top: number;
-            left: number;
-            title: string;
-            component: WidgetComponentType;
-            data: any;
-        };
-    };
+    boxes: Boxes;
 }
 
 // export function deleteBox(this: any, id) {
@@ -64,9 +66,23 @@ class Portfolio extends Component<IProps, IState> {
 
     constructor(props) {
         super(props);
-        this.state = {
-            boxes: {},
-        };
+        console.log(props);
+        if (Object.keys(props.portfolio.boxes).length > 0) {
+            console.log(props.portfolio.boxes);
+            this.state = {
+                boxes: props.portfolio.boxes,
+            };
+        } else {
+            this.state = {
+                boxes: {},
+            };
+        }
+    }
+
+    componentDidUpdate(_, prevState) {
+        if (!equals(this.state, prevState)) {
+            this.props.updatePortfolioBoxes(this.state.boxes);
+        }
     }
 
     deleteBox = (id: string) => {
@@ -81,23 +97,44 @@ class Portfolio extends Component<IProps, IState> {
         this.props.updateActiveWidgets(id, false);
     };
 
-    moveBox(id: string, left: number, top: number) {
+    moveBox(id: string, left: number, top: number, state: any) {
         this.setState(
-            update(this.state, { boxes: { [id]: { $merge: { left, top } } } })
+            update(this.state, {
+                boxes: { [id]: { $merge: { left, top, state } } },
+            })
         );
     }
 
-    addBox(id, left, top, component: WidgetComponentType, data: any) {
+    addBox(
+        id,
+        left,
+        top,
+        component: WidgetComponentType,
+        data: any,
+        state: any
+    ) {
+        console.log(state);
         this.setState(
             update(this.state, {
                 boxes: {
                     $merge: {
-                        [id]: { title: 'hi', left, top, component, data },
+                        [id]: {
+                            title: 'hi',
+                            left,
+                            top,
+                            component,
+                            data,
+                            state,
+                        },
                     },
                 },
             })
         );
         this.props.updateActiveWidgets(id, true);
+    }
+
+    temp(node: React.ReactNode) {
+        return node;
     }
 
     render() {
@@ -106,6 +143,8 @@ class Portfolio extends Component<IProps, IState> {
         //const backgroundColor = hovered ? '#F0F02D' : 'white';
         const backgroundColor = hovered ? '0px 0px 40px black' : '';
         const { boxes } = this.state;
+        const { background, gradient, angleValue, colorPercent } = this.props;
+        const gradientColor = gradient || background;
         return connectDropTarget(
             <div className="portfolio">
                 <div
@@ -114,13 +153,20 @@ class Portfolio extends Component<IProps, IState> {
                     style={{
                         boxShadow: backgroundColor,
                         position: 'relative',
+                        backgroundImage: `linear-gradient(${angleValue}deg, ${background} ${colorPercent}%, ${gradientColor})`,
                     }}
                 >
                     {/* <p style={{ color: '#000000' }}>This is my page</p> */}
                     {Object.keys(boxes).map((key) => {
-                        const { left, top, title, component, data } = boxes[
-                            key
-                        ];
+                        const {
+                            left,
+                            top,
+                            title,
+                            component,
+                            data,
+                            state,
+                        } = boxes[key];
+                        console.log(component);
                         const WidgetComponent = component;
                         return (
                             <WidgetComponent
@@ -128,9 +174,12 @@ class Portfolio extends Component<IProps, IState> {
                                 id={key}
                                 left={left}
                                 top={top}
+                                state={state}
+                                setThemePanel={this.props.setThemePanel}
                                 hideSourceOnDrag={hideSourceOnDrag}
                                 data={data}
                                 delete={this.deleteBox}
+                                widgetStyle={this.props.widgetStyle}
                             />
                         );
                     })}
@@ -152,16 +201,24 @@ export default DropTarget(
             }
 
             const item = monitor.getItem<BoxDragItem>();
+            console.log(item);
             if (!component.state.boxes[item.id]) {
                 const delta = monitor.getClientOffset() as XYCoord;
-                const left = Math.round(delta.x - 64); // TODO figure out where this value (64) comes from. It will cause issues if we change the styling
+                const left = Math.round(delta.x - 64 - 225); // TODO figure out where this value (64) comes from. It will cause issues if we change the styling
                 const top = Math.round(delta.y - 64);
-                component.addBox(item.id, left, top, item.component, item.data);
+                component.addBox(
+                    item.id,
+                    left,
+                    top,
+                    item.component,
+                    item.data,
+                    item.state
+                );
             } else {
                 const delta = monitor.getDifferenceFromInitialOffset() as XYCoord;
                 const left = Math.round(item.left + delta.x);
                 const top = Math.round(item.top + delta.y);
-                component.moveBox(item.id, left, top);
+                component.moveBox(item.id, left, top, item.state);
             }
         },
     },

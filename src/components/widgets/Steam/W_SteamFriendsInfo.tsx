@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/naming-convention */
+/* eslint-disable react/no-array-index-key */
 /* eslint-disable consistent-return */
 /* eslint-disable array-callback-return */
 import { textAlign } from 'html2canvas/dist/types/css/property-descriptors/text-align';
@@ -8,7 +10,7 @@ import { widgetFactory, ExternalProps } from '../IWidget';
 
 type IProps = ExternalProps<SteamFriendsModel>;
 
-class SteamFriendsInfo extends PureComponent<IProps> {
+class W_SteamFriendsInfo extends PureComponent<IProps> {
     props!: IProps;
 
     constructor(props: IProps) {
@@ -28,10 +30,13 @@ class SteamFriendsInfo extends PureComponent<IProps> {
             return (
                 <div>
                     {data.friends
-                        .map((friend) => {
+                        .map((friend, i) => {
                             if (friend.avatar_url) {
                                 return (
-                                    <div style={{ display: 'flex' }}>
+                                    <div
+                                        key={`steam-friend-${i}`}
+                                        style={{ display: 'flex' }}
+                                    >
                                         <img
                                             style={{
                                                 width: '4rem',
@@ -69,4 +74,4 @@ class SteamFriendsInfo extends PureComponent<IProps> {
     }
 }
 
-export default widgetFactory()<SteamFriendsModel, IProps>(SteamFriendsInfo);
+export default widgetFactory()<SteamFriendsModel, IProps>(W_SteamFriendsInfo);

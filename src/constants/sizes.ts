@@ -12,7 +12,7 @@ const sizes = {
         height: 600,
     },
     designerWindow: {
-        width: 1200,
+        width: 1500,
         height: 700,
     },
 };

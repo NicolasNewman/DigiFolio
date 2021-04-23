@@ -1,12 +1,16 @@
 import { Store } from 'redux';
-import { message } from 'antd';
+import { Alert, message } from 'antd';
 import DataStore, { APIInfo, SchemaFields } from '../classes/DataStore';
 import CatsAPI, { CatsAPIData } from './CatsAPI';
 import GithubAPI, { GithubData } from './GithubAPI';
 import SteamAPI, { SteamAPIData } from './SteamAPI';
+import RedditAPI, { RedditAPIData } from './RedditAPI';
 import { updateCatsAPI } from '../actions/catsapi';
 import { updateGithubAPI } from '../actions/githubapi';
 import { updateSteamAPI } from '../actions/steamapi';
+import { updateRedditAPI } from '../actions/redditapi';
+// eslint-disable-next-line import/order
+import { error } from 'electron-log';
 
 const validateAPIObject = (
     obj: APIInfo,
@@ -40,6 +44,10 @@ export interface APIMap {
         api: SteamAPI;
         dispatch: (data: SteamAPIData) => void;
     } | null;
+    [SchemaFields.redditAPI]: {
+        api: RedditAPI;
+        dispatch: (data: RedditAPIData) => void;
+    } | null;
 }
 
 export default class APIManager {
@@ -57,6 +65,7 @@ export default class APIManager {
             [SchemaFields.catsAPI]: null,
             [SchemaFields.githubAPI]: null,
             [SchemaFields.steamAPI]: null,
+            [SchemaFields.redditAPI]: null,
         };
 
         // ===== init catsAPI =====
@@ -89,6 +98,20 @@ export default class APIManager {
             };
         }
 
+        // ==== init RedditAPI ====
+        const redditAPIObjct = dataStore.getAPIInfo(SchemaFields.redditAPI);
+        if (validateAPIObject(redditAPIObjct, ['username', 'key', 'other'])) {
+            this.apis[SchemaFields.redditAPI] = {
+                api: new RedditAPI(
+                    redditAPIObjct.username,
+                    redditAPIObjct.key,
+                    redditAPIObjct.other
+                ),
+                dispatch: (data: RedditAPIData) =>
+                    this.reduxStore.dispatch(updateRedditAPI(data)),
+            };
+        }
+
         console.log(this.apis);
     }
 
@@ -105,27 +128,38 @@ export default class APIManager {
 
         // console.log(`The currently saved key is: ${savedKey}`);
         if (
-            options.key === null ||
-            options.key === undefined ||
-            options.key === ''
+            // options.key === null ||
+            // options.key === undefined ||
+            // options.key === ''
+            (options.key === null ||
+                options.key === undefined ||
+                options.key === '') &&
+            (options.username === null ||
+                options.username === undefined ||
+                options.username === '') &&
+            (options.other === null ||
+                options.other === undefined ||
+                options.other === '')
         ) {
             // The user wants to delete an integration
             console.log(
-                `The new key is empty, removing the api and saved data`
+                `The new values empty, removing the api and saved data`
             );
             this.apis[api]?.dispatch(null);
             this.apis[api] = null;
             this.dataStore.set(api, {});
+            message.success('Removed stored API keys and saved data');
         } else if (
             !apiInfo ||
             !validateAPIObject(apiInfo, ['key']) ||
             apiInfo.key !== options.key ||
             apiInfo.username !== options.username ||
+            apiInfo.other !== options.other ||
             forced === true
         ) {
             // There is no record of the api existing
             console.log(
-                `The passed key is different from the saved key (or foced update), updating`
+                `The passed keys are different from the saved keys (or foced update), updating`
             );
             console.log('api ', api);
             switch (api) {
@@ -209,6 +243,8 @@ export default class APIManager {
                     break;
                 case SchemaFields.steamAPI:
                     if (options.key && options.username) {
+                        // console.log(`key: ${options.key}`);
+                        // console.log(`username: ${options.username}`);
                         if (!SteamAPI.verify_key(options.key)) {
                             message.error('Invalid Web API Key');
                             canCommit = false;
@@ -250,7 +286,58 @@ export default class APIManager {
                         canCommit = false;
                     }
                     break;
+                case SchemaFields.redditAPI:
+                    if (options.key && options.username && options.other) {
+                        if (!RedditAPI.verify_client_id(options.username)) {
+                            message.error('Invalid Client ID');
+                            canCommit = false;
+                        }
+
+                        if (!RedditAPI.verify_client_secret(options.key)) {
+                            message.error('Invalid Client Secret');
+                            canCommit = false;
+                        }
+
+                        if (!RedditAPI.verify_token(options.other)) {
+                            message.error('Invalid Token');
+                            canCommit = false;
+                        }
+
+                        if (canCommit) {
+                            this.apis[SchemaFields.redditAPI] = {
+                                api: new RedditAPI(
+                                    options.username,
+                                    options.key,
+                                    options.other
+                                ),
+                                dispatch: (data: RedditAPIData) =>
+                                    this.reduxStore.dispatch(
+                                        updateRedditAPI(data)
+                                    ),
+                            };
+                            this.apis[SchemaFields.redditAPI]?.api
+                                .parse_api()
+                                .then((data) => {
+                                    this.apis[SchemaFields.redditAPI]?.dispatch(
+                                        data
+                                    );
+                                    this.printState('State after parsing');
+                                })
+                                .catch((err) => {
+                                    console.log(err);
+                                    canCommit = false;
+                                    message.error('Non-existent key');
+                                });
+                        }
+                    } else {
+                        message.error(
+                            'All of the ID, secret, and token must be specified!'
+                        );
+                        canCommit = false;
+                    }
+                    break;
                 default:
+                    console.log('updateKey() defaulted on switch');
                     return;
             }
 

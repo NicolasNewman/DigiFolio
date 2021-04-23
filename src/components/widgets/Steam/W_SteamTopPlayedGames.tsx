@@ -1,12 +1,25 @@
+/* eslint-disable @typescript-eslint/naming-convention */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 import * as React from 'react';
-import { PureComponent } from 'react';
+import { Component } from 'react';
 import { ResponsiveTreeMap } from '@nivo/treemap';
+import { Checkbox, Slider } from 'antd';
 import { SteamLibraryModel } from '../../../api/SteamAPI';
-import { widgetFactory, ExternalProps } from '../IWidget';
+import {
+    widgetFactory,
+    ExternalProps,
+    ComponentExtendedProps,
+} from '../IWidget';
 
-type IProps = ExternalProps<SteamLibraryModel>;
+type IProps = ExternalProps<SteamLibraryModel> & ComponentExtendedProps<IState>;
 
-class GithubUserOverview extends PureComponent<IProps> {
+export interface IState {
+    orientLabels: boolean;
+    opacity: number;
+}
+
+class W_SteamTopPlayedGames extends Component<IProps, IState> {
     props!: IProps;
 
     data: {
@@ -23,6 +36,43 @@ class GithubUserOverview extends PureComponent<IProps> {
             game: 'Top 10',
             children: [],
         };
+        const restoredState = props.restoreState();
+        this.state = restoredState ||
+            props.state || {
+                orientLabels: true,
+                opacity: 0.33,
+            };
+
+        props.setHOCState({ width: 500, height: 300, hover: false });
+    }
+
+    componentWillUnmount() {
+        this.props.saveState(this.state);
+    }
+
+    getThemePanel() {
+        return (
+            <div>
+                <Checkbox
+                    onChange={(e) =>
+                        this.setState({ orientLabels: e.target.checked })
+                    }
+                    defaultChecked={this.state.orientLabels}
+                >
+                    Orient Labels
+                </Checkbox>
+                <div>
+                    <span>Opacity: </span>
+                    <Slider
+                        min={0}
+                        max={1}
+                        step={0.01}
+                        onChange={(val) => this.setState({ opacity: val })}
+                        defaultValue={this.state.opacity}
+                    />
+                </div>
+            </div>
+        );
     }
 
     compileData() {
@@ -60,8 +110,17 @@ class GithubUserOverview extends PureComponent<IProps> {
                 style={
                     this.props.onWidgetList
                         ? { width: '100%', height: '225px' }
-                        : { width: '500px', height: '300px' }
+                        : {
+                              width: `${this.props.width}px`,
+                              height: `${this.props.height}px`,
+                          }
                 }
+                onClick={(e) => {
+                    e.stopPropagation();
+                    return this.props.setThemePanel
+                        ? this.props.setThemePanel(this.getThemePanel())
+                        : null;
+                }}
             >
                 <ResponsiveTreeMap
                     data={this.data}
@@ -74,6 +133,8 @@ class GithubUserOverview extends PureComponent<IProps> {
                     label={(e) => {
                         return `${e.id}`;
                     }}
+                    orientLabel={this.state.orientLabels}
+                    nodeOpacity={this.state.opacity}
                     labelTextColor={{
                         from: 'color',
                         modifiers: [['darker', 1.2]],
@@ -93,4 +154,6 @@ class GithubUserOverview extends PureComponent<IProps> {
     }
 }
 
-export default widgetFactory()<SteamLibraryModel, IProps>(GithubUserOverview);
+export default widgetFactory()<SteamLibraryModel, IProps, IState>(
+    W_SteamTopPlayedGames
+);

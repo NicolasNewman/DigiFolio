@@ -5,16 +5,16 @@
 /* eslint-disable react/require-default-props */
 /* eslint-disable react/no-unused-prop-types */
 import * as React from 'react';
-import { PureComponent } from 'react';
+import { PureComponent, useRef } from 'react';
 import {
     ConnectDragSource,
     DragSource,
     DragSourceConnector,
     DragSourceMonitor,
 } from 'react-dnd';
+// import { Rnd } from 'react-rnd';
 import { CloseCircleOutlined } from '@ant-design/icons';
-//import Portfolio from '../Designer/Portfolio';
-// import { deleteBox } from '../Designer/Portfolio';
+import { ResizableBox } from 'react-resizable';
 
 const widgetStyle: React.CSSProperties = {
     background: '#ddd',
@@ -29,21 +29,33 @@ export type WidgetComponentType =
 
 export interface ExternalProps<T> {
     id: any;
-    // data: T;
     component: WidgetComponentType;
     left?: number;
     top?: number;
+    state?: any;
     hideSourceOnDrag?: boolean;
     delete?: (id: string) => void;
     data: T;
     onWidgetList?: boolean;
+    setThemePanel?: (node: React.ReactNode) => void;
 
     connectDragSource: ConnectDragSource;
     isDragging?: boolean;
+    widgetStyle: React.CSSProperties;
+}
+
+export interface ComponentExtendedProps<S> {
+    saveState: (state: S) => void;
+    restoreState: () => S;
+    width: number;
+    height: number;
+    setHOCState: (state: IState) => void;
 }
 
 interface IState {
     hover: boolean;
+    width: number;
+    height: number;
 }
 
 interface Options {
@@ -52,18 +64,31 @@ interface Options {
 
 export const widgetFactory = ({ test = '' }: Options = {}) => <
     T,
-    TOriginalProps extends {}
+    TOriginalProps extends {},
+    TOriginalState extends {} = {}
 >(
-    Component:
-        | React.ComponentClass<TOriginalProps>
-        | React.FunctionComponent<TOriginalProps>
+    Component: React.ComponentClass<
+        TOriginalProps & {
+            saveState: (state: TOriginalState) => void;
+            restoreState: () => TOriginalState;
+            setHOCState: (state: IState) => void;
+            width: number;
+            height: number;
+        },
+        TOriginalState
+    >
+    // | React.FunctionComponent<TOriginalProps>
 ) => {
     type ResultProps = TOriginalProps & ExternalProps<T>;
-
+    let draggable = true;
     class Widget extends React.Component<ResultProps, IState> {
         props!: ResultProps;
 
         state: IState;
+
+        savedState: TOriginalState | null = null;
+
+        // draggable: boolean = true;
 
         static displayName = `Widget(${
             Component.displayName || Component.name
@@ -73,6 +98,8 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
             super(props);
             this.state = {
                 hover: false,
+                width: 250,
+                height: 250,
             };
         }
 
@@ -81,8 +108,6 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
             string | React.JSXElementConstructor<any>
         > | null {
             const { isDragging } = this.props;
-            console.log('HOC RENDER');
-            // console.log(this.props.data);
             if (isDragging) {
                 return null;
             }
@@ -95,6 +120,35 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
                 id,
             } = this.props;
             const position = onWidgetList ? 'relative' : 'absolute';
+
+            const html = (
+                <div style={{ position: 'relative' }}>
+                    <Component
+                        {...this.props}
+                        saveState={(state: TOriginalState) => {
+                            this.savedState = state;
+                        }}
+                        restoreState={() => {
+                            return this.savedState;
+                        }}
+                        width={this.state.width}
+                        height={this.state.height}
+                        setHOCState={(state) => this.setState(state)}
+                    />
+                    {!this.props.onWidgetList && this.state.hover ? (
+                        <CloseCircleOutlined
+                            onClick={() => {
+                                if (this.props.delete) {
+                                    this.props.delete(this.props.id);
+                                }
+                            }}
+                            className="btn-close"
+                        />
+                    ) : (
+                        <span />
+                    )}
+                </div>
+            );
             return connectDragSource(
                 <div
                     style={{
@@ -103,26 +157,43 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
                         position,
                         color: 'black',
                         ...widgetStyle,
+                        ...this.props.widgetStyle,
                     }}
                     className="widget__container"
                     onMouseEnter={() => this.setState({ hover: true })}
                     onMouseLeave={() => this.setState({ hover: false })}
                 >
-                    <div style={{ position: 'relative' }}>
-                        <Component {...this.props} />
-                        {!this.props.onWidgetList && this.state.hover ? (
-                            <CloseCircleOutlined
-                                onClick={() => {
-                                    if (this.props.delete) {
-                                        this.props.delete(this.props.id);
-                                    }
-                                }}
-                                className="btn-close"
-                            />
-                        ) : (
-                            <span />
-                        )}
-                    </div>
+                    {this.props.onWidgetList ? (
+                        html
+                    ) : (
+                        <ResizableBox
+                            width={this.state.width}
+                            height={this.state.height}
+                            minConstraints={[25, 25]}
+                            maxConstraints={[600, 600]}
+                            onResizeStop={(e, data) => {
+                                this.setState({
+                                    width: data.size.width,
+                                    height: data.size.height,
+                                });
+                            }}
+                            handle={
+                                <span
+                                    onPointerEnter={(e) => {
+                                        console.log('Enter');
+                                        draggable = false;
+                                    }}
+                                    onPointerLeave={(e) => {
+                                        console.log('Exit');
+                                        draggable = true;
+                                    }}
+                                    className="react-resizable-handle react-resizable-handle-se"
+                                />
+                            }
+                        >
+                            {html}
+                        </ResizableBox>
+                    )}
                 </div>
             );
         }
@@ -131,23 +202,39 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
     const result = DragSource(
         'widget',
         {
-            beginDrag: (props: ResultProps) => {
+            beginDrag: (
+                props: ResultProps,
+                monitor: DragSourceMonitor,
+                widgetComponent: any
+            ) => {
                 console.log('========== BEING DRAG ==========');
                 console.log(props);
+                console.log(widgetComponent);
+                console.log(widgetComponent.savedState);
                 const { id, left, top, component, data } = props;
-                return { id, left, top, component, data };
+                return {
+                    id,
+                    left,
+                    top,
+                    component,
+                    data,
+                    state: widgetComponent.savedState,
+                };
             },
             endDrag: (
                 props: ResultProps,
                 monitor: DragSourceMonitor,
-                component:
-                    | React.ComponentClass<TOriginalProps>
-                    | React.FunctionComponent<TOriginalProps>
+                component
             ) => {
                 console.log('========== END DRAG ==========');
                 console.log(props);
                 console.log(monitor);
                 console.log(component);
+            },
+            canDrag: (props, monitor: DragSourceMonitor) => {
+                console.log('========== CAN DRAG ==========');
+                console.log(draggable);
+                return draggable;
             },
         },
         (connect: DragSourceConnector, monitor: DragSourceMonitor) => ({
@@ -158,36 +245,3 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
 
     return result;
 };
-
-// export abstract class IWidget<P = {}> extends PureComponent<P & IWidgetProps> {
-//     props!: P & IWidgetProps;
-
-//     constructor(props) {
-//         super(props);
-//     }
-
-//     abstract mapData();
-
-//     render() {
-//         const { connectDragSource, left, top } = this.props;
-//         return connectDragSource(
-//             <div style={{ left, top, position: 'absolute', color: 'black' }}>
-//                 <p>Hello</p>
-//             </div>
-//         );
-//     }
-// }
-
-// export default DragSource(
-//     ItemTypes.WIDGET,
-//     {
-//         beginDrag: (props: IWidgetProps) => {
-//             const { id, left, top } = props;
-//             return { id, left, top };
-//         },
-//     },
-//     (connect: DragSourceConnector, monitor: DragSourceMonitor) => ({
-//         connectDragSource: connect.dragSource(),
-//         isDragging: monitor.isDragging(),
-//     })
-// )(IWidget);

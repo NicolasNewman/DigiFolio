@@ -1,6 +1,8 @@
 import { message } from 'antd';
 import IAPI from './IAPI';
 
+require('dotenv').config();
+
 export interface GithubInfoModel {
     avatar_url: string;
     bio: string;
@@ -91,30 +93,29 @@ export default class GithubAPI extends IAPI<GithubDataModel> {
     static verify_username(name: string) {
         if (name.length === 0 || name.length > 39) return false;
         const re = /^[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}$/i;
-        console.log('checking regex');
         const found = name.match(re);
-        console.log('found ', found);
         if (found === null || found === undefined) return false;
-        console.log('returning true');
         return true;
     }
 
     async fetch_user_info() {
         const info = await this.fetch<GithubInfoModel>(
-            `https://api.github.com/users/${this.username}`
+            `https://api.github.com/users/${this.username}?client_id=${process.env.GITHUB_CLIENT_ID}&client_secret=${process.env.GITHUB_CLIENT_SECRET}`
         );
         return info;
     }
 
     async fetch_user_repos() {
         const repos = await this.fetch<GithubRepoModel>(
-            `https://api.github.com/users/${this.username}/repos`
+            `https://api.github.com/users/${this.username}/repos?client_id=${process.env.GITHUB_CLIENT_ID}&client_secret=${process.env.GITHUB_CLIENT_SECRET}`
         );
 
         try {
             repos.forEach(async (repo) => {
                 const commits = await this.fetch<GithubCommitsModel>(
-                    this.filter_url(repo.commits_url)
+                    `${this.filter_url(repo.commits_url)}?client_id=${
+                        process.env.GITHUB_CLIENT_ID
+                    }&client_secret=${process.env.GITHUB_CLIENT_SECRET}`
                 );
                 repo.data_commits = commits;
             });

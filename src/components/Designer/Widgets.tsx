@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-pascal-case */
 /* eslint-disable react/prop-types */
 import * as React from 'react';
 import { Component, useRef } from 'react';
@@ -8,18 +9,23 @@ import { Tabs, Button, Layout } from 'antd';
 import 'antd/dist/antd.css';
 import Demo from '../widgets/TestWidget';
 import Demo2 from '../widgets/TestWidget2';
-import DemoChart from '../widgets/Tests/NivoTest';
+import DemoChart from '../widgets/Steam/W_SteamAchievements';
 import GithubUserOverview from '../widgets/Github/GithubUserOverview';
 
 import SteamProfileInfo from '../widgets/Steam/W_SteamProfileInfo';
-import SteamFriendsInfo from '../widgets/Steam/W_SteamFriendsInfo';
-import SteamTopGames from '../widgets/Steam/W_TopPlayedGames';
+import W_SteamFriendsInfo from '../widgets/Steam/W_SteamFriendsInfo';
+import W_SteamTopPlayedGames from '../widgets/Steam/W_SteamTopPlayedGames';
+
+import RedditProfileInfo from '../widgets/Reddit/W_RedditProfileInfo';
+import RedditSubmissionInfo from '../widgets/Reddit/W_RedditSubmissionInfo';
+import RedditCommentInfo from '../widgets/Reddit/W_RedditCommentInfo';
 
 import { GithubData } from '../../api/GithubAPI';
 import { SteamAPIData } from '../../api/SteamAPI';
 import ReposWidget from '../widgets/Github/ReposWidget';
 import CommitsWidget from '../widgets/Github/CommitsWidget';
 import RepoGraph from '../widgets/Github/RepoGraph';
+import { RedditAPIData } from '../../api/RedditAPI';
 
 const { TabPane } = Tabs;
 const { Header, Content } = Layout;
@@ -31,7 +37,9 @@ function callback(key) {
 interface IProps {
     github: GithubData;
     steam: SteamAPIData;
+    reddit: RedditAPIData;
     active: { [key: string]: boolean };
+    setThemePanel: (panel: React.ReactNode) => void;
 }
 
 const WidgetEntry: React.FC<{
@@ -149,9 +157,9 @@ export default class Widgets extends Component<IProps> {
                                     />
                                     <WidgetEntry
                                         component={
-                                            <SteamFriendsInfo
+                                            <W_SteamFriendsInfo
                                                 id="steam_friends_info"
-                                                component={SteamFriendsInfo}
+                                                component={W_SteamFriendsInfo}
                                                 onWidgetList
                                                 data={this.props.steam.friends}
                                             />
@@ -162,9 +170,11 @@ export default class Widgets extends Component<IProps> {
                                     />
                                     <WidgetEntry
                                         component={
-                                            <SteamTopGames
+                                            <W_SteamTopPlayedGames
                                                 id="steam_top_games"
-                                                component={SteamTopGames}
+                                                component={
+                                                    W_SteamTopPlayedGames
+                                                }
                                                 onWidgetList
                                                 data={this.props.steam.library}
                                             />
@@ -174,7 +184,63 @@ export default class Widgets extends Component<IProps> {
                                         }
                                     />
                                 </TabPane>
-                            ) : null}
+                            ) : (
+                                <span />
+                            )}
+                            {this.props.reddit ? (
+                                <TabPane
+                                    className="widget-list__tab"
+                                    tab="Reddit"
+                                    key="3"
+                                >
+                                    <WidgetEntry
+                                        component={
+                                            <RedditProfileInfo
+                                                id="reddit_profile_info"
+                                                component={RedditProfileInfo}
+                                                onWidgetList
+                                                data={this.props.reddit.profile}
+                                            />
+                                        }
+                                        active={
+                                            this.props.active
+                                                .reddit_profile_info
+                                        }
+                                    />
+                                    <WidgetEntry
+                                        component={
+                                            <RedditSubmissionInfo
+                                                id="reddit_submission_info"
+                                                component={RedditSubmissionInfo}
+                                                onWidgetList
+                                                data={
+                                                    this.props.reddit
+                                                        .submissions
+                                                }
+                                            />
+                                        }
+                                        active={
+                                            this.props.active
+                                                .reddit_submission_info
+                                        }
+                                    />
+                                    <WidgetEntry
+                                        component={
+                                            <RedditCommentInfo
+                                                id="reddit_comment_info"
+                                                component={RedditCommentInfo}
+                                                onWidgetList
+                                                data={
+                                                    this.props.reddit.comments
+                                                }
+                                            />
+                                        }
+                                        active={this.props.active.comments}
+                                    />
+                                </TabPane>
+                            ) : (
+                                <span />
+                            )}
                             {/* <TabPane
                                 className="widget-list__tab"
                                 tab="Reddit"

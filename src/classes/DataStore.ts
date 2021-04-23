@@ -3,6 +3,9 @@ import Store from 'electron-store';
 export interface APIInfo {
     key: string;
     username: string;
+    // clientId: string;
+    // clientSecret: string;
+    other: string;
 }
 export enum SchemaFields {
     // catsAPIKey = 'catsAPIKey',
@@ -13,6 +16,7 @@ export enum SchemaFields {
     catsAPI = 'catsAPI',
     githubAPI = 'githubAPI',
     steamAPI = 'steamAPI',
+    redditAPI = 'redditAPI',
 }
 
 /**
@@ -60,6 +64,11 @@ export default class DataStore {
             steamAPI: {
                 type: 'object',
                 description: 'The object containing steam key information',
+            },
+            redditAPI: {
+                type: 'object',
+                description:
+                    'The object containing reddit id, secret, and token information',
             },
             reduxSave: {
                 type: 'object',

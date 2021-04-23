@@ -6,6 +6,9 @@ import { createLogger } from 'redux-logger';
 import createRootReducer from '../reducers';
 import * as catsapiActions from '../actions/catsapi';
 import * as githubapiActions from '../actions/githubapi';
+import * as steamapiActions from '../actions/steamapi';
+import * as portfolioActions from '../actions/portfolio';
+import * as redditapiActions from '../actions/redditapi';
 
 const history = createHashHistory();
 
@@ -38,6 +41,9 @@ const configureStore = (initialState?: any) => {
     const actionCreators = {
         ...catsapiActions,
         ...githubapiActions,
+        ...steamapiActions,
+        ...portfolioActions,
+        ...redditapiActions,
         ...routerActions,
     };
     // If Redux DevTools Extension is installed use it, otherwise use Redux compose

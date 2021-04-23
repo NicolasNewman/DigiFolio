@@ -5,11 +5,10 @@ import {
     shell,
     BrowserWindow,
     MenuItemConstructorOptions,
-    ipcMain,
-    ipcRenderer,
 } from 'electron';
-import { join, basename } from 'path';
+import { basename } from 'path';
 import { electron } from 'process';
+import { readFile } from 'fs';
 
 import routes from './Routes';
 
@@ -19,14 +18,14 @@ interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
 }
 
 export default class MenuBuilder {
-    // mainWindow: BrowserWindow;
+    mainWindow: BrowserWindow;
 
-    mainWindow = new BrowserWindow({
-        webPreferences: {
-            enableRemoteModule: true,
-            nodeIntegration: true,
-        },
-    });
+    // mainWindow = new BrowserWindow({
+    //     webPreferences: {
+    //         enableRemoteModule: true,
+    //         nodeIntegration: true,
+    //     },
+    // });
 
     constructor(mainWindow: BrowserWindow) {
         this.mainWindow = mainWindow;
@@ -272,39 +271,34 @@ export default class MenuBuilder {
             */
         };
 
-        const exportClickHandler = () => {
-            // dialog
-            //     .showSaveDialog({
-            //         title: 'Select the File Path to export',
-            //         defaultPath: join(__dirname, '../assets/sample.txt'),
-            //         // defaultPath: path.join(__dirname, '../assets/'),
-            //         buttonLabel: 'Export',
-            //         // Restricting the user to only Text Files.
-            //         filters: [
-            //             {
-            //                 name: '.pdf Files',
-            //                 extensions: ['pdf'],
-            //             },
-            //         ],
-            //         properties: [],
-            //     })
-            //     .then((file) => {
-            //         if (!file.canceled && file.filePath) {
-            //             this.mainWindow.webContents.send(
-            //                 'save-as',
-            //                 file.filePath,
-            //                 basename(file.filePath)
-            //             );
-            //         }
-            //     })
-            //     .catch((err) => {
-            //         ipcRenderer.send('error', err);
-            //     });
+        const saveWorkspaceClickHandler = () => {
             this.mainWindow.webContents.send(
-                'save-as',
+                'save-ws-as',
                 'blah',
                 basename('blah')
             );
+        };
+
+        const openWorkspace = () => {
+            dialog
+                .showOpenDialog({
+                    title: 'Open Workspace',
+                    properties: ['openFile'],
+                })
+                .then((res) => {
+                    if (res.filePaths) {
+                        readFile(res.filePaths[0], (err, data) => {
+                            this.mainWindow.webContents.send(
+                                'open-workspace',
+                                Buffer.from(
+                                    data.toString(),
+                                    'base64'
+                                ).toString()
+                            );
+                        });
+                    }
+                })
+                .catch((err) => {});
         };
 
         const templateDefault = [
@@ -317,8 +311,9 @@ export default class MenuBuilder {
                         click: createNewPortfolio,
                     },
                     {
-                        label: 'Open Portfolio',
+                        label: 'Open Workspace',
                         accelerator: 'Ctrl+O',
+                        click: openWorkspace,
                     },
                     // {
                     //     label: 'Save Portfolio',
@@ -336,9 +331,9 @@ export default class MenuBuilder {
                     //     click: exportClickHandler,
                     // },
                     {
-                        label: 'Export Portfolio As',
+                        label: 'Save Workspace As',
                         accelerator: 'Ctrl+Shift+E',
-                        click: exportClickHandler,
+                        click: saveWorkspaceClickHandler,
                     },
                     {
                         label: 'Print',
