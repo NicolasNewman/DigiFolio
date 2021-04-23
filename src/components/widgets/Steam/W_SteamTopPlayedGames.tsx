@@ -6,12 +6,13 @@ import { Component } from 'react';
 import { ResponsiveTreeMap } from '@nivo/treemap';
 import { Checkbox, Slider } from 'antd';
 import { SteamLibraryModel } from '../../../api/SteamAPI';
-import { widgetFactory, ExternalProps } from '../IWidget';
+import {
+    widgetFactory,
+    ExternalProps,
+    ComponentExtendedProps,
+} from '../IWidget';
 
-type IProps = ExternalProps<SteamLibraryModel> & {
-    saveState: (state: IState) => void;
-    restoreState: () => IState;
-};
+type IProps = ExternalProps<SteamLibraryModel> & ComponentExtendedProps<IState>;
 
 export interface IState {
     orientLabels: boolean;
@@ -36,10 +37,13 @@ class W_SteamTopPlayedGames extends Component<IProps, IState> {
             children: [],
         };
         const restoredState = props.restoreState();
-        this.state = restoredState || {
-            orientLabels: true,
-            opacity: 0.33,
-        };
+        this.state = restoredState ||
+            props.state || {
+                orientLabels: true,
+                opacity: 0.33,
+            };
+
+        props.setHOCState({ width: 500, height: 300, hover: false });
     }
 
     componentWillUnmount() {
@@ -106,7 +110,10 @@ class W_SteamTopPlayedGames extends Component<IProps, IState> {
                 style={
                     this.props.onWidgetList
                         ? { width: '100%', height: '225px' }
-                        : { width: '500px', height: '300px' }
+                        : {
+                              width: `${this.props.width}px`,
+                              height: `${this.props.height}px`,
+                          }
                 }
                 onClick={(e) => {
                     e.stopPropagation();

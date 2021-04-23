@@ -9,16 +9,17 @@ import * as React from 'react';
 import { PureComponent } from 'react';
 import { ResponsiveBar, Layer } from '@nivo/bar';
 import { Select } from 'antd';
-import { widgetFactory, ExternalProps } from '../IWidget';
+import {
+    widgetFactory,
+    ExternalProps,
+    ComponentExtendedProps,
+} from '../IWidget';
 import { SteamLibraryModel } from '../../../api/SteamAPI';
 
 const { Option } = Select;
 
 // The props should always extend ExternalProps which takes a generic of the type of the data model being given to this widget
-type IProps = ExternalProps<SteamLibraryModel> & {
-    saveState: (state: IState) => void;
-    restoreState: () => IState;
-};
+type IProps = ExternalProps<SteamLibraryModel> & ComponentExtendedProps<IState>;
 
 export interface IState {
     games: string[];
@@ -90,6 +91,8 @@ class W_SteamAchievements extends React.Component<IProps, IState> {
             props.state || {
                 games: [],
             };
+
+        props.setHOCState({ width: 500, height: 300, hover: false });
     }
 
     componentDidUpdate(_, prevState) {
@@ -185,7 +188,10 @@ class W_SteamAchievements extends React.Component<IProps, IState> {
                 style={
                     this.props.onWidgetList
                         ? { width: '100%', height: '225px' }
-                        : { width: '500px', height: '300px' }
+                        : {
+                              width: `${this.props.width}px`,
+                              height: `${this.props.height}px`,
+                          }
                 }
                 onClick={(e) => {
                     e.stopPropagation();
