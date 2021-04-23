@@ -166,6 +166,7 @@ export default class Designer extends Component<IProps, IState> {
                         <Popover
                             content={
                                 <Slider
+                                    className="slider-override"
                                     min={0}
                                     max={360}
                                     onAfterChange={this.handleAngleChange}
@@ -181,6 +182,7 @@ export default class Designer extends Component<IProps, IState> {
                         <Popover
                             content={
                                 <Slider
+                                    className="slider-override"
                                     min={0}
                                     max={100}
                                     onAfterChange={this.handlePercentageChange}
