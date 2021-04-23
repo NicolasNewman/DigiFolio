@@ -52,12 +52,12 @@ class GithubUserOverview extends PureComponent<IProps> {
                                         <div>
                                             {'\t'}to{' '}
                                             <strong>
-                                                `&quot;`
+                                                &quot;
                                                 {this.circumsize(
                                                     comment.parent_post_title,
                                                     this.max_length_2
                                                 )}
-                                                `&quot;`
+                                                &quot;
                                             </strong>
                                         </div>
                                         <div>
