@@ -171,137 +171,174 @@ export default class Designer extends Component<IProps, IState> {
         const theme = this.state.background === '#fff' ? 'Dark' : 'Light';
         return (
             <div>
-                <Button onClick={this.switchTheme}>
-                    Switch to {theme} Mode
-                </Button>
+                <div>
+                    <h2>Portfolio Theme</h2>
+                    <Button
+                        onClick={this.switchTheme}
+                        type="primary"
+                        style={{ margin: '0.3rem 0' }}
+                    >
+                        Switch to {theme} Mode
+                    </Button>
+                    <Popover
+                        content={
+                            <SketchPicker
+                                className="sketch-picker-override"
+                                color={this.state.background}
+                                onChangeComplete={this.handleBackgroundChange}
+                                disableAlpha
+                            />
+                        }
+                        title="Background"
+                        trigger="click"
+                    >
+                        <Button type="primary" style={{ margin: '0.3rem 0' }}>
+                            Change Theme
+                        </Button>
+                    </Popover>
+                    <Popover
+                        content={
+                            <SketchPicker
+                                className="sketch-picker-override"
+                                color={this.state.gradient || '#fff'}
+                                onChangeComplete={this.handleGradientChange}
+                                disableAlpha
+                            />
+                        }
+                        title="Gradient"
+                        trigger="click"
+                    >
+                        <Button type="primary" style={{ margin: '0.3rem 0' }}>
+                            Add Gradient
+                        </Button>
+                    </Popover>
+                    {this.state.gradient ? (
+                        <div>
+                            <Popover
+                                content={
+                                    <Slider
+                                        min={0}
+                                        max={360}
+                                        onAfterChange={this.handleAngleChange}
+                                        defaultValue={this.state.angleValue}
+                                    />
+                                }
+                                title="Angle"
+                                trigger="click"
+                            >
+                                <Button
+                                    type="primary"
+                                    style={{ margin: '0.3rem 0' }}
+                                >
+                                    Change Angle
+                                </Button>
+                            </Popover>
+                            <Popover
+                                content={
+                                    <Slider
+                                        min={0}
+                                        max={100}
+                                        onAfterChange={
+                                            this.handlePercentageChange
+                                        }
+                                        defaultValue={
+                                            this.state.colorPercentage
+                                        }
+                                    />
+                                }
+                                title="Color %"
+                                trigger="click"
+                            >
+                                <Button
+                                    type="primary"
+                                    style={{ margin: '0.3rem 0' }}
+                                >
+                                    Change Color %
+                                </Button>
+                            </Popover>
+                        </div>
+                    ) : null}
+                </div>
                 <hr />
-                <Popover
-                    content={
-                        <SketchPicker
-                            className="sketch-picker-override"
-                            color={this.state.background}
-                            onChangeComplete={this.handleBackgroundChange}
-                            disableAlpha
-                        />
-                    }
-                    title="Background"
-                    trigger="click"
-                >
-                    <Button>Change Theme</Button>
-                </Popover>
-                <hr />
-                <Popover
-                    content={
-                        <SketchPicker
-                            className="sketch-picker-override"
-                            color={this.state.gradient || '#fff'}
-                            onChangeComplete={this.handleGradientChange}
-                            disableAlpha
-                        />
-                    }
-                    title="Gradient"
-                    trigger="click"
-                >
-                    <Button>Add Gradient</Button>
-                </Popover>
-                {this.state.gradient ? (
-                    <div>
-                        <hr />
-                        <Popover
-                            content={
-                                <Slider
-                                    min={0}
-                                    max={360}
-                                    onAfterChange={this.handleAngleChange}
-                                    defaultValue={this.state.angleValue}
-                                />
-                            }
-                            title="Angle"
-                            trigger="click"
-                        >
-                            <Button>Change Angle</Button>
-                        </Popover>
-                        <hr />
-                        <Popover
-                            content={
-                                <Slider
-                                    min={0}
-                                    max={100}
-                                    onAfterChange={this.handlePercentageChange}
-                                    defaultValue={this.state.colorPercentage}
-                                />
-                            }
-                            title="Color %"
-                            trigger="click"
-                        >
-                            <Button>Change Color %</Button>
-                        </Popover>
+                <div>
+                    <h2>Widget Theme</h2>
+                    <Popover
+                        content={
+                            <SketchPicker
+                                className="sketch-picker-override"
+                                color={
+                                    this.state.widgetStyle.background || '#fff'
+                                }
+                                onChangeComplete={
+                                    this.handleWidgetBackgroundChange
+                                }
+                                disableAlpha
+                            />
+                        }
+                        title="Widget Background"
+                        trigger="click"
+                    >
+                        <Button type="primary" style={{ margin: '0.3rem 0' }}>
+                            Change Widget Theme
+                        </Button>
+                    </Popover>
+                    <Popover
+                        content={
+                            <SketchPicker
+                                className="sketch-picker-override"
+                                color={this.state.widgetStyle.color || '#000'}
+                                onChangeComplete={this.handleWidgetTextChange}
+                                disableAlpha
+                            />
+                        }
+                        title="Widget Background"
+                        trigger="click"
+                    >
+                        <Button type="primary" style={{ margin: '0.3rem 0' }}>
+                            Change Widget Text Color
+                        </Button>
+                    </Popover>
+                    <div style={{ marginTop: '0.5rem' }}>
+                        Change Widget Border:
                     </div>
-                ) : null}
-                <hr />
-                <Popover
-                    content={
-                        <SketchPicker
-                            className="sketch-picker-override"
-                            color={this.state.widgetStyle.background || '#fff'}
-                            onChangeComplete={this.handleWidgetBackgroundChange}
-                            disableAlpha
-                        />
-                    }
-                    title="Widget Background"
-                    trigger="click"
-                >
-                    <Button>Change Widget Theme</Button>
-                </Popover>
-                <hr />
-                <Popover
-                    content={
-                        <SketchPicker
-                            className="sketch-picker-override"
-                            color={this.state.widgetStyle.color || '#000'}
-                            onChangeComplete={this.handleWidgetTextChange}
-                            disableAlpha
-                        />
-                    }
-                    title="Widget Background"
-                    trigger="click"
-                >
-                    <Button>Change Widget Text Color</Button>
-                </Popover>
-                <hr />
-                <div>Change Widget Border:</div>
-                <InputNumber
-                    min={0}
-                    max={36}
-                    defaultValue={1}
-                    onChange={this.handleBorderSize}
-                />
-                <Select
-                    showSearch
-                    style={{ width: 200 }}
-                    placeholder="Select a Type"
-                    optionFilterProp="children"
-                    onChange={this.handleBorderType}
-                >
-                    <Option value="solid">Solid</Option>
-                    <Option value="dotted">Dotted</Option>
-                    <Option value="dashed">Dashed</Option>
-                    <Option value="double">Double</Option>
-                </Select>
-                <Popover
-                    content={
-                        <SketchPicker
-                            className="sketch-picker-override"
-                            color={this.state.widgetStyle.borderColor}
-                            onChangeComplete={this.handleBorderColor}
-                            disableAlpha
-                        />
-                    }
-                    title="Widget Background"
-                    trigger="click"
-                >
-                    <Button>Change Border Color</Button>
-                </Popover>
+                    <InputNumber
+                        min={0}
+                        max={36}
+                        defaultValue={1}
+                        onChange={this.handleBorderSize}
+                        formatter={(value) => `${value}px`}
+                        parser={(value) => value?.replace('px', '')}
+                        style={{ margin: '0.3rem 0' }}
+                    />
+                    <Select
+                        showSearch
+                        style={{ width: 200, margin: '0.3rem 0' }}
+                        placeholder="Select a Type"
+                        optionFilterProp="children"
+                        onChange={this.handleBorderType}
+                    >
+                        <Option value="solid">Solid</Option>
+                        <Option value="dotted">Dotted</Option>
+                        <Option value="dashed">Dashed</Option>
+                        <Option value="double">Double</Option>
+                    </Select>
+                    <Popover
+                        content={
+                            <SketchPicker
+                                className="sketch-picker-override"
+                                color={this.state.widgetStyle.borderColor}
+                                onChangeComplete={this.handleBorderColor}
+                                disableAlpha
+                            />
+                        }
+                        title="Widget Background"
+                        trigger="click"
+                    >
+                        <Button type="primary" style={{ margin: '0.3rem 0' }}>
+                            Change Border Color
+                        </Button>
+                    </Popover>
+                </div>
             </div>
         );
     };
