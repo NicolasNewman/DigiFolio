@@ -18,14 +18,14 @@ interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
 }
 
 export default class MenuBuilder {
-    // mainWindow: BrowserWindow;
+    mainWindow: BrowserWindow;
 
-    mainWindow = new BrowserWindow({
-        webPreferences: {
-            enableRemoteModule: true,
-            nodeIntegration: true,
-        },
-    });
+    // mainWindow = new BrowserWindow({
+    //     webPreferences: {
+    //         enableRemoteModule: true,
+    //         nodeIntegration: true,
+    //     },
+    // });
 
     constructor(mainWindow: BrowserWindow) {
         this.mainWindow = mainWindow;
