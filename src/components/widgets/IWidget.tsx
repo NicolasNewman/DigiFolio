@@ -172,6 +172,8 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
                             minConstraints={[25, 25]}
                             maxConstraints={[600, 600]}
                             onResizeStop={(e, data) => {
+                                // console.log(`New width: ${data.size.width}`);
+                                // console.log(`New height: ${data.size.height}`);
                                 this.setState({
                                     width: data.size.width,
                                     height: data.size.height,
@@ -180,11 +182,11 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
                             handle={
                                 <span
                                     onPointerEnter={(e) => {
-                                        console.log('Enter');
+                                        // console.log('Enter');
                                         draggable = false;
                                     }}
                                     onPointerLeave={(e) => {
-                                        console.log('Exit');
+                                        // console.log('Exit');
                                         draggable = true;
                                     }}
                                     className="react-resizable-handle react-resizable-handle-se"
@@ -207,10 +209,10 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
                 monitor: DragSourceMonitor,
                 widgetComponent: any
             ) => {
-                console.log('========== BEING DRAG ==========');
-                console.log(props);
-                console.log(widgetComponent);
-                console.log(widgetComponent.savedState);
+                // console.log('========== BEING DRAG ==========');
+                // console.log(props);
+                // console.log(widgetComponent);
+                // console.log(widgetComponent.savedState);
                 const { id, left, top, component, data } = props;
                 return {
                     id,
@@ -226,14 +228,14 @@ export const widgetFactory = ({ test = '' }: Options = {}) => <
                 monitor: DragSourceMonitor,
                 component
             ) => {
-                console.log('========== END DRAG ==========');
-                console.log(props);
-                console.log(monitor);
-                console.log(component);
+                // console.log('========== END DRAG ==========');
+                // console.log(props);
+                // console.log(monitor);
+                // console.log(component);
             },
             canDrag: (props, monitor: DragSourceMonitor) => {
-                console.log('========== CAN DRAG ==========');
-                console.log(draggable);
+                // console.log('========== CAN DRAG ==========');
+                // console.log(draggable);
                 return draggable;
             },
         },

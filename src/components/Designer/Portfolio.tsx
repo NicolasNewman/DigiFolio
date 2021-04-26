@@ -66,9 +66,9 @@ class Portfolio extends Component<IProps, IState> {
 
     constructor(props) {
         super(props);
-        console.log(props);
+        // console.log(props);
         if (Object.keys(props.portfolio.boxes).length > 0) {
-            console.log(props.portfolio.boxes);
+            // console.log(props.portfolio.boxes);
             this.state = {
                 boxes: props.portfolio.boxes,
             };
@@ -166,7 +166,7 @@ class Portfolio extends Component<IProps, IState> {
                             data,
                             state,
                         } = boxes[key];
-                        console.log(component);
+                        // console.log(component);
                         const WidgetComponent = component;
                         return (
                             <WidgetComponent

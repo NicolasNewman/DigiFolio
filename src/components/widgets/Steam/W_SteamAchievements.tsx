@@ -91,8 +91,9 @@ class W_SteamAchievements extends React.Component<IProps, IState> {
             props.state || {
                 games: [],
             };
-
-        props.setHOCState({ width: 500, height: 300, hover: false });
+        if (props.width === 250) {
+            props.setHOCState({ width: 500, height: 300, hover: false });
+        }
     }
 
     componentDidUpdate(_, prevState) {

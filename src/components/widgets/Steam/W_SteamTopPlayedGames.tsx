@@ -43,7 +43,9 @@ class W_SteamTopPlayedGames extends Component<IProps, IState> {
                 opacity: 0.33,
             };
 
-        props.setHOCState({ width: 500, height: 300, hover: false });
+        if (props.width === 250) {
+            props.setHOCState({ width: 500, height: 300, hover: false });
+        }
     }
 
     componentWillUnmount() {
