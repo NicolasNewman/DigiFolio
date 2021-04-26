@@ -25,7 +25,7 @@ export default class IpcInterface {
                     .then((canvas) => {
                         const imgData = canvas.toDataURL('image/png');
                         // eslint-disable-next-line new-cap
-                        const pdf = new jsPDF('p', 'in');
+                        const pdf = new jsPDF('p', 'in', [8.5, 11]);
                         pdf.addImage(imgData, 'JPEG', 0, 0, 8.5, 11);
                         pdf.save('Portfolio.pdf');
                     })
